@@ -24,3 +24,9 @@ Explain what bug, feature, or improvement is being addressed.
 - [ ] Manually tested
 - [ ] No errors in console/server
 - [ ] Works as expected
+
+
+
+
+---
+Feel free to let me know if anything else should be added.
