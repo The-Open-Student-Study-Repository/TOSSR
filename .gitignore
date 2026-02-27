@@ -205,3 +205,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+#IDE Settings
+.vscode/
+.idea/
+*.iml
+
+# File Explorer Metadata
+Thumbs.db
+.DS_Store
