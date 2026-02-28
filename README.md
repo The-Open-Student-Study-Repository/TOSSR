@@ -6,7 +6,7 @@ WAD2 Group Project - Group 5C
 - Matthew MacPhail
 - Guanjie Wang
 - Kai Loach
-- Ali Algharabally
+- Ali N H A Algharabally
 - Evan Cureton
 
 ## Description
