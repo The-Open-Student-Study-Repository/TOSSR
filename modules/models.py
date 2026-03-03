@@ -157,7 +157,7 @@ class StudentModule(models.Model):
     )
 
     def __str__(self):
-        return f"{self.student.id}: {self.module.id}"
+        return f"{self.student}: {self.module.id}"
 
     class Meta:
         db_table = 'student_module'
@@ -183,7 +183,7 @@ class PinnedModule(models.Model):
     )
 
     def __str__(self):
-        return f"{self.student.user.username} pinned {self.module.id}"
+        return f"{self.student} pinned {self.module.id}"
 
     class Meta:
         db_table = 'pinned_module'

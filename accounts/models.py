@@ -52,7 +52,7 @@ class Student(models.Model):
         db_column='degree_id',
     )
     graduation_year = models.IntegerField(
-        db_column='graduation_date',
+        db_column='graduation_year',
     )
     bio = models.CharField(
         max_length=255,
@@ -68,8 +68,9 @@ class Student(models.Model):
         default=True,
         db_column='can_comment',
     )
+
     def __str__(self):
-        return f"{self.user.get_full_name()}. Graduating:{self.graduation_date}"
+        return f"#{self.user_id} - {self.user.get_full_name()}"
 
     class Meta:
         db_table='student_profile'
