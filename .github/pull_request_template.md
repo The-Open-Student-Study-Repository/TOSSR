@@ -7,4 +7,4 @@ Describe what you changed/added and why. If relevant explain your implemntation.
 - [ ] Updated requirements.txt (if needed)
 - [ ] Works locally
 
-/cc @teammate for review.
+/cc @MatthewJMacphail and @evan-cure  for review.
