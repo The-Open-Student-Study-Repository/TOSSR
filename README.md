@@ -11,6 +11,7 @@ WAD2 Group Project - Group 5C
 
 ## Description
 A web platform for students to share and discover module specific study materials including flashcards and quizzes.
+This software is currently intended to be used by Universioty of Glasgow Students only.
 
 ## Prerequisites
 - Python 3.10+ (Project developed with Python 3.14)
@@ -67,3 +68,5 @@ A web platform for students to share and discover module specific study material
 - MariaDB
 - Bootstrap
 - JavaScript/jQuery/AJAX
+
+By contributing to this project, you agree to the terms in .github/CLA.md
