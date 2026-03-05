@@ -30,6 +30,11 @@ class User(AbstractUser):
         blank=False,
         db_column='surname',
     )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_column='created_at',
+    )
     def __str__(self):
         return f"Account:{self.username}, Role:{self.get_role_display()}"
 

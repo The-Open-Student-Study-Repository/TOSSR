@@ -1,3 +1,4 @@
+from MySQLdb.constants.FIELD_TYPE import NULL
 from django.db import models
 
 class School(models.Model):
@@ -27,41 +28,17 @@ class Degree(models.Model):
 
     name = models.CharField(
         max_length=255,
-        unique=True,
         db_column='name',
         help_text='Full degree name.'
     )
 
-    DEGREE_TYPE_CHOICES = [
-        ('BSc', 'Bachelor of Science'),
-        ('MSci', 'Master in Science'),
-        ('MA', 'Master of Arts'),
-        ('MA(SocSci)', 'Master of Arts (Social Sciences)'),
-        ('BEng', 'Bachelor of Engineering'),
-        ('MEng', 'Master of Engineering'),
-        ('LLB', 'Bachelor of Laws'),
-        ('BAcc', 'Bachelor of Accountancy'),
-        ('BFin', 'Bachelor of Finance'),
-        ('MBChB', 'Bachelor of Medicine, Bachelor of Surgery'),
-        ('BDS', 'Bachelor of Dental Surgery'),
-        ('BVMS', 'Bachelor of Veterinary Medicine & Surgery'),
-        ('BN', 'Bachelor of Nursing'),
-        ('BMus', 'Bachelor of Music'),
-        ('MEduc', 'Master of Education'),
-        ('MDTechEd', 'Master of Design & Technology Education'),
-        ('BD', 'Bachelor of Divinity'),
-        ('BA', 'Bachelor of Arts'),
-        ('CertHE', 'Certificate of Higher Education'),
-        ('LSc', 'Laurea in Statistica'),  # For Bologna double degree
-    ]
 
     degree_type = models.CharField(
-        max_length=15,  # Increased for 'MA(SocSci)'
-        choices=DEGREE_TYPE_CHOICES,
+        max_length=31,
         db_column='degree_type',
         null=True,
         blank=True,
-        help_text='Degree type (can be null due to some dual international degrees)'
+        help_text='Degree type'
     )
 
     schools = models.ManyToManyField(
@@ -71,7 +48,7 @@ class Degree(models.Model):
     )
 
     def get_full_name(self):
-        """Returns full degree name e.g. BSc Computing Science'"""
+        """Returns full degree name e.g. B.Sc. Computing Science"""
         return f"{self.degree_type} {self.name}"
 
     def __str__(self):
@@ -155,6 +132,7 @@ class StudentModule(models.Model):
         db_column='is_archived',
         help_text='Student can archive modules to hide them without unsubscribing',
     )
+
 
     def __str__(self):
         return f"{self.student}: {self.module.id}"

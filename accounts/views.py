@@ -1,9 +1,12 @@
+from typing import Any
+
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from .forms import SignUpStep1Form, SignUpStep2Form
 from .models import User, Student
-
+import json
 
 # Create your views here.
 
@@ -33,10 +36,10 @@ def signup_step1(request):
     else:
         form = SignUpStep1Form()
 
-    return render(request, 'accounts/signup_step1.html'), {
+    return render(request, 'accounts/signup/signup_step1.html', {
         'form': form,
         'step': 1
-    }
+    })
 
 def signup_step2(request):
     """
@@ -79,7 +82,7 @@ def signup_step2(request):
     else:
         form = SignUpStep2Form()
 
-    return render(request, 'accounts/signup_step2.html', {
+    return render(request, 'accounts/signup/signup_step2.html', {
         'form': form,
         'step': 2
     })
@@ -113,7 +116,6 @@ def login_view(request):
 
     return render(request, 'accounts/login.html')
 
-
 @login_required(login_url='/accounts/login/')
 def placeholder_view(request):
     if request.user.is_staff:
@@ -125,3 +127,91 @@ def placeholder_view(request):
         'user': request.user,
         'student': request.user.student_profile,
     })
+
+
+@login_required
+def download_my_data(request):
+    """Required for GDPR Compliancy"""
+    user: User = request.user
+    data: dict[str, Any] = {
+        'profile': {
+            'username': user.username,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'role': user.role,
+            'date_joined': user.created_at.isoformat(),
+        }
+    }
+    if user.role == 'student':
+        student = user.student_profile
+        data['profile'].update({
+            'degree': student.degree.get_full_name(),
+            'graduation_year': student.graduation_year,
+            'bio': student.bio,
+        })
+        data['modules'] = [
+            {
+                'code': sm.module.id,
+                'name': sm.module.name,
+            }
+            for sm in student.studentmodule_set.all()
+        ]
+
+        data['materials_created'] = [
+            {
+                'title': mat.title,
+                'type': mat.material_type,
+                'created': mat.created_at.isoformat(),
+            }
+            for mat in student.created_materials.all()
+        ]
+        data['comments'] = [
+            {
+                'content': c.content,
+                'date': c.created_at.isoformat(),
+            }
+            for c in student.comments.all()
+        ]
+
+
+
+
+    response = JsonResponse(data)
+    response['Content-Disposition'] = f'attachment; filename="tossr_data_{user.username}.json"'
+    return response
+
+
+
+@login_required
+def anonymise_account(request):
+    """
+    GDPR Compliancy
+    """
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        user = authenticate(username=request.user.username, password=password)
+        if user:
+            user.username = f"deleted_user_{user.id}"
+            user.email = f"deleted_{user.id}@deleted.com"
+            user.first_name = "Deleted"
+            user.last_name = "User"
+            user.is_active = False
+            user.save()
+            if user.role == 'student':
+                student = user.student_profile
+                student.student_profile.bio = ""
+
+                student.created_materials.filter(is_published=False).delete()
+                student.created_materials.filter(module__isnull=True).delete()
+                student.created_materials.filter(is_deleted=True).delete()
+                student.save()
+            logout(request)
+            return redirect('account_deleted')
+        else:
+            # TODO: make profile delete page
+            return render(request, 'accounts/delete_account.html', {
+                'error': 'Incorrect password'
+            })
+
+    return render(request, 'accounts/delete_account.html')

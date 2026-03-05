@@ -27,6 +27,12 @@ class SignUpStep1Form(forms.Form):
         label='Confirm Password',
     )
 
+    privacy_accepted = forms.BooleanField(
+        required=True,
+        label="I accept the Privacy Policy",
+        error_messages={'required': "You must agree to the Privacy Policy. before creating an account."},
+    )
+
     def verify_username(self):
         username = self.cleaned_data['username']
         if User.objects.filter(username=username).exists():
