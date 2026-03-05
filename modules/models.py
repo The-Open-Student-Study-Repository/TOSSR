@@ -70,8 +70,8 @@ class Module(models.Model):
 
     name = models.CharField(
         max_length=255,
-        unique=True,
         db_column='name',
+        unique=False,
         help_text='Module name'
     )
 
@@ -109,7 +109,7 @@ class Module(models.Model):
 
     class Meta:
         db_table = 'module'
-        unique_together = [['name', 'school']]
+        unique_together = [['id', 'school']]
         verbose_name = 'Module'
         verbose_name_plural = 'Modules'
 
