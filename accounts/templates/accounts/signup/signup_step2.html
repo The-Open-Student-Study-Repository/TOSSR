@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TOSSR Sign Up - Step 2</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+</head>
+<body>
+
+<div class="card">
+    <div class="logo">TOSSR</div>
+    <div class="subtitle">Complete your profile</div>
+    <div class="step-indicator">Step 2 of 2</div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <input type="text" name="forename" placeholder="Forename" required>
+
+        <input type="text" name="surname" placeholder="Surname" required>
+
+        <input type="text" name="degree" placeholder="Degree" required>
+
+        <input type="text" name="graduation_year" placeholder="Graduation year" required>
+
+        <textarea name="bio" placeholder="Bio" rows="4"></textarea>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <div class="footer">
+        Need to change your email or password?
+        <a href="{% url 'accounts:signup_step1' %}">Go back</a>
+    </div>
+</div>
+
+</body>
+</html>

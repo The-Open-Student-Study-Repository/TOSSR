@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 # import the include
 from django.urls import path, include
+from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # register all routes under the materials
     path('materials/', include('materials.urls')),
+        path('accounts/', include('accounts.urls')),
+        path('', lambda request: redirect('accounts:login')),
 ]
