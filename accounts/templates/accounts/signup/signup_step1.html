@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TOSSR Sign Up</title>
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="logo">TOSSR</div>
+<div class="subtitle">Create your account</div>
+<div class="step-indicator">Step 1 of 2</div>
+
+{% if form.errors %}
+    <div style="color:red; margin-bottom:15px; text-align:left;">
+        {{ form.errors }}
+    </div>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+
+    <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        value="{{ form.username.value|default:'' }}"
+        required
+    >
+
+    <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value="{{ form.email.value|default:'' }}"
+        required
+    >
+
+    <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+    >
+
+    <input
+        type="password"
+        name="password_confirm"
+        placeholder="Confirm Password"
+        required
+    >
+
+    <div class="privacy">
+        <label>
+            <input type="checkbox" name="privacy_accepted" id="privacy_accepted">
+            I agree to the
+            <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>
+        </label>
+    </div>
+
+    <button type="submit">Sign Up</button>
+</form>
+
+<div class="footer">
+Already have an account?  
+<a href="{% url 'accounts:login' %}">Login</a>
+      <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="logo">TOSSR</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h1 style="text-align: center; font-size: 1.8rem; margin-bottom: 20px;">Privacy Policy</h1>
+
+                    <h2>What data we collect</h2>
+                    <p>We collect: email, name, degree program, graduation year, and optional bio.</p>
+
+                    <h2>How we use your data</h2>
+                    <p>To provide the TOSSR platform functionality - allowing you to share and access study materials.</p>
+
+                    <h2>Your rights</h2>
+                    <ul>
+                        <li><strong>Access:</strong> Download your data anytime</li>
+                        <li><strong>Rectification:</strong> Edit your profile</li>
+                        <li><strong>Erasure:</strong> Delete your account</li>
+                        <li><strong>Portability:</strong> Export your data as JSON</li>
+                    </ul>
+
+                    <h2>Data retention</h2>
+                    <p>When you delete your account:</p>
+                    <ul>
+                        <li>Your personal information (name, email, bio) is anonymized</li>
+                        <li>Your account is deactivated and you cannot log in</li>
+                        <li>Your published study materials and comments remain visible but show as "Deleted User"</li>
+                        <li>This ensures other students can continue to benefit from resources you shared</li>
+                    </ul>
+
+                    <h2>Contact</h2>
+                    <p>For data protection queries: <a href="mailto:2996230m@student.gla.ac.uk">2996230m@student.gla.ac.uk</a></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="document.getElementById('privacy_accepted').checked = true;">Accept & Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+</body>
+</html>

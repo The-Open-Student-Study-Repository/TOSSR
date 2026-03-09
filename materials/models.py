@@ -20,14 +20,14 @@ class StudyMaterial(models.Model):
 
     material_type = models.CharField(
         max_length=20,
-        choices=MATERIAL_TYPE_CHOICES,  # Enforces your check constraint
+        choices=MATERIAL_TYPE_CHOICES,
         db_column='material_type',
         help_text='Type of study material',
     )
 
     owner = models.ForeignKey(
         'accounts.Student',
-        on_delete=models.CASCADE,  # Matches your 'on delete cascade'
+        on_delete=models.CASCADE,
         db_column='owner_id',
         related_name='created_materials',
         help_text='Student who created this material',
@@ -35,8 +35,8 @@ class StudyMaterial(models.Model):
 
     module = models.ForeignKey(
         'modules.Module',
-        on_delete=models.SET_NULL,  # Matches your 'on delete set null'
-        null=True,  # Matches your SQL 'null'
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
         db_column='module_id',
         related_name='materials',
@@ -163,13 +163,13 @@ class Upvote(models.Model):
     """
     student = models.ForeignKey(
         'accounts.Student',
-        on_delete=models.CASCADE,  # Matches your 'on delete cascade'
+        on_delete=models.CASCADE,
         db_column='student_id',
     )
 
     study_material = models.ForeignKey(
         StudyMaterial,
-        on_delete=models.CASCADE,  # Matches your 'on delete cascade'
+        on_delete=models.CASCADE,
         db_column='material_id',
         related_name='upvotes',
     )
