@@ -18,4 +18,4 @@ def module_list(request):
         'modules': modules,
         'schools': School.objects.all(),
     }
-    return render(request, 'modules/list.html', context)
+    return render(request, 'modules/mymodules.html', context)
