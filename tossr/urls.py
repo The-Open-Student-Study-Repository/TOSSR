@@ -24,5 +24,6 @@ urlpatterns = [
     # register all routes under the materials
     path('materials/', include('materials.urls')),
         path('accounts/', include('accounts.urls')),
+        path('modules/', include('modules.urls')),
         path('', lambda request: redirect('accounts:login')),
 ]

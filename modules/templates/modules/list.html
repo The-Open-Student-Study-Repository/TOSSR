@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Modules</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .module {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .module h3 {
+            margin-top: 0;
+        }
+        .module-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Modules</h1>
+    
+    <form method="GET">
+        <select name="school">
+            <option value="">All Schools</option>
+            {% for school in schools %}
+                <option value="{{ school.id }}">{{ school.name }}</option>
+            {% endfor %}
+        </select>
+        
+        <select name="level">
+            <option value="">All Levels</option>
+            <option value="1">Level 1</option>
+            <option value="2">Level 2</option>
+            <option value="3">Level 3</option>
+        </select>
+        
+        <button type="submit">Filter</button>
+    </form>
+    
+    {% if modules %}
+        {% for module in modules %}
+            <div class="module">
+                <h3>{{ module.id }}: {{ module.name }}</h3>
+                <div class="module-info">
+                    <div><strong>School:</strong> {{ module.school.name }}</div>
+                    <div><strong>Level:</strong> {{ module.level }}</div>
+                    <div><strong>Credits:</strong> {{ module.credits }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No modules available.</p>
+    {% endif %}
+</body>
+</html>
