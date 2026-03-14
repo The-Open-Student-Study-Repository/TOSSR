@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% load static %}
+{% load materials_template_tags %}
+{% load modules_template_tags %}
+
+<html>
+    <head lang="en">
+        <meta charset="UTF-8" />
+        <title>TOSSR - 
+            {% block title_block %}
+            The Open Student Study Repository
+            {% endblock %}
+        </title>
+        <link rel="stylesheet" href="{% static '/base.css' %}" >
+        {% block head_block %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block sidebar_block %}
+        <div class="sidenav">
+            <h3><strong><u>TOSSR</u></strong></h3>
+            <p style="text-align: center"><strong>The Open Student Study Repository</strong></p>
+        <br />
+            <h4><strong><u>Navigation:</u></strong></h4>
+            <ul>
+                <li><a href="#">My Resources</a></li>
+                <li><a href="#">My Modules</a></li>
+            </ul>
+        <br />
+            {% get_starred_materials_list material %}
+        <br />
+            {% get_starred_modules_list module %}
+        <br />
+            <h4><strong><u>Profile:</u></strong></h4>
+            <ul>
+                <li>Name: </li>
+                <li>Degree: </li>
+                <li>Graduation Year: </li>
+                <li><a href="#">Logout</a></li>
+            </ul>
+        <br />
+            <h4><strong><u>Bio:</u></strong></h4>
+            <p>Insert really boring text about person or funny joke</p>
+        <br />
+        <div class="settings">
+            <h3 ><a href="#">Settings</a></h3>
+        </div>
+        </div>
+        {% endblock %}
+        <div class="main">
+            {% block body_block %}
+            <h1>The Open Student Study Repository</h1>
+            {% endblock %}
+        </div>
+    </body>
+</html>
+
