@@ -118,7 +118,7 @@ def login_view(request):
                 'error': 'Invalid username or password.'
             })
 
-    return render(request, 'accounts/login.html')
+    return render(request, 'base.html')
 
 
 
