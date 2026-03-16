@@ -4,6 +4,7 @@
 <head>
     <title>TOSSR Sign Up - Step 2</title>
     <link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css">
 </head>
 <body>
 
@@ -19,7 +20,9 @@
 
         <input type="text" name="surname" placeholder="Surname" required>
 
-        <input type="text" name="degree" placeholder="Degree" required>
+        <select id="id_degree" name="degree" placeholder="Search your degree..." required>
+            <option value="">Search your degree...</option>
+        </select>
 
         <input type="text" name="graduation_year" placeholder="Graduation year" required>
 
@@ -34,5 +37,31 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script>
+new TomSelect("#id_degree", {
+    valueField: 'name',
+    labelField: 'name',
+    searchField: 'name',
+    maxOptions: 20,
+    create: false,
+    loadThrottle: 300,
+
+    load: function(query, callback) {
+        if (query.length < 2) return callback();
+
+        fetch(`/accounts/api/degrees/?q=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => callback(data))
+            .catch(() => callback());
+    },
+
+    render: {
+        no_results: function() {
+            return '<div class="no-results">No degrees found</div>';
+        }
+    }
+});
+</script>
 </body>
 </html>

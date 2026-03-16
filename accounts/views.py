@@ -7,6 +7,7 @@ from django.contrib.auth import login, authenticate, logout
 from materials.models import StudyMaterial
 from .forms import SignUpStep1Form, SignUpStep2Form
 from .models import User, Student
+from  modules.models import Degree
 from .decorators import student_required, moderator_required
 
 
@@ -280,3 +281,12 @@ def anonymise_account(request):
 
     return render(request, 'accounts/delete_account.html')
 
+def degree_search(request):
+    q = request.GET.get('q','')
+    if len(q) < 2:
+        return JsonResponse([], safe=False)
+
+    degrees = Degree.objects.filter(name__icontains=q)[:20]
+    return JsonResponse([{
+        'name': d.name + " " + d.degree_type, 'code': d.code
+    } for d in degrees], safe=False)
