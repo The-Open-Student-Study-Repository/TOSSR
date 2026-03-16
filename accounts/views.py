@@ -58,8 +58,8 @@ def signup_step2(request):
                 username=step1_data['username'],
                 email=step1_data['email'],
                 password=step1_data['password'],
-                first_name=step1_data['forename'],
-                last_name=step1_data['surname'],
+                first_name=form.cleaned_data['forename'],
+                last_name=form.cleaned_data['surname'],
                 role='student'
             )
 
@@ -163,7 +163,7 @@ def moderator_dashboard(request):
         'total_students': User.objects.filter(role='student').count(),
     }
     #TODO: MAKE SURE WE MAKE A MOD DASHBOARD
-    return render(request, 'accounts/moderator_dashboard_placeholder.html', {
+    return render(request, 'accounts/moderator_dashboard.html', {
         'flagged_materials': flagged_materials,
         'hidden_materials': hidden_materials,
         'recent_materials': recent_materials,
