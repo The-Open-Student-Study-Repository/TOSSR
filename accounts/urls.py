@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-from .views import degree_search
 
 app_name = 'accounts'
 urlpatterns = [
@@ -9,5 +8,5 @@ urlpatterns = [
     path("signup/step2/", views.signup_step2, name="signup_step2"),
     path("moderator/dashboard/", views.moderator_dashboard, name="moderator_dashboard"),
     path("student/dashboard/", views.student_dashboard, name="student_dashboard"),
-    path('api/degrees/', degree_search, name='degree_search'),
+    path("autocomplete/degree/", views.DegreeAutocompleteView.as_view(), name="degree_autocomplete"),
 ]

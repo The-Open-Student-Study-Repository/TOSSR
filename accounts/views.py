@@ -9,7 +9,7 @@ from .forms import SignUpStep1Form, SignUpStep2Form
 from .models import User, Student
 from  modules.models import Degree
 from .decorators import student_required, moderator_required
-
+from django_tomselect.autocompletes import AutocompleteModelView
 
 # Create your views here.
 
@@ -281,12 +281,14 @@ def anonymise_account(request):
 
     return render(request, 'accounts/delete_account.html')
 
-def degree_search(request):
-    q = request.GET.get('q','')
-    if len(q) < 2:
-        return JsonResponse([], safe=False)
+class DegreeAutocompleteView(AutocompleteModelView):
+    model = Degree
+    search_lookups = ["name__icontains"]
+    value_fields = ["code", "name", "degree_type"]
+    page_size = 20
+    skip_authorization = True
 
-    degrees = Degree.objects.filter(name__icontains=q)[:20]
-    return JsonResponse([{
-        'name': d.name + " " + d.degree_type, 'code': d.code
-    } for d in degrees], safe=False)
+    def hook_prepare_results(self, results):
+        for item in results:
+            item["name"] = f"{item.get('name', '')} {item.get('degree_type', '')}".strip()
+        return results
