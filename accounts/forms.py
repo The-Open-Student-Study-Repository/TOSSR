@@ -1,8 +1,9 @@
 from django import forms
 from django.utils import timezone
+from django_tomselect.app_settings import TomSelectConfig
+from django_tomselect.forms import TomSelectModelChoiceField
 
 from .models import User
-from modules.models import Degree
 
 class SignUpStep1Form(forms.Form):
     """Basic credentials to validate user can create account"""
@@ -69,9 +70,15 @@ class SignUpStep2Form(forms.Form):
         help_text='Surname',
     )
 
-    degree = forms.ModelChoiceField(
-        queryset=Degree.objects.all(),
-        help_text='Select your degree program',
+    degree = TomSelectModelChoiceField(
+        config=TomSelectConfig(
+            url="accounts:degree_autocomplete",
+            value_field="code",
+            label_field="name",
+            placeholder="Search your degree...",
+            highlight=True,
+            max_options=10,
+        )
     )
 
     graduation_year = forms.IntegerField(

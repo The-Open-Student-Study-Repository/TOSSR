@@ -4,6 +4,7 @@
 <head>
     <title>TOSSR Sign Up - Step 2</title>
     <link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+    {{ form.media.css }}
 </head>
 <body>
 
@@ -19,7 +20,7 @@
 
         <input type="text" name="surname" placeholder="Surname" required>
 
-        <input type="text" name="degree" placeholder="Degree" required>
+        {{ form.degree }}
 
         <input type="text" name="graduation_year" placeholder="Graduation year" required>
 
@@ -34,5 +35,6 @@
     </div>
 </div>
 
+{{ form.media.js }}
 </body>
 </html>

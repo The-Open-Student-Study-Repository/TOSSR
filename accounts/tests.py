@@ -1,4 +1,4 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from accounts.models import User, Student
 from modules.models import School, Degree
@@ -113,3 +113,62 @@ class TestLogIn(TestCase):
         # Should redirect away
         self.assertEqual(response.status_code, 302)
 
+class TestDegreeAutocomplete(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('accounts:degree_autocomplete')
+
+        self.school = School.objects.create(name='School of Computing Science')
+
+        self.degree1 = Degree.objects.create(
+            code='G400', name='Computing Science', degree_type='BSc (Hons)'
+        )
+        self.degree2 = Degree.objects.create(
+            code='G401', name='Software Engineering', degree_type='BSc (Hons)'
+        )
+        self.degree3 = Degree.objects.create(
+            code='M100', name='Common Law', degree_type='LLB'
+        )
+
+    def tearDown(self):
+        Degree.objects.all().delete()
+        School.objects.all().delete()
+
+    def test_search_returns_matching_degrees(self):
+        response = self.client.get(self.url, {'q': 'Computing'})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        codes = [r['code'] for r in data['results']]
+        self.assertIn('G400', codes)
+        self.assertNotIn('M100', codes)
+
+    def test_search_returns_empty_for_no_match(self):
+        response = self.client.get(self.url, {'q': 'Zoology'})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data['results']), 0)
+
+    def test_search_is_case_insensitive(self):
+        response = self.client.get(self.url, {'q': 'computing'})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        codes = [r['code'] for r in data['results']]
+        self.assertIn('G400', codes)
+
+    def test_display_name_includes_degree_type(self):
+        response = self.client.get(self.url, {'q': 'Computing'})
+        data = response.json()
+        result = next(r for r in data['results'] if r['code'] == 'G400')
+        self.assertIn('BSc (Hons)', result['name'])
+
+    def test_empty_query_returns_results(self):
+        response = self.client.get(self.url, {'q': ''})
+        self.assertEqual(response.status_code, 200)
+
+    def test_no_duplicate_results(self):
+        """Ensure distinct() prevents duplicate entries"""
+        self.degree1.schools.add(self.school)
+        response = self.client.get(self.url, {'q': 'Computing'})
+        data = response.json()
+        codes = [r['code'] for r in data['results']]
+        self.assertEqual(len(codes), len(set(codes)))
