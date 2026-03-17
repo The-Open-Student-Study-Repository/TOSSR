@@ -34,19 +34,19 @@ class SignUpStep1Form(forms.Form):
         error_messages={'required': "You must agree to the Privacy Policy. before creating an account."},
     )
 
-    def verify_username(self):
+    def clean_username(self):
         username = self.cleaned_data['username']
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError("Username has been taken. Please choose a different one.")
         return username
 
-    def verify_email(self):
+    def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("This email has already been registered to an account.")
         return email
 
-    def verify_password(self):
+    def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get('password')
         password_confirm = cleaned_data.get('password_confirm')

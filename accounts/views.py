@@ -59,8 +59,8 @@ def signup_step2(request):
                 username=step1_data['username'],
                 email=step1_data['email'],
                 password=step1_data['password'],
-                first_name=step1_data['forename'],
-                last_name=step1_data['surname'],
+                first_name=form.cleaned_data['forename'],
+                last_name=form.cleaned_data['surname'],
                 role='student'
             )
 
