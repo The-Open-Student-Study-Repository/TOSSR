@@ -2,6 +2,7 @@ from typing import Any
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
+from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from materials.models import StudyMaterial
@@ -281,6 +282,7 @@ def anonymise_account(request):
 
     return render(request, 'accounts/delete_account.html')
 
+<<<<<<< HEAD
 class DegreeAutocompleteView(AutocompleteModelView):
     model = Degree
     search_lookups = ["name__icontains"]
@@ -292,3 +294,9 @@ class DegreeAutocompleteView(AutocompleteModelView):
         for item in results:
             item["name"] = f"{item.get('name', '')} {item.get('degree_type', '')}".strip()
         return results
+=======
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect(reverse('accounts:login'))
+>>>>>>> 6b3170f (settings frontend started)
