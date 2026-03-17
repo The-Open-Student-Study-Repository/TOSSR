@@ -192,6 +192,7 @@ class TestSignUpStep1(TestCase):
         })
         self.assertRedirects(response, reverse('accounts:signup_step2'))
         self.assertIn('signup_step1', self.client.session)
+        self.assertFalse(User.objects.filter(username='newuser').exists())
 
     def test_step1_stores_session_data(self):
         self.client.post(self.url, {
@@ -214,7 +215,8 @@ class TestSignUpStep1(TestCase):
             'password_confirm': 'testpass123',
             'privacy_accepted': True,
         })
-        self.assertEqual(response.status_code, 200)  # stays on page
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('username', response.context['form'].errors)
 
     def test_step1_privacy_not_accepted(self):
         response = self.client.post(self.url, {
@@ -223,11 +225,62 @@ class TestSignUpStep1(TestCase):
             'password': 'testpass123',
             'password_confirm': 'testpass123',
         })
-        self.assertEqual(response.status_code, 200)  # stays on page
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('privacy_accepted', response.context['form'].errors)
 
     def test_step1_missing_fields(self):
         response = self.client.post(self.url, {})
-        self.assertEqual(response.status_code, 200)  # stays on page
+        self.assertEqual(response.status_code, 200)
+        form_errors = response.context['form'].errors
+        self.assertIn('username', form_errors)
+        self.assertIn('email', form_errors)
+        self.assertIn('password', form_errors)
+        self.assertIn('privacy_accepted', form_errors)
+
+    def test_step1_duplicate_email(self):
+        User.objects.create_user(username='existing', email='taken@test.com', password='pass1234')
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'taken@test.com',
+            'password': 'testpass123',
+            'password_confirm': 'testpass123',
+            'privacy_accepted': True,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('email', response.context['form'].errors)
+
+    def test_step1_invalid_email(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'notanemail',
+            'password': 'testpass123',
+            'password_confirm': 'testpass123',
+            'privacy_accepted': True,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('email', response.context['form'].errors)
+
+    def test_step1_password_mismatch(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'new@test.com',
+            'password': 'testpass123',
+            'password_confirm': 'differentpass',
+            'privacy_accepted': True,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form'].errors)
+
+    def test_step1_password_too_short(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'new@test.com',
+            'password': 'short',
+            'password_confirm': 'short',
+            'privacy_accepted': True,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('password', response.context['form'].errors)
 
 
 class TestSignUpStep2(TestCase):
