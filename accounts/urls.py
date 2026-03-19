@@ -11,5 +11,6 @@ urlpatterns = [
     path("moderator/materials/<int:material_id>/hide/", views.hide_material, name="hide_material"),
 path("moderator/materials/<int:material_id>/unhide/", views.unhide_material, name="unhide_material"),
     path("student/dashboard/", views.student_dashboard, name="student_dashboard"),
-    path('logout/', logout, name='logout'),
+    path("autocomplete/degree/", views.DegreeAutocompleteView.as_view(), name="degree_autocomplete"),
+    path('logout/',views.user_logout,name='logout'),
 ]
