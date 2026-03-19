@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find Modules</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'modules/css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Find Modules</h1>
+        
+        {% if page_obj %}
+            <div class="filter-section">
+                <form method="GET" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; width: 100%;">
+                    <select name="school">
+                        <option value="">All Schools</option>
+                        {% for school in schools %}
+                            <option value="{{ school.id }}" {% if school.id|stringformat:"s" == school %}selected{% endif %}>{{ school.name }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <select name="level">
+                        <option value="">All Levels</option>
+                        <option value="1" {% if level == "1" %}selected{% endif %}>Level 1</option>
+                        <option value="2" {% if level == "2" %}selected{% endif %}>Level 2</option>
+                        <option value="3" {% if level == "3" %}selected{% endif %}>Level 3</option>
+                        <option value="4" {% if level == "4" %}selected{% endif %}>Level 4</option>
+                        <option value="5" {% if level == "5" %}selected{% endif %}>Level 5</option>
+                    </select>
+                    
+                    <button type="submit">Filter</button>
+                </form>
+            </div>
+            
+            <div class="modules-grid">
+                {% for module in page_obj %}
+                    <div class="module">
+                        <h3>{{ module.id }}: {{ module.name }}</h3>
+                        <div class="module-info">
+                            <div><strong>School:</strong> {{ module.school.name }}</div>
+                            <div><strong>Level:</strong> {{ module.level }}</div>
+                            <div><strong>Credits:</strong> {{ module.credits }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if page_obj.has_other_pages %}
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">« First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">‹ Previous</a>
+                    {% else %}
+                        <span class="disabled">« First</span>
+                        <span class="disabled">‹ Previous</span>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="current">{{ num }}</span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <a href="?page={{ num }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">Next ›</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">Last »</a>
+                    {% else %}
+                        <span class="disabled">Next ›</span>
+                        <span class="disabled">Last »</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="no-modules">
+                <p>No modules available.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
