@@ -9,4 +9,5 @@ urlpatterns = [
     path("moderator/dashboard/", views.moderator_dashboard, name="moderator_dashboard"),
     path("student/dashboard/", views.student_dashboard, name="student_dashboard"),
     path("autocomplete/degree/", views.DegreeAutocompleteView.as_view(), name="degree_autocomplete"),
+    path('logout/',views.user_logout,name='logout'),
 ]

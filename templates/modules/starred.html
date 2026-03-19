@@ -1,0 +1,12 @@
+{% if starred %}
+<h4><strong><u>Starred Modules:</u></strong></h4>
+<ul>
+    {% for module in starred %}
+        {% if module == current_module %}
+        <li><strong><a href="#">{{ module.name }}</a></strong></li>
+        {% else %}
+        <li><a href="#">{{ module.name }}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endif %}
