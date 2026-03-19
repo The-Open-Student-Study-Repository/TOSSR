@@ -1,7 +1,10 @@
 from django.db import models
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django_tomselect.autocompletes import AutocompleteModelView
-from .models import Module, School
+from .models import Module, School, StudentModule, PinnedModule
 
 class ModuleAutocompleteView(AutocompleteModelView):
     model = Module
@@ -56,14 +59,98 @@ def browse_modules(request):
     levels = Module.objects.filter(is_archived=False).values_list('level', flat=True).distinct().order_by('level')
     schools = School.objects.filter(modules__is_archived=False).distinct().order_by('name')
     credit_options = Module.objects.filter(is_archived=False).values_list('credits', flat=True).distinct().order_by('credits')
-
-    return render(request, 'modules/browse.html', {
-        'modules': modules,
+    
+    # Get user's subscriptions and favourites
+    user_subscriptions = set()
+    user_favourites = set()
+    if request.user.is_authenticated and request.user.role == 'student':
+        student = request.user.student_profile
+        user_subscriptions = set(
+            StudentModule.objects.filter(student=student).values_list('module_id', flat=True)
+        )
+        user_favourites = set(
+            PinnedModule.objects.filter(student=student).values_list('module_id', flat=True)
+        )
+    
+    # Add pagination
+    paginator = Paginator(modules, 20)  # 20 modules per page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
+    # Add subscription/favourite info to each module
+    for module in page_obj:
+        module.is_subscribed = module.id in user_subscriptions
+        module.is_favourited = module.id in user_favourites
+    
+    return render(request, 'modules/findmodules.html', {
+        'page_obj': page_obj,
         'levels': levels,
         'schools': schools,
         'credit_options': credit_options,
-        'current_level': level,
-        'current_school': school,
-        'current_credits': credits,
-        'current_q': q or '',
+        'level': level,
+        'school': school,
+        'credits': credits,
+        'q': q or '',
     })
+
+
+@login_required
+def toggle_subscribe_module(request, module_id):
+    """Toggle subscription to a module"""
+    if request.user.role != 'student':
+        return JsonResponse({'error': 'Only students can subscribe to modules'}, status=403)
+    
+    module = get_object_or_404(Module, id=module_id)
+    student = request.user.student_profile
+    
+    subscription, created = StudentModule.objects.get_or_create(
+        student=student,
+        module=module
+    )
+    
+    if not created:
+        # Already subscribed, so unsubscribe
+        subscription.delete()
+        is_subscribed = False
+    else:
+        is_subscribed = True
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'is_subscribed': is_subscribed})
+    
+    # Preserve the current page and filters
+    query_params = request.GET.urlencode()
+    if query_params:
+        return redirect(f"{request.META.get('HTTP_REFERER', 'modules:browse_modules')}?{query_params}")
+    return redirect(request.META.get('HTTP_REFERER', 'modules:browse_modules'))
+
+
+@login_required
+def toggle_favourite_module(request, module_id):
+    """Toggle favourite/pinned status of a module"""
+    if request.user.role != 'student':
+        return JsonResponse({'error': 'Only students can favourite modules'}, status=403)
+    
+    module = get_object_or_404(Module, id=module_id)
+    student = request.user.student_profile
+    
+    favourite, created = PinnedModule.objects.get_or_create(
+        student=student,
+        module=module
+    )
+    
+    if not created:
+        # Already favourited, so unfavourite
+        favourite.delete()
+        is_favourited = False
+    else:
+        is_favourited = True
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'is_favourited': is_favourited})
+    
+    # Preserve the current page and filters
+    query_params = request.GET.urlencode()
+    if query_params:
+        return redirect(f"{request.META.get('HTTP_REFERER', 'modules:browse_modules')}?{query_params}")
+    return redirect(request.META.get('HTTP_REFERER', 'modules:browse_modules'))

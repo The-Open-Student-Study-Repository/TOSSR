@@ -291,7 +291,6 @@ def anonymise_account(request):
 
     return render(request, 'accounts/delete_account.html')
 
-<<<<<<< HEAD
 class DegreeAutocompleteView(AutocompleteModelView):
     model = Degree
     search_lookups = ["name__icontains"]
@@ -303,9 +302,9 @@ class DegreeAutocompleteView(AutocompleteModelView):
         for item in results:
             item["name"] = f"{item.get('name', '')} {item.get('degree_type', '')}".strip()
         return results
-=======
+
+
 @login_required
 def user_logout(request):
     logout(request)
     return redirect(reverse('accounts:login'))
->>>>>>> 6b3170f (settings frontend started)

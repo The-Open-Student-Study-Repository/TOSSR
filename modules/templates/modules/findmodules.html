@@ -4,7 +4,56 @@
     <title>Find Modules</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'modules/css/style.css' %}">
-</head>
+    <style>
+        .module h3 {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            margin: 0 0 10px 0;
+        }
+        .module-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .btn {
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        .btn-subscribe {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-subscribe:hover {
+            background-color: #0056b3;
+        }
+        .btn-subscribed {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-subscribed:hover {
+            background-color: #1e7e34;
+        }
+        .btn-favourite {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .btn-favourite:hover {
+            background-color: #e0a800;
+        }
+        .btn-favourited {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        .btn-favourited:hover {
+            background-color: #ee5a52;
+        }
+    </style>
+    </head>
 <body>
     <div class="container">
         <h1>Find Modules</h1>
@@ -41,6 +90,18 @@
                             <div><strong>Level:</strong> {{ module.level }}</div>
                             <div><strong>Credits:</strong> {{ module.credits }}</div>
                         </div>
+                        {% if user.is_authenticated and user.role == 'student' %}
+                        <div class="module-actions">
+                            <a href="{% url 'modules:toggle_subscribe' module.id %}" 
+                               class="btn {% if module.is_subscribed %}btn-subscribed{% else %}btn-subscribe{% endif %}">
+                                {% if module.is_subscribed %}Unsubscribe{% else %}Subscribe{% endif %}
+                            </a>
+                            <a href="{% url 'modules:toggle_favourite' module.id %}" 
+                               class="btn {% if module.is_favourited %}btn-favourited{% else %}btn-favourite{% endif %}">
+                                {% if module.is_favourited %}★ Unfavourite{% else %}☆ Favourite{% endif %}
+                            </a>
+                        </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
