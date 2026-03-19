@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderator Dashboard - TOSSR</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/moderator.css' %}">
+</head>
+<body>
+    <div class="dashboard-shell">
+        <aside class="sidebar"> <!-- The moderator sidebar -->
+            <div>
+                <div class="brand">TOSSR</div>
+                <div class="brand-subtitle">Moderator Panel</div>
+            </div>
+
+            <div class="moderator-card">
+                <div class="moderator-label">Logged in as</div>
+                <div class="moderator-name"> {{ user.username }}</div>
+                <div class="moderator-role">Moderator</div>
+            
+
+                <a href="/accounts/logout/" class="logout-button">
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-panel">
+            <header class="topbar">
+                <div>
+                    <h1>Moderator Dashboard</h1>
+                    <p>Priority goes to materials that are live and need moderator attention.</p>
+                </div>
+            </header>
+
+            <section id="priority-queue" class="section-block">
+                <div class="section-intro">
+                    <div>
+                        <h2>Priority Queue</h2>
+                        <p>Visible materials that should be reviewed first.</p>
+                    </div>
+                    <div class="queue-badge">
+                        {{ flagged_materials|length }} in queue
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Priority</th>
+                                    <th>Title</th>
+                                    <th>Module</th>
+                                    <th>Author</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for material in flagged_materials %}
+                                    <tr>
+                                        <td>
+                                            <span class="priority-pill high-priority">
+                                                Review
+                                            </span>
+                                        </td>
+                                        <td class="material-title-cell">
+                                            <strong>{{ material.title }}</strong>
+                                            <div class="row-subtext">
+                                                Published material currently visible to students
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if material.module %}
+                                                {{ material.module.name }}
+                                            {% else %}
+                                                No module
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if material.owner %}
+                                                {{ material.owner.username }}
+                                            {% else %}
+                                                Unknown
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="status-badge visible-badge">Visible</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-group">
+                                                <form method="post" action="{% url 'accounts:hide_material' material.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="small-button danger-button">Hide</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="empty-state">No materials currently need review.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="hidden-materials" class="section-block">
+                <div class="section-intro">
+                    <div>
+                        <h2>Hidden Materials</h2>
+                        <p>Previously moderated materials that are currently hidden.</p>
+                    </div>
+                    <div class="queue-badge muted-badge">
+                        {{ hidden_materials|length }} hidden
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Module</th>
+                                    <th>Author</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for material in hidden_materials %}
+                                    <tr>
+                                        <td class="material-title-cell">
+                                            <strong>{{ material.title }}</strong>
+                                            <div class="row-subtext">
+                                                Removed from public view
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if material.module %}
+                                                {{ material.module.name }}
+                                            {% else %}
+                                                No module
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if material.owner %}
+                                                {{ material.owner.username }}
+                                            {% else %}
+                                                Unknown
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="status-badge hidden-badge">Hidden</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-group">
+                                                <form method="post" action="{% url 'accounts:unhide_material' material.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="small-button secondary-button">Unhide</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="empty-state">No hidden materials found.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="recent-materials" class="section-block">
+                <div class="section-intro">
+                    <div>
+                        <h2>Recent Published Materials</h2>
+                        <p>Newest public materials from the current backend query.</p>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Module</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for material in recent_materials %}
+                                    <tr>
+                                        <td class="material-title-cell">
+                                            <strong>{{ material.title }}</strong>
+                                        </td>
+                                        <td>
+                                            {% if material.module %}
+                                                {{ material.module.name }}
+                                            {% else %}
+                                                No module
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ material.created_at|date:"d M Y, H:i" }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="empty-state">No recent materials found.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="overview" class="section-block">
+                <div class="section-intro">
+                    <div>
+                        <h2>Overview</h2>
+                        <p>Quick platform counts from the current backend.</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card priority-stat">
+                        <span class="stat-label">Needs review now</span>
+                        <strong>{{ flagged_materials|length }}</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-label">Total materials</span>
+                        <strong>{{ stats.total_materials }}</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-label">Published materials</span>
+                        <strong>{{ stats.published_materials }}</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-label">Hidden materials</span>
+                        <strong>{{ stats.hidden_materials }}</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-label">Total students</span>
+                        <strong>{{ stats.total_students }}</strong>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

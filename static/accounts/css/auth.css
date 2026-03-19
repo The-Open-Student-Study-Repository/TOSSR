@@ -147,3 +147,51 @@ textarea:focus {
     text-align: left;
     margin-bottom: 12px;
 }
+
+.ts-wrapper {
+    border: 1px solid #ddd !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    background: white !important;
+    box-shadow: none !important;
+}
+
+.ts-wrapper.single .ts-control {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    cursor: text !important;
+}
+
+.ts-wrapper.single .ts-control::after {
+    display: none !important;
+}
+
+.ts-wrapper.single .ts-control input {
+    font-size: 16px !important;
+}
+
+.ts-wrapper.focus {
+    border-color: #6c63ff !important;
+    box-shadow: none !important;
+}
+
+.ts-dropdown {
+    border-radius: 12px !important;
+    border: 1px solid #ddd !important;
+}
+
+.ts-dropdown .ts-dropdown-content {
+    max-height: 132px !important;
+    overflow-y: auto !important;
+}
+
+.ts-dropdown .option {
+    padding: 10px 16px !important;
+}
+
+.ts-dropdown .active {
+    background-color: rgba(108, 99, 255, 0.1) !important;
+    color: inherit !important;
+}
