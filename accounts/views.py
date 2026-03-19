@@ -122,6 +122,15 @@ def login_view(request):
 
     return render(request, 'accounts/login.html')
 
+def logout(request):
+    """
+    Logs the user out and clears the session
+    
+    """
+    request.session.flush()
+
+    return redirect('/accounts/login/')
+
 
 
 
@@ -165,7 +174,7 @@ def moderator_dashboard(request):
         'total_students': User.objects.filter(role='student').count(),
     }
     #TODO: MAKE SURE WE MAKE A MOD DASHBOARD
-    return render(request, 'accounts/moderator_dashboard_placeholder.html', {
+    return render(request, 'accounts/moderator_dashboard.html', {
         'flagged_materials': flagged_materials,
         'hidden_materials': hidden_materials,
         'recent_materials': recent_materials,
