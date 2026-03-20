@@ -1,0 +1,157 @@
+/* Global Style Guide */
+
+/* Colors */
+:root {
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg-light: #f3f4f6;
+    --bg-white: white;
+    --text-dark: #1f2937;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+    --shadow: 0 20px 40px rgba(0,0,0,0.08);
+    --shadow-hover: 0 30px 60px rgba(0,0,0,0.12);
+}
+
+/* Page Layout */
+body {
+    margin: 0;
+    background: var(--bg-light);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+h1 {
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+/* Filter Section */
+.filter-section {
+    background: var(--bg-white);
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.filter-section select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.filter-section select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.filter-section button {
+    padding: 10px 20px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.filter-section button:hover {
+    background: var(--primary-hover);
+}
+
+/* Grid Layout */
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Card/Module */
+.module {
+    background: var(--bg-white);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.3s ease;
+}
+
+.module:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.module h3 {
+    margin-top: 0;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.module-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.module-info strong {
+    color: var(--text-dark);
+}
+
+/* Empty State */
+.no-modules {
+    background: var(--bg-white);
+    padding: 40px;
+    border-radius: 14px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 40px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.pagination a:hover {
+    background: var(--bg-light);
+}
+
+.pagination .current {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.pagination .disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+    border-color: #d1d5db;
+}
