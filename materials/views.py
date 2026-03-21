@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.db.models import Prefetch
 from .models import StudyMaterial
+from modules.models import StudentModule
 
 def filter_materials(request):
 
@@ -81,3 +84,48 @@ def filter_materials(request):
         'total_count': materials.count(),
         'results': data
     })
+
+
+@login_required
+def my_resources(request):
+    """Display all resources (materials) created by the logged-in student"""
+    # Ensure the user is a student
+    if request.user.role != 'student':
+        return render(request, 'materials/my_resources.html', {'error': 'Only students can view their resources'})
+    
+    student = request.user.student_profile
+    
+    # Get all modules the student is subscribed to
+    subscribed_modules = StudentModule.objects.filter(
+        student=student,
+        is_hidden_by_student=False
+    ).select_related('module').order_by('module__school__name', 'module__id')
+    
+    # Get all materials created by the student (both published and unpublished, but not deleted)
+    all_materials = student.created_materials.filter(is_deleted=False).select_related('module')
+    
+    # Organize materials by module
+    modules_with_materials = []
+    
+    for subscription in subscribed_modules:
+        module = subscription.module
+        # Get materials for this module
+        module_materials = all_materials.filter(module=module).order_by('-created_at')
+        
+        if module_materials.exists():
+            modules_with_materials.append({
+                'module': module,
+                'materials': module_materials,
+                'material_count': module_materials.count(),
+            })
+    
+    # Also include materials not assigned to any module (private materials)
+    private_materials = all_materials.filter(module__isnull=True).order_by('-created_at')
+    
+    context = {
+        'modules_with_materials': modules_with_materials,
+        'private_materials': private_materials,
+        'total_materials': all_materials.count(),
+    }
+    
+    return render(request, 'materials/my_resources.html', context)

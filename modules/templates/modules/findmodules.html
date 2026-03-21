@@ -5,7 +5,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'modules/css/style.css' %}">
     <style>
-        .module h3 {
+        /* .module h3 {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -56,7 +56,7 @@
         }
         .btn-favourited:hover {
             background-color: #ee5a52;
-        }
+        } */
     </style>
     </head>
 <body>
@@ -89,7 +89,7 @@
             <div class="modules-grid">
                 {% for module in page_obj %}
                     <div class="module">
-                        <h3>{{ module.id }}: {{ module.name }}</h3>
+                        <h3><a href="{% url 'modules:module_detail' module.id %}" style="text-decoration: none; color: inherit;">{{ module.id }}: {{ module.name }}</a></h3>
                         <div class="module-info">
                             <div><strong>School:</strong> {{ module.school.name }}</div>
                             <div><strong>Level:</strong> {{ module.level }}</div>

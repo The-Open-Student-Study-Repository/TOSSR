@@ -9,4 +9,5 @@ urlpatterns = [
     path("autocomplete/module/", ModuleAutocompleteView.as_view(), name="module_autocomplete"),
     path("subscribe/<str:module_id>/", views.toggle_subscribe_module, name="toggle_subscribe"),
     path("favourite/<str:module_id>/", views.toggle_favourite_module, name="toggle_favourite"),
+    path("<str:module_id>/", views.module_detail, name="module_detail"),
 ]
