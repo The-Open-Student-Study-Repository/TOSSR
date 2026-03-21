@@ -1,8 +1,9 @@
 from django import forms
 from django.utils import timezone
+from django_tomselect.app_settings import TomSelectConfig
+from django_tomselect.forms import TomSelectModelChoiceField
 
 from .models import User
-from modules.models import Degree
 
 class SignUpStep1Form(forms.Form):
     """Basic credentials to validate user can create account"""
@@ -33,19 +34,19 @@ class SignUpStep1Form(forms.Form):
         error_messages={'required': "You must agree to the Privacy Policy. before creating an account."},
     )
 
-    def verify_username(self):
+    def clean_username(self):
         username = self.cleaned_data['username']
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError("Username has been taken. Please choose a different one.")
         return username
 
-    def verify_email(self):
+    def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("This email has already been registered to an account.")
         return email
 
-    def verify_password(self):
+    def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get('password')
         password_confirm = cleaned_data.get('password_confirm')
@@ -69,9 +70,15 @@ class SignUpStep2Form(forms.Form):
         help_text='Surname',
     )
 
-    degree = forms.ModelChoiceField(
-        queryset=Degree.objects.all(),
-        help_text='Select your degree program',
+    degree = TomSelectModelChoiceField(
+        config=TomSelectConfig(
+            url="accounts:degree_autocomplete",
+            value_field="code",
+            label_field="name",
+            placeholder="Search your degree...",
+            highlight=True,
+            max_options=10,
+        )
     )
 
     graduation_year = forms.IntegerField(

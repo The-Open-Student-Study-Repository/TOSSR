@@ -1,4 +1,4 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from accounts.models import User, Student
 from modules.models import School, Degree
@@ -113,3 +113,271 @@ class TestLogIn(TestCase):
         # Should redirect away
         self.assertEqual(response.status_code, 302)
 
+class TestDegreeAutocomplete(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('accounts:degree_autocomplete')
+
+        self.school = School.objects.create(name='School of Computing Science')
+
+        self.degree1 = Degree.objects.create(
+            code='G400', name='Computing Science', degree_type='BSc (Hons)'
+        )
+        self.degree2 = Degree.objects.create(
+            code='G401', name='Software Engineering', degree_type='BSc (Hons)'
+        )
+        self.degree3 = Degree.objects.create(
+            code='M100', name='Common Law', degree_type='LLB'
+        )
+
+    def tearDown(self):
+        Degree.objects.all().delete()
+        School.objects.all().delete()
+
+    def test_search_returns_matching_degrees(self):
+        response = self.client.get(self.url, {'q': 'Computing'})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        codes = [r['code'] for r in data['results']]
+        self.assertIn('G400', codes)
+        self.assertNotIn('M100', codes)
+
+    def test_search_returns_empty_for_no_match(self):
+        response = self.client.get(self.url, {'q': 'Zoology'})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data['results']), 0)
+
+    def test_search_is_case_insensitive(self):
+        response = self.client.get(self.url, {'q': 'computing'})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        codes = [r['code'] for r in data['results']]
+        self.assertIn('G400', codes)
+
+    def test_display_name_includes_degree_type(self):
+        response = self.client.get(self.url, {'q': 'Computing'})
+        data = response.json()
+        result = next(r for r in data['results'] if r['code'] == 'G400')
+        self.assertIn('BSc (Hons)', result['name'])
+
+    def test_empty_query_returns_results(self):
+        response = self.client.get(self.url, {'q': ''})
+        self.assertEqual(response.status_code, 200)
+
+    def test_no_duplicate_results(self):
+        """Ensure distinct() prevents duplicate entries"""
+        self.degree1.schools.add(self.school)
+        response = self.client.get(self.url, {'q': 'Computing'})
+        data = response.json()
+        codes = [r['code'] for r in data['results']]
+        self.assertEqual(len(codes), len(set(codes)))
+
+class TestSignUpStep1(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('accounts:signup_step1')
+
+    def test_step1_page_loads(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_step1_valid_submission(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'new@test.com',
+            'password': 'testpass123',
+            'password_confirm': 'testpass123',
+            'privacy_accepted': True,
+        })
+        self.assertRedirects(response, reverse('accounts:signup_step2'))
+        self.assertIn('signup_step1', self.client.session)
+        self.assertFalse(User.objects.filter(username='newuser').exists())
+
+    def test_step1_stores_session_data(self):
+        self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'new@test.com',
+            'password': 'testpass123',
+            'password_confirm': 'testpass123',
+            'privacy_accepted': True,
+        })
+        session = self.client.session['signup_step1']
+        self.assertEqual(session['username'], 'newuser')
+        self.assertEqual(session['email'], 'new@test.com')
+
+    def test_step1_duplicate_username(self):
+        User.objects.create_user(username='taken', email='taken@test.com', password='pass1234')
+        response = self.client.post(self.url, {
+            'username': 'taken',
+            'email': 'new@test.com',
+            'password': 'testpass123',
+            'password_confirm': 'testpass123',
+            'privacy_accepted': True,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('username', response.context['form'].errors)
+
+    def test_step1_privacy_not_accepted(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'new@test.com',
+            'password': 'testpass123',
+            'password_confirm': 'testpass123',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('privacy_accepted', response.context['form'].errors)
+
+    def test_step1_missing_fields(self):
+        response = self.client.post(self.url, {})
+        self.assertEqual(response.status_code, 200)
+        form_errors = response.context['form'].errors
+        self.assertIn('username', form_errors)
+        self.assertIn('email', form_errors)
+        self.assertIn('password', form_errors)
+        self.assertIn('privacy_accepted', form_errors)
+
+    def test_step1_duplicate_email(self):
+        User.objects.create_user(username='existing', email='taken@test.com', password='pass1234')
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'taken@test.com',
+            'password': 'testpass123',
+            'password_confirm': 'testpass123',
+            'privacy_accepted': True,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('email', response.context['form'].errors)
+
+    def test_step1_invalid_email(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'notanemail',
+            'password': 'testpass123',
+            'password_confirm': 'testpass123',
+            'privacy_accepted': True,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('email', response.context['form'].errors)
+
+    def test_step1_password_mismatch(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'new@test.com',
+            'password': 'testpass123',
+            'password_confirm': 'differentpass',
+            'privacy_accepted': True,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form'].errors)
+
+    def test_step1_password_too_short(self):
+        response = self.client.post(self.url, {
+            'username': 'newuser',
+            'email': 'new@test.com',
+            'password': 'short',
+            'password_confirm': 'short',
+            'privacy_accepted': True,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('password', response.context['form'].errors)
+
+
+class TestSignUpStep2(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('accounts:signup_step2')
+
+        self.school = School.objects.create(name='School of Computing Science')
+        self.degree = Degree.objects.create(
+            code='G400', name='Computing Science', degree_type='BSc (Hons)'
+        )
+
+    def tearDown(self):
+        User.objects.all().delete()
+        Student.objects.all().delete()
+        Degree.objects.all().delete()
+        School.objects.all().delete()
+
+    def _set_step1_session(self):
+        """Helper to simulate completing step 1"""
+        session = self.client.session
+        session['signup_step1'] = {
+            'username': 'newuser',
+            'email': 'new@test.com',
+            'password': 'testpass123',
+        }
+        session.save()
+
+    def test_step2_redirects_without_step1(self):
+        """Cannot access step 2 without completing step 1"""
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('accounts:signup_step1'))
+
+    def test_step2_page_loads_with_session(self):
+        self._set_step1_session()
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_step2_creates_user_and_student(self):
+        self._set_step1_session()
+        response = self.client.post(self.url, {
+            'forename': 'John',
+            'surname': 'Smith',
+            'degree': 'G400',
+            'graduation_year': 2027,
+            'bio': 'Test bio',
+        })
+        self.assertRedirects(response, reverse('accounts:login'))
+
+        # Check user was created
+        user = User.objects.get(username='newuser')
+        self.assertEqual(user.email, 'new@test.com')
+        self.assertEqual(user.role, 'student')
+
+        # Check student profile was created
+        student = Student.objects.get(user=user)
+        self.assertEqual(student.degree.code, 'G400')
+        self.assertEqual(student.graduation_year, 2027)
+        self.assertEqual(student.bio, 'Test bio')
+
+    def test_step2_clears_session_after_success(self):
+        self._set_step1_session()
+        self.client.post(self.url, {
+            'forename': 'John',
+            'surname': 'Smith',
+            'degree': 'G400',
+            'graduation_year': 2027,
+            'bio': '',
+        })
+        self.assertNotIn('signup_step1', self.client.session)
+
+    def test_step2_bio_optional(self):
+        self._set_step1_session()
+        response = self.client.post(self.url, {
+            'forename': 'John',
+            'surname': 'Smith',
+            'degree': 'G400',
+            'graduation_year': 2027,
+            'bio': '',
+        })
+        self.assertRedirects(response, reverse('accounts:login'))
+        self.assertTrue(User.objects.filter(username='newuser').exists())
+
+    def test_step2_missing_required_fields(self):
+        self._set_step1_session()
+        response = self.client.post(self.url, {})
+        self.assertEqual(response.status_code, 200)  # stays on page
+        self.assertFalse(User.objects.filter(username='newuser').exists())
+
+    def test_step2_invalid_degree(self):
+        self._set_step1_session()
+        response = self.client.post(self.url, {
+            'forename': 'John',
+            'surname': 'Smith',
+            'degree': 'XXXX',
+            'graduation_year': 2027,
+            'bio': '',
+        })
+        self.assertEqual(response.status_code, 200)  # stays on page
+        self.assertFalse(User.objects.filter(username='newuser').exists())

@@ -2,13 +2,15 @@ from typing import Any
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
+from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from materials.models import StudyMaterial
 from .forms import SignUpStep1Form, SignUpStep2Form
 from .models import User, Student
+from  modules.models import Degree
 from .decorators import student_required, moderator_required
-
+from django_tomselect.autocompletes import AutocompleteModelView
 
 # Create your views here.
 
@@ -58,8 +60,8 @@ def signup_step2(request):
                 username=step1_data['username'],
                 email=step1_data['email'],
                 password=step1_data['password'],
-                first_name=step1_data['forename'],
-                last_name=step1_data['surname'],
+                first_name=form.cleaned_data['forename'],
+                last_name=form.cleaned_data['surname'],
                 role='student'
             )
 
@@ -120,6 +122,15 @@ def login_view(request):
 
     return render(request, 'accounts/login.html')
 
+def logout(request):
+    """
+    Logs the user out and clears the session
+    
+    """
+    request.session.flush()
+
+    return redirect('/accounts/login/')
+
 
 
 
@@ -163,7 +174,7 @@ def moderator_dashboard(request):
         'total_students': User.objects.filter(role='student').count(),
     }
     #TODO: MAKE SURE WE MAKE A MOD DASHBOARD
-    return render(request, 'accounts/moderator_dashboard_placeholder.html', {
+    return render(request, 'accounts/moderator_dashboard.html', {
         'flagged_materials': flagged_materials,
         'hidden_materials': hidden_materials,
         'recent_materials': recent_materials,
@@ -280,3 +291,20 @@ def anonymise_account(request):
 
     return render(request, 'accounts/delete_account.html')
 
+class DegreeAutocompleteView(AutocompleteModelView):
+    model = Degree
+    search_lookups = ["name__icontains"]
+    value_fields = ["code", "name", "degree_type"]
+    page_size = 20
+    skip_authorization = True
+
+    def hook_prepare_results(self, results):
+        for item in results:
+            item["name"] = f"{item.get('name', '')} {item.get('degree_type', '')}".strip()
+        return results
+
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect(reverse('accounts:login'))

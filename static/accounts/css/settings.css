@@ -1,0 +1,63 @@
+.settings {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center; /* horizontal */
+  align-items: center;     /* vertical */
+}
+
+.center-box {
+  width: 40%;
+  height: 40%;
+}
+.center-box li {
+    text-align: center;
+    border: 1px solid #a1a1a1;   /* box around item */
+    padding: 8px 12px;         /* space inside the box */
+    border-radius: 6px;        /* slightly rounded corners */
+    margin-bottom: 8px;
+    background-color: #a1a1a1; 
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+.center-box ul {
+    list-style: none;
+    padding: 20px;
+}
+
+.custom-check input {
+  display: none; /* hide the original */
+}
+
+.custom-check .checkmark {
+  width: 30px;
+  height: 30px;
+  background-color: #00bfcf;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+}
+
+.custom-check input:checked + .checkmark {
+  background-color: #00bfcf;   /* checked background */
+
+}
+
+.custom-check input:checked + .checkmark::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 7px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);   /* draws the checkmark */
+}
+
+.text {
+    flex: 1;
+    text-align: center;
+}

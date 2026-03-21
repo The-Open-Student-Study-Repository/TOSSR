@@ -9,6 +9,7 @@ from modules.models import School, Degree, Module, StudentModule
 
 
 def populate():
+
     print("Populating TOSSR...\n")
     """
     NOTE: I will intentionally leave out MAIN Comp Sci degrees and comp sci modules.
@@ -52,19 +53,12 @@ def populate():
     degrees = {}
     degrees_data = []
 
-    # ====== Art - BSc  (Hons) ======
-    deg_type = 'BSc  (Hons)'
+    # ====== Art - MA  (Hons) ======
+    deg_type = 'MA  (Hons)'
     degrees_data.extend([
         ('VW46', deg_type, 'Archaeology/Film & Television Studies', [art, critical_studies]),
         ('V4W3', deg_type, 'Archaeology/Music', [art, critical_studies]),
         ('VW44', deg_type, 'Archaeology/Theatre Studies', [art, critical_studies]),
-        ('LW73', deg_type, 'Geography/Music', [art, geography]),
-        ('LW74', deg_type, 'Geography/Theatre Studies', [art, geography]),
-    ])
-
-    # ====== Art - MA  (Hons) ======
-    deg_type = 'MA  (Hons)'
-    degrees_data.extend([
         ('W370', deg_type, 'Creative Arts & Industries', [art]),
         ('GP53', deg_type, 'Digital Media & Information Studies/Film & Television Studies', [art, critical_studies]),
         ('GW5H', deg_type, 'Digital Media & Information Studies/Music', [art, critical_studies]),
@@ -75,12 +69,17 @@ def populate():
         ('LW46', deg_type, 'Film & Television Studies/Social & Public Policy', [art, politics]),
         ('LW36', deg_type, 'Film & Television Studies/Sociology', [art, politics]),
         ('WW46', deg_type, 'Film & Television Studies/Theatre Studies', [art]),
+        ('LW73', deg_type, 'Geography/Music', [art, geography]),
+        ('LW74', deg_type, 'Geography/Theatre Studies', [art, geography]),
         ('LA41', deg_type, 'Liberal Arts with Film & Television Studies', [art]),
         ('LA71', deg_type, 'Liberal Arts with Theatre Studies', [art]),
         ('W300', deg_type, 'Music', [art]),
         ('LW23', deg_type, 'Music/Politics', [art, politics]),
         ('LW43', deg_type, 'Music/Social & Public Policy', [art, politics]),
         ('WW34', deg_type, 'Music/Theatre Studies', [art]),
+        ('LW24', deg_type, 'Politics/Theatre Studies', [art, politics]),
+        ('LW44', deg_type, 'Social & Public Policy/Theatre Studies', [art, politics]),
+        ('LW34', deg_type, 'Sociology/Theatre Studies', [art, politics]),
         ('W440', deg_type, 'Theatre Studies', [art]),
     ])
 
@@ -88,14 +87,6 @@ def populate():
     deg_type = 'BMus'
     degrees_data.extend([
         ('W302', deg_type, 'Music', [art]),
-    ])
-
-    # ====== Art - MA(SocSci)  (Hons) ======
-    deg_type = 'MA(SocSci)  (Hons)'
-    degrees_data.extend([
-        ('LW24', deg_type, 'Politics/Theatre Studies', [art, politics]),
-        ('LW44', deg_type, 'Social & Public Policy/Theatre Studies', [art, politics]),
-        ('LW34', deg_type, 'Sociology/Theatre Studies', [art, politics]),
     ])
 
     # ====== Bioscience - BSc  (Hons) ======
@@ -130,8 +121,9 @@ def populate():
     degrees_data.extend([
         ('NG4C', deg_type, 'Accounting & Mathematics', [business, maths]),
         ('GN34', deg_type, 'Accounting & Statistics', [business, maths]),
-        ('LN16', deg_type, 'Archaeology/Business Economics', [business, critical_studies]),
-        ('VL41', deg_type, 'Archaeology/Economics', [business, critical_studies]),
+        ('NG21', deg_type, 'Business & Management/Mathematics', [business, maths]),
+        ('LG1D', deg_type, 'Economics/Mathematics', [business, maths]),
+        ('GL31', deg_type, 'Economics/Statistics', [business, maths]),
         ('NG3C', deg_type, 'Finance & Mathematics', [business, maths]),
         ('GN33', deg_type, 'Finance & Statistics', [business, maths]),
     ])
@@ -139,16 +131,42 @@ def populate():
     # ====== Business - MA(SocSci)  (Hons) ======
     deg_type = 'MA(SocSci)  (Hons)'
     degrees_data.extend([
+        ('LN16', deg_type, 'Archaeology/Business Economics', [business, critical_studies]),
         ('N200', deg_type, 'Business & Management', [business]),
         ('LNC2', deg_type, 'Business & Management/Business Economics', [business]),
         ('LN12', deg_type, 'Business & Management/Economics', [business]),
         ('LN72', deg_type, 'Business & Management/Geography', [business, geography]),
         ('NV21', deg_type, 'Business & Management/History', [business, humanities]),
+        ('NV25', deg_type, 'Business & Management/Philosophy', [business, humanities]),
         ('LN22', deg_type, 'Business & Management/Politics', [business, politics]),
+        ('LN42', deg_type, 'Business & Management/Social & Public Policy', [business, politics]),
         ('LN62', deg_type, 'Business & Management/Sociology', [business, politics]),
-        ('NG21', deg_type, 'Business & Management/Mathematics', [business, maths]),
+        ('L112', deg_type, 'Business Economics', [business]),
+        ('RL71', deg_type, 'Business Economics/Central & East European Studies', [business]),
+        ('LG11', deg_type, 'Business Economics/Mathematics', [business, maths]),
+        ('LV15', deg_type, 'Business Economics/Philosophy', [business, humanities]),
+        ('LLC2', deg_type, 'Business Economics/Politics', [business, politics]),
+        ('LLC4', deg_type, 'Business Economics/Social & Public Policy', [business, politics]),
+        ('R900', deg_type, 'Central & East European Studies', [business]),
+        ('LVC3', deg_type, 'Economic & Social History/Economics', [business, humanities, politics]),
+        ('L150', deg_type, 'Economics', [business]),
+        ('LL17', deg_type, 'Economics/Geography', [business, geography]),
+        ('LV11', deg_type, 'Economics/History', [business, humanities]),
+        ('GL11', deg_type, 'Economics/Mathematics', [business, maths]),
+        ('LVC5', deg_type, 'Economics/Philosophy', [business, humanities]),
+        ('LL12', deg_type, 'Economics/Politics', [business, politics]),
+    ])
+
+    # ====== Business - LLB  (Hons) ======
+    deg_type = 'LLB  (Hons)'
+    degrees_data.extend([
         ('MN19', deg_type, 'Business & Management/Common Law', [business, law]),
         ('MN12', deg_type, 'Business & Management/Scots Law', [business, law]),
+    ])
+
+    # ====== Business - MA  (Hons) ======
+    deg_type = 'MA  (Hons)'
+    degrees_data.extend([
         ('GN52', deg_type, 'Business & Management/Digital Media & Information Studies', [business, critical_studies]),
         ('QN32', deg_type, 'Business & Management/English Literature', [business, humanities]),
         ('NR21', deg_type, 'Business & Management/French', [business, language]),
@@ -163,22 +181,7 @@ def populate():
         ('9K7B', deg_type, 'Business & Management/Portuguese', [business, language]),
         ('NR27', deg_type, 'Business & Management/Russian', [business, language]),
         ('N1R4', deg_type, 'Business & Management/Spanish', [business, language]),
-        ('L112', deg_type, 'Business Economics', [business]),
-        ('RL71', deg_type, 'Business Economics/Central & East European Studies', [business]),
-        ('LG11', deg_type, 'Business Economics/Mathematics', [business, maths]),
-        ('LV15', deg_type, 'Business Economics/Philosophy', [business, humanities]),
-        ('LLC2', deg_type, 'Business Economics/Politics', [business, politics]),
-        ('LVD2', deg_type, 'Business Economics/Scottish History', [business, humanities]),
-        ('LLC4', deg_type, 'Business Economics/Social & Public Policy', [business, politics]),
-        ('R900', deg_type, 'Central & East European Studies', [business]),
-        ('L150', deg_type, 'Economics', [business]),
-        ('LL17', deg_type, 'Economics/Geography', [business, geography]),
-        ('GL11', deg_type, 'Economics/Mathematics', [business, maths]),
-        ('LVC5', deg_type, 'Economics/Philosophy', [business, humanities]),
-        ('LL12', deg_type, 'Economics/Politics', [business, politics]),
-        ('LVC2', deg_type, 'Economics/Scottish History', [business, humanities]),
-        ('LG1D', deg_type, 'Economics/Mathematics', [business, maths]),
-        ('GL31', deg_type, 'Economics/Statistics', [business, maths]),
+        ('LQC2', deg_type, 'Comparative Literature/Economics', [business, humanities]),
         ('LQ1H', deg_type, 'Economics/English Language & Linguistics', [business, language]),
         ('LQD3', deg_type, 'Economics/English Literature', [business, humanities]),
         ('LR11', deg_type, 'Economics/French', [business, language]),
@@ -193,12 +196,6 @@ def populate():
         ('RL41', deg_type, 'Economics/Spanish', [business, language]),
         ('LW14', deg_type, 'Economics/Theatre Studies', [business, art]),
         ('LV16', deg_type, 'Economics/Theology & Religious Studies', [business, humanities]),
-    ])
-
-    # ====== Business - MA  (Hons) ======
-    deg_type = 'MA  (Hons)'
-    degrees_data.extend([
-        ('LQC2', deg_type, 'Comparative Literature/Economics', [business, humanities]),
     ])
 
     # ====== Business - BFin ======
@@ -218,14 +215,14 @@ def populate():
     degrees_data.extend([
         ('C700', deg_type, 'Biochemistry', [chemistry, bioscience]),
         ('F100', deg_type, 'Chemistry', [chemistry]),
-        ('F101', deg_type, 'Chemistry with work placement', [chemistry]),
         ('F103', deg_type, 'Chemistry with Medicinal Chemistry', [chemistry]),
-        ('F104', deg_type, 'Chemistry with Medicinal Chemistry (work placement)', [chemistry]),
     ])
 
     # ====== Chemistry - MSci ======
     deg_type = 'MSci'
     degrees_data.extend([
+        ('F101', deg_type, 'Chemistry with work placement', [chemistry]),
+        ('F104', deg_type, 'Chemistry with Medicinal Chemistry (work placement)', [chemistry]),
         ('F107', deg_type, 'Materials Chemistry with work placement', [chemistry]),
     ])
 
@@ -239,33 +236,48 @@ def populate():
     deg_type = 'BSc'
     degrees_data.extend([
         ('H763', deg_type, 'Artificial Intelligence', [computing, art]),
+    ])
+
+    # ====== Computing - MSci ======
+    deg_type = 'MSci'
+    degrees_data.extend([
         ('G700', deg_type, 'Artificial Intelligence', [computing, art]),
+        ('G402', deg_type, 'Computing Science', [computing]),
+        ('GG4C', deg_type, 'Computing Science/Mathematics', [computing, maths]),
+        ('IF13', deg_type, 'Computing Science/Physics', [computing, physics]),
+        ('7G3F', deg_type, 'Computing Science (faster route)', [computing]),
+        ('G610', deg_type, 'Software Engineering', [computing, engineering]),
+        ('I300', deg_type, 'Software Engineering with work placement', [computing, engineering]),
+        ('0VB3', deg_type, 'Software Engineering (faster route)', [computing, engineering]),
+        ('I301', deg_type, 'Software Engineering with work placement (faster route)', [computing, engineering]),
     ])
 
     # ====== Computing - MA(SocSci)  (Hons) ======
     deg_type = 'MA(SocSci)  (Hons)'
     degrees_data.extend([
-        ('NG24', deg_type, 'Business & Management/Computing Science', [computing, business]),
-    ])
-
-    # ====== Computing - MA  (Hons) ======
-    deg_type = 'MA  (Hons)'
-    degrees_data.extend([
-        ('GQ48', deg_type, 'Classics/Computing Science', [computing, humanities]),
+        ('GN42', deg_type, 'Business & Management/Computing Science', [computing, business]),
     ])
 
     # ====== Computing - BSc  (Hons) ======
     deg_type = 'BSc  (Hons)'
     degrees_data.extend([
+        ('NG24', deg_type, 'Business & Management/Computing Science', [computing, business]),
         ('G400', deg_type, 'Computing Science', [computing]),
         ('FG84', deg_type, 'Computing Science/Geography', [computing, geography]),
         ('GGK1', deg_type, 'Computing Science/Mathematics', [computing, maths]),
         ('FG34', deg_type, 'Computing Science/Physics', [computing, physics]),
         ('CG84', deg_type, 'Computing Science/Psychology', [computing, psychology]),
         ('GG34', deg_type, 'Computing Science/Statistics', [computing, maths]),
-        ('G402', deg_type, 'Computing Science', [computing]),
-        ('GG4C', deg_type, 'Computing Science/Mathematics', [computing, maths]),
-        ('IF13', deg_type, 'Computing Science/Physics', [computing, physics]),
+        ('3N7R', deg_type, 'Computing Science (faster route)', [computing]),
+        ('GH66', deg_type, 'Electronic & Software Engineering', [computing, engineering]),
+        ('G430', deg_type, 'Software Engineering', [computing, engineering]),
+        ('0P31', deg_type, 'Software Engineering (faster route)', [computing, engineering]),
+    ])
+
+    # ====== Computing - MA  (Hons) ======
+    deg_type = 'MA  (Hons)'
+    degrees_data.extend([
+        ('GQ48', deg_type, 'Classics/Computing Science', [computing, humanities]),
         ('GQ4J', deg_type, 'Computing Science/English Language & Linguistics', [computing, language]),
         ('GQ4H', deg_type, 'Computing Science/English Literature', [computing, humanities]),
         ('GR41', deg_type, 'Computing Science/French', [computing, language]),
@@ -274,23 +286,19 @@ def populate():
         ('GW43', deg_type, 'Computing Science/Music', [computing, art]),
         ('GW44', deg_type, 'Computing Science/Theatre Studies', [computing, art]),
         ('VG64', deg_type, 'Computing Science/Theology & Religious Studies', [computing, humanities]),
-        ('3N7R', deg_type, 'Computing Science (faster route)', [computing]),
-        ('7G3F', deg_type, 'Computing Science (faster route)', [computing]),
-        ('G430', deg_type, 'Software Engineering', [computing, engineering]),
-        ('G610', deg_type, 'Software Engineering', [computing, engineering]),
-        ('I300', deg_type, 'Software Engineering with work placement', [computing, engineering]),
-        ('0P31', deg_type, 'Software Engineering (faster route)', [computing, engineering]),
-        ('0VB3', deg_type, 'Software Engineering (faster route)', [computing, engineering]),
-        ('I301', deg_type, 'Software Engineering with work placement (faster route)', [computing, engineering]),
     ])
 
     # ====== Computing - BEng ======
     deg_type = 'BEng'
     degrees_data.extend([
         ('GHP6', deg_type, 'Electronic & Software Engineering', [computing, engineering]),
-        ('GH66', deg_type, 'Electronic & Software Engineering', [computing, engineering]),
-        ('HG66', deg_type, 'Electronic & Software Engineering', [computing, engineering]),
         ('H760', deg_type, 'Robotics & Artificial Intelligence', [computing, art]),
+    ])
+
+    # ====== Computing - MEng ======
+    deg_type = 'MEng'
+    degrees_data.extend([
+        ('HG66', deg_type, 'Electronic & Software Engineering', [computing, engineering]),
         ('H7RO', deg_type, 'Robotics & Artificial Intelligence', [computing, art]),
     ])
 
@@ -298,19 +306,14 @@ def populate():
     deg_type = 'BSc  (Hons)'
     degrees_data.extend([
         ('V402', deg_type, 'Archaeology', [critical_studies]),
-        ('V400', deg_type, 'Archaeology', [critical_studies]),
-        ('GV54', deg_type, 'Archaeology/Digital Media & Information Studies', [critical_studies]),
-    ])
-
-    # ====== Critical Studies - MA(SocSci)  (Hons) ======
-    deg_type = 'MA(SocSci)  (Hons)'
-    degrees_data.extend([
-        ('RG75', deg_type, 'Central & East European Studies/Digital Media & Information Studies', [critical_studies]),
     ])
 
     # ====== Critical Studies - MA  (Hons) ======
     deg_type = 'MA  (Hons)'
     degrees_data.extend([
+        ('V400', deg_type, 'Archaeology', [critical_studies]),
+        ('GV54', deg_type, 'Archaeology/Digital Media & Information Studies', [critical_studies]),
+        ('RG75', deg_type, 'Central & East European Studies/Digital Media & Information Studies', [critical_studies]),
         ('I150', deg_type, 'Digital Media & Information Studies', [critical_studies]),
     ])
 
@@ -345,28 +348,33 @@ def populate():
     deg_type = 'BEng'
     degrees_data.extend([
         ('H415', deg_type, 'Aeronautical Engineering', [engineering]),
-        ('H410', deg_type, 'Aeronautical Engineering', [engineering]),
         ('H402', deg_type, 'Aerospace Systems', [engineering]),
-        ('H401', deg_type, 'Aerospace Systems', [engineering]),
         ('J750', deg_type, 'Biomedical Engineering', [engineering, medicine]),
-        ('J751', deg_type, 'Biomedical Engineering', [engineering, medicine]),
         ('H202', deg_type, 'Civil Engineering', [engineering]),
-        ('H200', deg_type, 'Civil Engineering', [engineering]),
         ('H2KC', deg_type, 'Civil Engineering with Architecture', [engineering]),
-        ('H2K1', deg_type, 'Civil Engineering with Architecture', [engineering]),
         ('H600', deg_type, 'Electronics & Electrical Engineering', [engineering]),
-        ('H601', deg_type, 'Electronics & Electrical Engineering', [engineering]),
         ('H6W3', deg_type, 'Electronics with Music', [engineering, art]),
-        ('H6WJ', deg_type, 'Electronics with Music', [engineering, art]),
         ('HH37', deg_type, 'Mechanical Design Engineering', [engineering]),
-        ('HHJ7', deg_type, 'Mechanical Design Engineering', [engineering]),
         ('H300', deg_type, 'Mechanical Engineering', [engineering]),
-        ('H302', deg_type, 'Mechanical Engineering', [engineering]),
         ('H3H4', deg_type, 'Mechanical Engineering with Aeronautics', [engineering]),
-        ('H3HK', deg_type, 'Mechanical Engineering with Aeronautics', [engineering]),
         ('H730', deg_type, 'Mechatronics', [engineering]),
-        ('H731', deg_type, 'Mechatronics', [engineering]),
         ('H3W2', deg_type, 'Product Design Engineering', [engineering]),
+    ])
+
+    # ====== Engineering - MEng ======
+    deg_type = 'MEng'
+    degrees_data.extend([
+        ('H410', deg_type, 'Aeronautical Engineering', [engineering]),
+        ('H401', deg_type, 'Aerospace Systems', [engineering]),
+        ('J751', deg_type, 'Biomedical Engineering', [engineering, medicine]),
+        ('H200', deg_type, 'Civil Engineering', [engineering]),
+        ('H2K1', deg_type, 'Civil Engineering with Architecture', [engineering]),
+        ('H601', deg_type, 'Electronics & Electrical Engineering', [engineering]),
+        ('H6WJ', deg_type, 'Electronics with Music', [engineering, art]),
+        ('HHJ7', deg_type, 'Mechanical Design Engineering', [engineering]),
+        ('H302', deg_type, 'Mechanical Engineering', [engineering]),
+        ('H3HK', deg_type, 'Mechanical Engineering with Aeronautics', [engineering]),
+        ('H731', deg_type, 'Mechatronics', [engineering]),
         ('H3WG', deg_type, 'Product Design Engineering', [engineering]),
     ])
 
@@ -374,6 +382,7 @@ def populate():
     deg_type = 'MA  (Hons)'
     degrees_data.extend([
         ('V1Q5', deg_type, 'Ancient History/Celtic Civilisation', [engineering, language, humanities]),
+        ('QVM4', deg_type, 'Archaeology/Celtic Civilisation', [engineering, language, critical_studies]),
         ('RQR5', deg_type, 'Celtic Civilisation/Central & East European Studies', [engineering, language]),
         ('Q821', deg_type, 'Celtic Civilisation/Classics', [engineering, language, humanities]),
         ('GQ5N', deg_type, 'Celtic Civilisation/Digital Media & Information Studies',
@@ -392,38 +401,33 @@ def populate():
         ('QV56', deg_type, 'Celtic Civilisation/Theology & Religious Studies', [engineering, language, humanities]),
     ])
 
-    # ====== Engineering - BSc  (Hons) ======
-    deg_type = 'BSc  (Hons)'
-    degrees_data.extend([
-        ('QVM4', deg_type, 'Archaeology/Celtic Civilisation', [engineering, language, critical_studies]),
-    ])
-
     # ====== Geography - BSc  (Hons) ======
     deg_type = 'BSc  (Hons)'
     degrees_data.extend([
         ('FF64', deg_type, 'Archaeology/Environmental Geoscience', [geography, critical_studies]),
         ('FV84', deg_type, 'Archaeology/Geography', [geography, critical_studies]),
-        ('LV74', deg_type, 'Archaeology/Geography', [geography, critical_studies]),
         ('F600', deg_type, 'Environmental Geoscience', [geography]),
         ('D447', deg_type, 'Environmental Science & Sustainability (Dumfries)', [geography]),
         ('F800', deg_type, 'Geography', [geography]),
-        ('L702', deg_type, 'Geography', [geography]),
-        ('L700', deg_type, 'Geography', [geography]),
-        ('LL72', deg_type, 'Geography/Politics', [geography, politics]),
-        ('LL47', deg_type, 'Geography/Social & Public Policy', [geography, politics]),
         ('F610', deg_type, 'Geology', [geography]),
+    ])
+
+    # ====== Geography - MA  (Hons) ======
+    deg_type = 'MA  (Hons)'
+    degrees_data.extend([
+        ('LV74', deg_type, 'Archaeology/Geography', [geography, critical_studies]),
+        ('GL57', deg_type, 'Digital Media & Information Studies/Geography', [geography, critical_studies]),
+        ('L702', deg_type, 'Geography', [geography]),
     ])
 
     # ====== Geography - MA(SocSci)  (Hons) ======
     deg_type = 'MA(SocSci)  (Hons)'
     degrees_data.extend([
         ('RL77', deg_type, 'Central & East European Studies/Geography', [geography]),
-    ])
-
-    # ====== Geography - MA  (Hons) ======
-    deg_type = 'MA  (Hons)'
-    degrees_data.extend([
-        ('GL57', deg_type, 'Digital Media & Information Studies/Geography', [geography, critical_studies]),
+        ('L700', deg_type, 'Geography', [geography]),
+        ('LL72', deg_type, 'Geography/Politics', [geography, politics]),
+        ('LL47', deg_type, 'Geography/Social & Public Policy', [geography, politics]),
+        ('LL37', deg_type, 'Geography/Sociology', [geography, politics]),
     ])
 
     # ====== Humanities - MA  (Hons) ======
@@ -435,6 +439,22 @@ def populate():
         ('VV12', deg_type, 'Ancient History/History', [humanities]),
         ('VV15', deg_type, 'Ancient History/Philosophy', [humanities]),
         ('VL12', deg_type, 'Ancient History/Politics', [humanities, politics]),
+        ('QV84', deg_type, 'Archaeology/Classics', [humanities, critical_studies]),
+        ('VV34', deg_type, 'Archaeology/Economic & Social History', [humanities, politics, critical_studies]),
+        ('QV3K', deg_type, 'Archaeology/English Literature', [humanities, critical_studies]),
+        ('VV14', deg_type, 'Archaeology/History', [humanities, critical_studies]),
+        ('VVH4', deg_type, 'Archaeology/History of Art', [humanities, art, critical_studies]),
+        ('V4Q6', deg_type, 'Archaeology/Latin', [humanities, critical_studies]),
+        ('VVF4', deg_type, 'Archaeology/Scottish History', [humanities, critical_studies]),
+        ('VV46', deg_type, 'Archaeology/Theology & Religious Studies', [humanities, critical_studies]),
+        ('RQ78', deg_type, 'Central & East European Studies/Classics', [humanities]),
+        ('RQ28', deg_type, 'Central & East European Studies/Comparative Literature', [humanities]),
+        ('RQ7J', deg_type, 'Central & East European Studies/English Literature', [humanities]),
+        ('RV7C', deg_type, 'Central & East European Studies/History', [humanities]),
+        ('RVP3', deg_type, 'Central & East European Studies/History of Art', [humanities, art]),
+        ('VR85', deg_type, 'Central & East European Studies/Philosophy', [humanities]),
+        ('RVP1', deg_type, 'Central & East European Studies/Scottish History', [humanities]),
+        ('RQR2', deg_type, 'Central & East European Studies/Scottish Literature', [humanities]),
         ('Q820', deg_type, 'Classics', [humanities]),
         ('QQ3V', deg_type, 'Classics/English Literature', [humanities]),
         ('QP83', deg_type, 'Classics/Film & Television Studies', [humanities, art]),
@@ -449,8 +469,6 @@ def populate():
         ('QQF8', deg_type, 'Comparative Literature/Classics', [humanities]),
         ('LQ83', deg_type, 'Sociology/Classics', [humanities, politics]),
         ('WQ48', deg_type, 'Theatre Studies/Classics', [humanities, art]),
-        ('LQF8', deg_type, 'Classics/Politics', [humanities, politics]),
-        ('LQK8', deg_type, 'Classics/Social & Public Policy', [humanities, politics]),
         ('Q200', deg_type, 'Comparative Literature', [humanities]),
         ('Q290', deg_type, 'Comparative Literature/English Literature', [humanities]),
         ('PQ32', deg_type, 'Comparative Literature/Film & Television Studies', [humanities, art]),
@@ -467,6 +485,11 @@ def populate():
         ('GV55', deg_type, 'Digital Media & Information Studies/Philosophy', [humanities, critical_studies]),
         ('GV5P', deg_type, 'Digital Media & Information Studies/Theology & Religious Studies',
          [humanities, critical_studies]),
+        ('QV3H', deg_type, 'Economic & Social History/English Literature', [humanities, politics]),
+        ('VVC3', deg_type, 'Economic & Social History/History', [humanities, politics]),
+        ('VW33', deg_type, 'Economic & Social History/Music', [humanities, art, politics]),
+        ('VVJ5', deg_type, 'Economic & Social History/Philosophy', [humanities, politics]),
+        ('VVG3', deg_type, 'Economic & Social History/Scottish History', [humanities, politics]),
         ('Q301', deg_type, 'English Literature', [humanities]),
         ('QW3P', deg_type, 'English Literature/Film & Television Studies', [humanities, art]),
         ('QV3C', deg_type, 'English Literature/History', [humanities]),
@@ -487,6 +510,12 @@ def populate():
         ('VW56', deg_type, 'Film & Television Studies/Philosophy', [humanities, art]),
         ('VWF6', deg_type, 'Film & Television Studies/Scottish History', [humanities, art]),
         ('QW26', deg_type, 'Film & Television Studies/Scottish Literature', [humanities, art]),
+        ('LV71', deg_type, 'Geography/History', [humanities, geography]),
+        ('LVR3', deg_type, 'Geography/History of Art', [humanities, art, geography]),
+        ('QL67', deg_type, 'Geography/Latin', [humanities, geography]),
+        ('LV75', deg_type, 'Geography/Philosophy', [humanities, geography]),
+        ('LVR2', deg_type, 'Geography/Scottish History', [humanities, geography]),
+        ('LQ72', deg_type, 'Geography/Scottish Literature', [humanities, geography]),
         ('Q700', deg_type, 'Greek', [humanities]),
         ('Q7V1', deg_type, 'Greek/History', [humanities]),
         ('QVR3', deg_type, 'Greek/History of Art', [humanities, art]),
@@ -505,8 +534,6 @@ def populate():
         ('LV61', deg_type, 'History/Sociology', [humanities, politics]),
         ('VW14', deg_type, 'History/Theatre Studies', [humanities, art]),
         ('VV16', deg_type, 'History/Theology & Religious Studies', [humanities]),
-        ('LV21', deg_type, 'History/Politics', [humanities, politics]),
-        ('LV31', deg_type, 'History/Sociology', [humanities, politics]),
         ('V350', deg_type, 'History of Art', [humanities, art]),
         ('QVP3', deg_type, 'History of Art/Latin', [humanities, art]),
         ('VWH3', deg_type, 'History of Art/Music', [humanities, art]),
@@ -537,8 +564,9 @@ def populate():
         ('LV65', deg_type, 'Philosophy/Sociology', [humanities, politics]),
         ('VW54', deg_type, 'Philosophy/Theatre Studies', [humanities, art]),
         ('VV56', deg_type, 'Philosophy/Theology & Religious Studies', [humanities]),
-        ('LV25', deg_type, 'Philosophy/Politics', [humanities, politics]),
-        ('LVH5', deg_type, 'Philosophy/Sociology', [humanities, politics]),
+        ('LV22', deg_type, 'Politics/Scottish History', [humanities, politics]),
+        ('LQ22', deg_type, 'Politics/Scottish Literature', [humanities, politics]),
+        ('VL62', deg_type, 'Politics/Theology & Religious Studies', [humanities, politics]),
         ('QVF2', deg_type, 'Scottish History/Scottish Literature', [humanities]),
         ('LVP1', deg_type, 'Scottish History/Sociology', [humanities, politics]),
         ('VWF4', deg_type, 'Scottish History/Theatre Studies', [humanities, art]),
@@ -547,65 +575,37 @@ def populate():
         ('LQ32', deg_type, 'Scottish Literature/Sociology', [humanities, politics]),
         ('QW24', deg_type, 'Scottish Literature/Theatre Studies', [humanities, art]),
         ('QV26', deg_type, 'Scottish Literature/Theology & Religious Studies', [humanities]),
+        ('VL64', deg_type, 'Social & Public Policy/Theology & Religious Studies', [humanities, politics]),
+        ('LV66', deg_type, 'Sociology/Theology & Religious Studies', [humanities, politics]),
         ('VW64', deg_type, 'Theatre Studies/Theology & Religious Studies', [humanities, art]),
-    ])
-
-    # ====== Humanities - BSc  (Hons) ======
-    deg_type = 'BSc  (Hons)'
-    degrees_data.extend([
-        ('QV84', deg_type, 'Archaeology/Classics', [humanities, critical_studies]),
-        ('VV34', deg_type, 'Archaeology/Economic & Social History', [humanities, politics, critical_studies]),
-        ('QV3K', deg_type, 'Archaeology/English Literature', [humanities, critical_studies]),
-        ('VV14', deg_type, 'Archaeology/History', [humanities, critical_studies]),
-        ('VVH4', deg_type, 'Archaeology/History of Art', [humanities, art, critical_studies]),
-        ('V4Q6', deg_type, 'Archaeology/Latin', [humanities, critical_studies]),
-        ('VVF4', deg_type, 'Archaeology/Scottish History', [humanities, critical_studies]),
-        ('VV46', deg_type, 'Archaeology/Theology & Religious Studies', [humanities, critical_studies]),
-        ('VV43', deg_type, 'Archaeology/Economic & Social History', [humanities, politics, critical_studies]),
-        ('LV71', deg_type, 'Geography/History', [humanities, geography]),
-        ('LVR3', deg_type, 'Geography/History of Art', [humanities, art, geography]),
-        ('QL67', deg_type, 'Geography/Latin', [humanities, geography]),
-        ('LV75', deg_type, 'Geography/Philosophy', [humanities, geography]),
-        ('LVR2', deg_type, 'Geography/Scottish History', [humanities, geography]),
-        ('LQ72', deg_type, 'Geography/Scottish Literature', [humanities, geography]),
+        ('V621', deg_type, 'Theology & Religious Studies', [humanities]),
     ])
 
     # ====== Humanities - MA(SocSci)  (Hons) ======
     deg_type = 'MA(SocSci)  (Hons)'
     degrees_data.extend([
-        ('RVT5', deg_type, 'Central & East European Studies/Philosophy', [humanities]),
-        ('RQ78', deg_type, 'Central & East European Studies/Classics', [humanities]),
-        ('RQ28', deg_type, 'Central & East European Studies/Comparative Literature', [humanities]),
-        ('RQ7J', deg_type, 'Central & East European Studies/English Literature', [humanities]),
-        ('RV7C', deg_type, 'Central & East European Studies/History', [humanities]),
-        ('RVP3', deg_type, 'Central & East European Studies/History of Art', [humanities, art]),
-        ('VR85', deg_type, 'Central & East European Studies/Philosophy', [humanities]),
-        ('RVP1', deg_type, 'Central & East European Studies/Scottish History', [humanities]),
-        ('RQR2', deg_type, 'Central & East European Studies/Scottish Literature', [humanities]),
+        ('VV43', deg_type, 'Archaeology/Economic & Social History', [humanities, politics, critical_studies]),
+        ('RV83', deg_type, 'Central & East European Studies/Economic & Social History', [humanities, politics]),
+        ('LQF8', deg_type, 'Classics/Politics', [humanities, politics]),
+        ('LQK8', deg_type, 'Classics/Social & Public Policy', [humanities, politics]),
         ('V300', deg_type, 'Economic & Social History', [humanities, politics]),
         ('VG33', deg_type, 'Economic & Social History with Quantitative Methods', [humanities, politics]),
+        ('LV73', deg_type, 'Economic & Social History/Geography', [humanities, geography, politics]),
         ('L253', deg_type, 'Economic & Social History/International Relations', [humanities, politics]),
         ('LV23', deg_type, 'Economic & Social History/Politics', [humanities, politics]),
         ('VV32', deg_type, 'Economic & Social History/Scottish History', [humanities, politics]),
         ('LV33', deg_type, 'Economic & Social History/Sociology', [humanities, politics]),
-        ('QV3H', deg_type, 'Economic & Social History/English Literature', [humanities, politics]),
-        ('VVC3', deg_type, 'Economic & Social History/History', [humanities, politics]),
-        ('VW33', deg_type, 'Economic & Social History/Music', [humanities, art, politics]),
-        ('VVJ5', deg_type, 'Economic & Social History/Philosophy', [humanities, politics]),
-        ('VVG3', deg_type, 'Economic & Social History/Scottish History', [humanities, politics]),
+        ('LV21', deg_type, 'History/Politics', [humanities, politics]),
+        ('LV31', deg_type, 'History/Sociology', [humanities, politics]),
+        ('LV25', deg_type, 'Philosophy/Politics', [humanities, politics]),
+        ('LVH5', deg_type, 'Philosophy/Sociology', [humanities, politics]),
         ('LVF2', deg_type, 'Politics/Scottish History', [humanities, politics]),
-        ('LV22', deg_type, 'Politics/Scottish History', [humanities, politics]),
-        ('LQ22', deg_type, 'Politics/Scottish Literature', [humanities, politics]),
-        ('VL62', deg_type, 'Politics/Theology & Religious Studies', [humanities, politics]),
-        ('VL64', deg_type, 'Social & Public Policy/Theology & Religious Studies', [humanities, politics]),
-        ('LV66', deg_type, 'Sociology/Theology & Religious Studies', [humanities, politics]),
     ])
 
     # ====== Humanities - BD  (Hons) ======
     deg_type = 'BD  (Hons)'
     degrees_data.extend([
         ('V600', deg_type, 'Theology & Religious Studies', [humanities]),
-        ('V621', deg_type, 'Theology & Religious Studies', [humanities]),
     ])
 
     # ====== Language - MA  (Hons) ======
@@ -614,6 +614,12 @@ def populate():
         ('VQ15', deg_type, 'Ancient History/Celtic Studies', [language, humanities]),
         ('V1R1', deg_type, 'Ancient History/French', [language, humanities]),
         ('VR13', deg_type, 'Ancient History/Italian', [language, humanities]),
+        ('QV54', deg_type, 'Archaeology/Celtic Studies', [language, critical_studies]),
+        ('V4Q3', deg_type, 'Archaeology/English Language & Linguistics', [language, critical_studies]),
+        ('V4Q5', deg_type, 'Archaeology/Gaelic', [language, critical_studies]),
+        ('V4R2', deg_type, 'Archaeology/German', [language, critical_studies]),
+        ('7F1A', deg_type, 'Archaeology/Portuguese', [language, critical_studies]),
+        ('V4R4', deg_type, 'Archaeology/Spanish', [language, critical_studies]),
         ('Q504', deg_type, 'Celtic Studies', [language]),
         ('RQ75', deg_type, 'Celtic Studies/Central & East European Studies', [language]),
         ('QQ58', deg_type, 'Celtic Studies/Classics', [language, humanities]),
@@ -628,6 +634,10 @@ def populate():
         ('QVM2', deg_type, 'Celtic Studies/Scottish History', [language, humanities]),
         ('QQ25', deg_type, 'Celtic Studies/Scottish Literature', [language, humanities]),
         ('Q5V6', deg_type, 'Celtic Studies/Theology & Religious Studies', [language, humanities]),
+        ('QR5R', deg_type, 'Central & East European Studies/Gaelic', [language]),
+        ('RR72', deg_type, 'Central & East European Studies/German', [language]),
+        ('RR73', deg_type, 'Central & East European Studies/Italian', [language]),
+        ('R791', deg_type, 'Central & East European Studies/Russian', [language]),
         ('QR81', deg_type, 'Classics/French', [language, humanities]),
         ('QR83', deg_type, 'Classics/Italian', [language, humanities]),
         ('QR87', deg_type, 'Classics/Russian', [language, humanities]),
@@ -644,6 +654,9 @@ def populate():
         ('GR5C', deg_type, 'Digital Media & Information Studies/French', [language, critical_studies]),
         ('4K2W', deg_type, 'Digital Media & Information Studies/Portuguese', [language, critical_studies]),
         ('P3R4', deg_type, 'Digital Media & Information Studies/Spanish', [language, critical_studies]),
+        ('RV13', deg_type, 'Economic & Social History/French', [language, humanities, politics]),
+        ('RV23', deg_type, 'Economic & Social History/German', [language, humanities, politics]),
+        ('9W7L', deg_type, 'Economic & Social History/Portuguese', [language, humanities, politics]),
         ('Q300', deg_type, 'English Language & Linguistics', [language]),
         ('Q304', deg_type, 'English Language & Linguistics/English Literature', [language, humanities]),
         ('QR3D', deg_type, 'English Language & Linguistics/French', [language]),
@@ -698,6 +711,9 @@ def populate():
         ('QV52', deg_type, 'Gaelic/Scottish History', [language, humanities]),
         ('QL54', deg_type, 'Gaelic/Social & Public Policy', [language, politics]),
         ('VQ56', deg_type, 'Gaelic/Theology & Religious Studies', [language, humanities]),
+        ('LR72', deg_type, 'Geography/German', [language, geography]),
+        ('3T5Y', deg_type, 'Geography/Portuguese', [language, geography]),
+        ('RL47', deg_type, 'Geography/Spanish', [language, geography]),
         ('R220', deg_type, 'German', [language]),
         ('RVF3', deg_type, 'German/History of Art', [language, humanities, art]),
         ('RR23', deg_type, 'German/Italian', [language]),
@@ -735,6 +751,8 @@ def populate():
         ('7A3W', deg_type, 'Philosophy/Portuguese', [language, humanities]),
         ('RV75', deg_type, 'Philosophy/Russian', [language, humanities]),
         ('V5R4', deg_type, 'Philosophy/Spanish', [language, humanities]),
+        ('5Y4F', deg_type, 'Politics/Portuguese', [language, politics]),
+        ('L2R4', deg_type, 'Politics/Spanish', [language, politics]),
         ('9Q8Z', deg_type, 'Portuguese/Russian', [language]),
         ('3W2Q', deg_type, 'Portuguese/Scottish History', [language, humanities]),
         ('R642', deg_type, 'Portuguese/Scottish Literature', [language, humanities]),
@@ -747,39 +765,11 @@ def populate():
         ('VR67', deg_type, 'Russian/Theology & Religious Studies', [language, humanities]),
         ('V2R4', deg_type, 'Scottish History/Spanish', [language, humanities]),
         ('RQ4M', deg_type, 'Scottish Literature/Spanish', [language, humanities]),
+        ('RL44', deg_type, 'Social & Public Policy/Spanish', [language, politics]),
+        ('RL46', deg_type, 'Sociology/Spanish', [language, politics]),
         ('R410', deg_type, 'Spanish', [language]),
         ('RW4K', deg_type, 'Spanish/Theatre Studies', [language, art]),
         ('RV4P', deg_type, 'Spanish/Theology & Religious Studies', [language, humanities]),
-    ])
-
-    # ====== Language - BSc  (Hons) ======
-    deg_type = 'BSc  (Hons)'
-    degrees_data.extend([
-        ('QV54', deg_type, 'Archaeology/Celtic Studies', [language, critical_studies]),
-        ('V4Q3', deg_type, 'Archaeology/English Language & Linguistics', [language, critical_studies]),
-        ('V4Q5', deg_type, 'Archaeology/Gaelic', [language, critical_studies]),
-        ('V4R2', deg_type, 'Archaeology/German', [language, critical_studies]),
-        ('7F1A', deg_type, 'Archaeology/Portuguese', [language, critical_studies]),
-        ('V4R4', deg_type, 'Archaeology/Spanish', [language, critical_studies]),
-        ('LR72', deg_type, 'Geography/German', [language, geography]),
-        ('3T5Y', deg_type, 'Geography/Portuguese', [language, geography]),
-        ('RL47', deg_type, 'Geography/Spanish', [language, geography]),
-    ])
-
-    # ====== Language - MA(SocSci)  (Hons) ======
-    deg_type = 'MA(SocSci)  (Hons)'
-    degrees_data.extend([
-        ('QR5R', deg_type, 'Central & East European Studies/Gaelic', [language]),
-        ('RR72', deg_type, 'Central & East European Studies/German', [language]),
-        ('RR73', deg_type, 'Central & East European Studies/Italian', [language]),
-        ('R791', deg_type, 'Central & East European Studies/Russian', [language]),
-        ('RV13', deg_type, 'Economic & Social History/French', [language, humanities, politics]),
-        ('RV23', deg_type, 'Economic & Social History/German', [language, humanities, politics]),
-        ('9W7L', deg_type, 'Economic & Social History/Portuguese', [language, humanities, politics]),
-        ('5Y4F', deg_type, 'Politics/Portuguese', [language, politics]),
-        ('L2R4', deg_type, 'Politics/Spanish', [language, politics]),
-        ('RL44', deg_type, 'Social & Public Policy/Spanish', [language, politics]),
-        ('RL46', deg_type, 'Sociology/Spanish', [language, politics]),
     ])
 
     # ====== Law - LLB  (Hons) ======
@@ -795,6 +785,7 @@ def populate():
         ('MV91', deg_type, 'Common Law/History', [law, humanities]),
         ('MV95', deg_type, 'Common Law/Philosophy', [law, humanities]),
         ('ML92', deg_type, 'Common Law/Politics', [law, politics]),
+        ('ML12', deg_type, 'Politics/Scots Law', [law, politics]),
         ('M114', deg_type, 'Scots Law', [law]),
         ('M1R1', deg_type, 'Scots Law with French Language', [law, language]),
         ('M1R2', deg_type, 'Scots Law with German Language', [law, language]),
@@ -813,51 +804,10 @@ def populate():
         ('M115', deg_type, 'Scots Law (fast track', [law]),
     ])
 
-    # ====== Law - MA(SocSci)  (Hons) ======
-    deg_type = 'MA(SocSci)  (Hons)'
-    degrees_data.extend([
-        ('ML12', deg_type, 'Politics/Scots Law', [law, politics]),
-    ])
-
-    # ====== Maths - BSc  (Hons) ======
-    deg_type = 'BSc  (Hons)'
-    degrees_data.extend([
-        ('GV14', deg_type, 'Archaeology/Mathematics', [maths, critical_studies]),
-        ('FGM1', deg_type, 'Astronomy/Mathematics', [maths, physics]),
-        ('FG5D', deg_type, 'Astronomy/Mathematics', [maths, physics]),
-        ('GF11', deg_type, 'Chemistry/Mathematics', [maths, chemistry]),
-        ('FG11', deg_type, 'Chemistry/Mathematics', [maths, chemistry]),
-        ('FG81', deg_type, 'Geography/Mathematics', [maths, geography]),
-        ('G100', deg_type, 'Mathematics', [maths]),
-        ('GVD5', deg_type, 'Mathematics/Philosophy', [maths, humanities]),
-        ('GF14', deg_type, 'Mathematics/Physics', [maths, physics]),
-        ('GGC3', deg_type, 'Mathematics/Statistics', [maths]),
-        ('G102', deg_type, 'Mathematics', [maths]),
-        ('GW13', deg_type, 'Mathematics/Music', [maths, art]),
-        ('GV15', deg_type, 'Mathematics/Philosophy', [maths, humanities]),
-        ('4A9P', deg_type, 'Mathematics/Portuguese', [maths, language]),
-        ('GR17', deg_type, 'Mathematics/Russian', [maths, language]),
-        ('GVC2', deg_type, 'Mathematics/Scottish History', [maths, humanities]),
-        ('GQ12', deg_type, 'Mathematics/Scottish Literature', [maths, humanities]),
-        ('RG41', deg_type, 'Mathematics/Spanish', [maths, language]),
-        ('GW14', deg_type, 'Mathematics/Theatre Studies', [maths, art]),
-        ('GV16', deg_type, 'Mathematics/Theology & Religious Studies', [maths, humanities]),
-        ('G101', deg_type, 'Mathematics', [maths]),
-        ('FGJ1', deg_type, 'Mathematics/Physics', [maths, physics]),
-        ('GGH1', deg_type, 'Mathematics/Statistics', [maths]),
-        ('2GM1', deg_type, 'Mathematics (faster route)', [maths]),
-        ('3GC3', deg_type, 'Mathematics/Statistics (faster route)', [maths]),
-        ('MF20', deg_type, 'Mathematics (faster route)', [maths]),
-        ('MSF1', deg_type, 'Mathematics/Statistics (faster route)', [maths]),
-        ('G300', deg_type, 'Statistics', [maths]),
-        ('G302', deg_type, 'Statistics', [maths]),
-        ('1G30', deg_type, 'Statistics (faster route)', [maths]),
-        ('SF10', deg_type, 'Statistics (faster route)', [maths]),
-    ])
-
     # ====== Maths - MA  (Hons) ======
     deg_type = 'MA  (Hons)'
     degrees_data.extend([
+        ('GV14', deg_type, 'Archaeology/Mathematics', [maths, critical_studies]),
         ('GQC5', deg_type, 'Celtic Studies/Mathematics', [maths, language]),
         ('GQ18', deg_type, 'Classics/Mathematics', [maths, humanities]),
         ('GGM1', deg_type, 'Digital Media & Information Studies/Mathematics', [maths, critical_studies]),
@@ -870,6 +820,47 @@ def populate():
         ('GVC3', deg_type, 'History of Art/Mathematics', [maths, humanities, art]),
         ('GR13', deg_type, 'Italian/Mathematics', [maths, language]),
         ('GQ16', deg_type, 'Latin/Mathematics', [maths, humanities]),
+        ('G102', deg_type, 'Mathematics', [maths]),
+        ('GW13', deg_type, 'Mathematics/Music', [maths, art]),
+        ('GV15', deg_type, 'Mathematics/Philosophy', [maths, humanities]),
+        ('4A9P', deg_type, 'Mathematics/Portuguese', [maths, language]),
+        ('GR17', deg_type, 'Mathematics/Russian', [maths, language]),
+        ('GVC2', deg_type, 'Mathematics/Scottish History', [maths, humanities]),
+        ('GQ12', deg_type, 'Mathematics/Scottish Literature', [maths, humanities]),
+        ('RG41', deg_type, 'Mathematics/Spanish', [maths, language]),
+        ('GW14', deg_type, 'Mathematics/Theatre Studies', [maths, art]),
+        ('GV16', deg_type, 'Mathematics/Theology & Religious Studies', [maths, humanities]),
+    ])
+
+    # ====== Maths - BSc  (Hons) ======
+    deg_type = 'BSc  (Hons)'
+    degrees_data.extend([
+        ('FGM1', deg_type, 'Astronomy/Mathematics', [maths, physics]),
+        ('GF11', deg_type, 'Chemistry/Mathematics', [maths, chemistry]),
+        ('FG81', deg_type, 'Geography/Mathematics', [maths, geography]),
+        ('G100', deg_type, 'Mathematics', [maths]),
+        ('GVD5', deg_type, 'Mathematics/Philosophy', [maths, humanities]),
+        ('GF14', deg_type, 'Mathematics/Physics', [maths, physics]),
+        ('GGC3', deg_type, 'Mathematics/Statistics', [maths]),
+        ('2GM1', deg_type, 'Mathematics (faster route)', [maths]),
+        ('3GC3', deg_type, 'Mathematics/Statistics (faster route)', [maths]),
+        ('G300', deg_type, 'Statistics', [maths]),
+        ('1G30', deg_type, 'Statistics (faster route)', [maths]),
+    ])
+
+    # ====== Maths - MSci ======
+    deg_type = 'MSci'
+    degrees_data.extend([
+        ('FG5D', deg_type, 'Astronomy/Mathematics', [maths, physics]),
+        ('FG11', deg_type, 'Chemistry/Mathematics', [maths, chemistry]),
+        ('G501', deg_type, 'Machine Learning, Mathematics & Statistics', [maths]),
+        ('G101', deg_type, 'Mathematics', [maths]),
+        ('FGJ1', deg_type, 'Mathematics/Physics', [maths, physics]),
+        ('GGH1', deg_type, 'Mathematics/Statistics', [maths]),
+        ('MF20', deg_type, 'Mathematics (faster route)', [maths]),
+        ('MSF1', deg_type, 'Mathematics/Statistics (faster route)', [maths]),
+        ('G302', deg_type, 'Statistics', [maths]),
+        ('SF10', deg_type, 'Statistics (faster route)', [maths]),
     ])
 
     # ====== Maths - MA(SocSci)  (Hons) ======
@@ -882,7 +873,6 @@ def populate():
     deg_type = 'BSc'
     degrees_data.extend([
         ('G500', deg_type, 'Machine Learning, Mathematics & Statistics', [maths]),
-        ('G501', deg_type, 'Machine Learning, Mathematics & Statistics', [maths]),
     ])
 
     # ====== Medicine - BDS ======
@@ -920,34 +910,42 @@ def populate():
     deg_type = 'BSc  (Hons)'
     degrees_data.extend([
         ('FF53', deg_type, 'Astronomy/Physics', [physics]),
-        ('FF5H', deg_type, 'Astronomy/Physics', [physics]),
         ('F335', deg_type, 'Chemical Physics', [physics]),
-        ('F322', deg_type, 'Chemical Physics', [physics]),
-        ('F320', deg_type, 'Chemical Physics with work placement', [physics]),
         ('F300', deg_type, 'Physics', [physics]),
         ('F344', deg_type, 'Theoretical Physics', [physics]),
-        ('F301', deg_type, 'Physics', [physics]),
-        ('F340', deg_type, 'Theoretical Physics', [physics]),
         ('F303', deg_type, 'Physics (Faster Route)', [physics]),
         ('F345', deg_type, 'Theoretical Physics (Faster Route)', [physics]),
+        ('F3F5', deg_type, 'Physics with Astrophysics', [physics]),
+        ('F3F2', deg_type, 'Physics with Astrophysics (Faster Route)', [physics]),
+    ])
+
+    # ====== Physics - MSci ======
+    deg_type = 'MSci'
+    degrees_data.extend([
+        ('FF5H', deg_type, 'Astronomy/Physics', [physics]),
+        ('F322', deg_type, 'Chemical Physics', [physics]),
+        ('F320', deg_type, 'Chemical Physics with work placement', [physics]),
+        ('F301', deg_type, 'Physics', [physics]),
+        ('F340', deg_type, 'Theoretical Physics', [physics]),
         ('F302', deg_type, 'Physics (Faster Route)', [physics]),
         ('F341', deg_type, 'Theoretical Physics (Faster Route)', [physics]),
-        ('F3F5', deg_type, 'Physics with Astrophysics', [physics]),
         ('F3FM', deg_type, 'Physics with Astrophysics', [physics]),
-        ('F3F2', deg_type, 'Physics with Astrophysics (Faster Route)', [physics]),
         ('F3F1', deg_type, 'Physics with Astrophysics (Faster Route)', [physics]),
     ])
 
-    # ====== Politics - BSc  (Hons) ======
-    deg_type = 'BSc  (Hons)'
+    # ====== Politics - MA  (Hons) ======
+    deg_type = 'MA  (Hons)'
     degrees_data.extend([
         ('LV24', deg_type, 'Archaeology/Politics', [politics, critical_studies]),
-        ('VL42', deg_type, 'Archaeology/Politics', [politics, critical_studies]),
+        ('GL52', deg_type, 'Digital Media & Information Studies/Politics', [politics, critical_studies]),
+        ('GL54', deg_type, 'Digital Media & Information Studies/Social & Public Policy', [politics, critical_studies]),
+        ('GL56', deg_type, 'Digital Media & Information Studies/Sociology', [politics, critical_studies]),
     ])
 
     # ====== Politics - MA(SocSci)  (Hons) ======
     deg_type = 'MA(SocSci)  (Hons)'
     degrees_data.extend([
+        ('VL42', deg_type, 'Archaeology/Politics', [politics, critical_studies]),
         ('RG73', deg_type, 'Central & East European Studies with Quantitative Methods', [politics]),
         ('L252', deg_type, 'Central & East European Studies/International Relations', [politics]),
         ('RL82', deg_type, 'Central & East European Studies/Politics', [politics]),
@@ -958,7 +956,7 @@ def populate():
         ('L251', deg_type, 'International Relations/Sociology', [politics]),
         ('L202', deg_type, 'Politics', [politics]),
         ('LG23', deg_type, 'Politics with Quantitative Methods', [politics]),
-        ('LL42', deg_type, 'Politics/', [politics]),
+        ('LL42', deg_type, 'Politics/Social & Public Policy', [politics]),
         ('LL62', deg_type, 'Politics/Sociology', [politics]),
         ('LG43', deg_type, 'Social & Public Policy with Quantitative Methods', [politics]),
         ('LG33', deg_type, 'Sociology with Quantitative Methods', [politics]),
@@ -967,45 +965,10 @@ def populate():
         ('L300', deg_type, 'Sociology', [politics]),
     ])
 
-    # ====== Politics - MA  (Hons) ======
-    deg_type = 'MA  (Hons)'
-    degrees_data.extend([
-        ('GL52', deg_type, 'Digital Media & Information Studies/Politics', [politics, critical_studies]),
-        ('GL54', deg_type, 'Digital Media & Information Studies/Social & Public Policy', [politics, critical_studies]),
-        ('GL56', deg_type, 'Digital Media & Information Studies/Sociology', [politics, critical_studies]),
-    ])
-
-    # ====== Psychology - BSc  (Hons) ======
-    deg_type = 'BSc  (Hons)'
-    degrees_data.extend([
-        ('CV84', deg_type, 'Archaeology/Psychology', [psychology, critical_studies]),
-        ('CG81', deg_type, 'Mathematics/Psychology', [psychology, maths]),
-        ('B140', deg_type, 'Neuroscience', [psychology]),
-        ('C800', deg_type, 'Psychology', [psychology]),
-        ('CG83', deg_type, 'Psychology/Statistics', [psychology, maths]),
-        ('C801', deg_type, 'Psychology', [psychology]),
-        ('CVW2', deg_type, 'Psychology/Scottish History', [psychology, humanities]),
-        ('CQ82', deg_type, 'Psychology/Scottish Literature', [psychology, humanities]),
-        ('8U9K', deg_type, 'Psychology/Spanish', [psychology, language]),
-        ('CW84', deg_type, 'Psychology/Theatre Studies', [psychology, art]),
-        ('CV86', deg_type, 'Psychology/Theology & Religious Studies', [psychology, humanities]),
-        ('C802', deg_type, 'Psychology', [psychology]),
-        ('LC38', deg_type, 'Psychology/Sociology', [psychology, politics]),
-    ])
-
-    # ====== Psychology - MA(SocSci)  (Hons) ======
-    deg_type = 'MA(SocSci)  (Hons)'
-    degrees_data.extend([
-        ('CN82', deg_type, 'Business & Management/Psychology', [psychology, business]),
-        ('LC18', deg_type, 'Business Economics/Psychology', [psychology, business]),
-        ('RG68', deg_type, 'Central & East European Studies/Psychology', [psychology]),
-        ('CV83', deg_type, 'Economic & Social History/Psychology', [psychology, humanities, politics]),
-        ('CL81', deg_type, 'Economics/Psychology', [psychology, business]),
-    ])
-
     # ====== Psychology - MA  (Hons) ======
     deg_type = 'MA  (Hons)'
     degrees_data.extend([
+        ('CV84', deg_type, 'Archaeology/Psychology', [psychology, critical_studies]),
         ('CQV5', deg_type, 'Celtic Civilisation/Psychology', [psychology, engineering, language]),
         ('CQ85', deg_type, 'Celtic Studies/Psychology', [psychology, language]),
         ('CQ88', deg_type, 'Classics/Psychology', [psychology, humanities]),
@@ -1019,6 +982,33 @@ def populate():
         ('CW83', deg_type, 'Music/Psychology', [psychology, art]),
         ('CVV5', deg_type, 'Philosophy/Psychology', [psychology, humanities]),
         ('3H2N', deg_type, 'Portuguese/Psychology', [psychology, language]),
+        ('C801', deg_type, 'Psychology', [psychology]),
+        ('CVW2', deg_type, 'Psychology/Scottish History', [psychology, humanities]),
+        ('CQ82', deg_type, 'Psychology/Scottish Literature', [psychology, humanities]),
+        ('8U9K', deg_type, 'Psychology/Spanish', [psychology, language]),
+        ('CW84', deg_type, 'Psychology/Theatre Studies', [psychology, art]),
+        ('CV86', deg_type, 'Psychology/Theology & Religious Studies', [psychology, humanities]),
+    ])
+
+    # ====== Psychology - MA(SocSci)  (Hons) ======
+    deg_type = 'MA(SocSci)  (Hons)'
+    degrees_data.extend([
+        ('CN82', deg_type, 'Business & Management/Psychology', [psychology, business]),
+        ('LC18', deg_type, 'Business Economics/Psychology', [psychology, business]),
+        ('RG68', deg_type, 'Central & East European Studies/Psychology', [psychology]),
+        ('CV83', deg_type, 'Economic & Social History/Psychology', [psychology, humanities, politics]),
+        ('CL81', deg_type, 'Economics/Psychology', [psychology, business]),
+        ('C802', deg_type, 'Psychology', [psychology]),
+        ('LC38', deg_type, 'Psychology/Sociology', [psychology, politics]),
+    ])
+
+    # ====== Psychology - BSc  (Hons) ======
+    deg_type = 'BSc  (Hons)'
+    degrees_data.extend([
+        ('CG81', deg_type, 'Mathematics/Psychology', [psychology, maths]),
+        ('B140', deg_type, 'Neuroscience', [psychology]),
+        ('C800', deg_type, 'Psychology', [psychology]),
+        ('CG83', deg_type, 'Psychology/Statistics', [psychology, maths]),
     ])
 
     # ====== Veterinary - BSc  (Hons) ======
