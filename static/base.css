@@ -66,8 +66,7 @@ color: #818181;
     font-size: 25px;
 }
 .main {
-    top: 0;
     margin-left: 250px;
-    width: fit-content;
-    position: fixed;
+    width: calc(100% - 250px);
+    overflow-y: auto;
 }

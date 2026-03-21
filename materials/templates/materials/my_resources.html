@@ -6,79 +6,84 @@ My Resources - TOSSR
 {% endblock %}
 
 {% block head_block %}
-<link rel="stylesheet" href="{% static 'modules/css/style.css' %}">
 <style>
     .my-resources-container {
-        padding: 20px;
+        padding: 40px;
         max-width: 1400px;
         margin: 0 auto;
     }
 
     .resources-header {
-        margin-bottom: 30px;
-        padding: 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 32px;
+        padding: 32px;
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     .resources-header h1 {
         font-size: 2em;
-        margin: 0 0 10px 0;
+        margin: 0 0 8px 0;
+        color: #111827;
+        font-weight: 700;
     }
 
     .resources-header p {
-        margin: 0;
-        opacity: 0.9;
+        margin: 0 0 20px 0;
+        color: #6b7280;
+        font-size: 1em;
     }
 
     .stats {
         display: flex;
         gap: 20px;
-        margin-top: 15px;
         flex-wrap: wrap;
     }
 
     .stat-item {
-        background: rgba(255, 255, 255, 0.2);
-        padding: 12px 20px;
-        border-radius: 6px;
-        backdrop-filter: blur(10px);
+        background: #f9fafb;
+        padding: 16px 20px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
     }
 
     .stat-item strong {
         display: block;
-        font-size: 0.9em;
-        opacity: 0.8;
+        font-size: 0.85em;
+        color: #6b7280;
+        margin-bottom: 6px;
+        font-weight: 600;
     }
 
     .stat-item .number {
-        font-size: 1.5em;
-        margin-top: 5px;
+        font-size: 1.6em;
+        color: #111827;
+        font-weight: 700;
     }
 
     .error-message {
-        background-color: #f8d7da;
-        color: #721c24;
-        padding: 15px;
-        border-radius: 6px;
-        border: 1px solid #f5c6cb;
+        background-color: #fee2e2;
+        color: #991b1b;
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid #fecaca;
         margin-bottom: 20px;
     }
 
     .module-section {
-        margin-bottom: 40px;
+        margin-bottom: 32px;
         background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
         overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     .module-section-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: #f9fafb;
         padding: 20px;
+        border-bottom: 1px solid #e5e7eb;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -86,14 +91,24 @@ My Resources - TOSSR
 
     .module-section-header h2 {
         margin: 0;
-        font-size: 1.4em;
+        font-size: 1.3em;
+        color: #111827;
+        font-weight: 700;
+    }
+
+    .module-section-header p {
+        margin: 4px 0 0 0;
+        color: #6b7280;
+        font-size: 0.9em;
     }
 
     .module-section-header .material-count {
-        background: rgba(255, 255, 255, 0.3);
-        padding: 8px 16px;
-        border-radius: 20px;
+        background: #6366f1;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 6px;
         font-size: 0.9em;
+        font-weight: 600;
     }
 
     .materials-list {
@@ -104,18 +119,18 @@ My Resources - TOSSR
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px;
-        border: 1px solid #e0e0e0;
-        border-radius: 6px;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
         margin-bottom: 12px;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         background-color: #fafafa;
     }
 
     .material-item:hover {
-        background-color: #f0f0f0;
-        border-color: #667eea;
-        box-shadow: 0 2px 6px rgba(102, 126, 234, 0.1);
+        background-color: white;
+        border-color: #6366f1;
+        box-shadow: 0 2px 6px rgba(99, 102, 241, 0.1);
     }
 
     .material-info {
@@ -123,144 +138,140 @@ My Resources - TOSSR
     }
 
     .material-title {
-        font-size: 1.1em;
+        font-size: 1.05em;
         font-weight: 600;
-        color: #333;
-        margin-bottom: 6px;
+        color: #111827;
+        margin-bottom: 8px;
         word-break: break-word;
     }
 
     .material-meta {
         display: flex;
-        gap: 15px;
+        gap: 12px;
         flex-wrap: wrap;
         font-size: 0.9em;
-        color: #666;
     }
 
     .meta-tag {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
         padding: 4px 10px;
-        background-color: #e8eaf6;
-        border-radius: 4px;
+        background-color: #f3f4f6;
+        border-radius: 6px;
+        color: #6b7280;
+        font-weight: 500;
     }
 
     .type-badge {
         display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
+        padding: 6px 12px;
+        border-radius: 6px;
         font-size: 0.85em;
-        font-weight: 500;
+        font-weight: 600;
         color: white;
     }
 
     .type-badge.flashcard {
-        background-color: #667eea;
+        background-color: #6366f1;
     }
 
     .type-badge.quiz {
-        background-color: #ff9800;
+        background-color: #f59e0b;
     }
 
     .status-badge {
         display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
+        padding: 6px 12px;
+        border-radius: 6px;
         font-size: 0.85em;
-        font-weight: 500;
+        font-weight: 600;
     }
 
     .status-badge.published {
-        background-color: #4CAF50;
+        background-color: #10b981;
         color: white;
     }
 
     .status-badge.draft {
-        background-color: #9e9e9e;
-        color: white;
+        background-color: #d1d5db;
+        color: #374151;
     }
 
     .material-actions {
         margin-left: 15px;
         display: flex;
-        gap: 10px;
+        gap: 8px;
     }
 
     .btn-action {
-        padding: 8px 16px;
-        background-color: #667eea;
+        padding: 8px 14px;
+        background-color: #6366f1;
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 6px;
         text-decoration: none;
         font-size: 0.9em;
         cursor: pointer;
-        transition: background-color 0.3s;
+        transition: all 0.2s;
+        font-weight: 500;
     }
 
     .btn-action:hover {
-        background-color: #764ba2;
+        background-color: #4f46e5;
     }
 
     .btn-action.edit {
-        background-color: #2196F3;
+        background-color: #2563eb;
     }
 
     .btn-action.edit:hover {
-        background-color: #1976D2;
+        background-color: #1d4ed8;
     }
 
     .empty-state {
         text-align: center;
         padding: 60px 20px;
-        color: #999;
+        color: #9ca3af;
     }
 
     .empty-state .icon {
         font-size: 4em;
         margin-bottom: 20px;
-        opacity: 0.5;
+        opacity: 0.6;
     }
 
     .empty-state p {
-        font-size: 1.1em;
-        margin: 10px 0;
+        font-size: 1em;
+        margin: 8px 0;
+        color: #6b7280;
     }
 
     .private-materials-section {
-        margin-top: 30px;
+        margin-top: 0;
     }
 
     .private-materials-header {
         display: flex;
         align-items: center;
         gap: 10px;
-        margin-bottom: 15px;
+        padding: 0;
     }
 
     .private-materials-header h3 {
         margin: 0;
-        color: #333;
+        color: #111827;
         font-size: 1.3em;
-    }
-
-    .private-materials-header .material-count {
-        background-color: #e0e0e0;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.85em;
-        color: #666;
+        font-weight: 700;
     }
 
     @media (max-width: 768px) {
         .my-resources-container {
-            padding: 10px;
+            padding: 20px;
         }
 
         .resources-header {
-            padding: 15px;
+            padding: 20px;
         }
 
         .resources-header h1 {
@@ -269,13 +280,13 @@ My Resources - TOSSR
 
         .stats {
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .module-section-header {
             flex-direction: column;
             align-items: flex-start;
-            gap: 10px;
+            gap: 12px;
         }
 
         .material-item {
@@ -330,7 +341,7 @@ My Resources - TOSSR
                     <div class="module-section-header">
                         <div>
                             <h2>{{ item.module.id }}: {{ item.module.name }}</h2>
-                            <p style="margin: 5px 0 0 0; opacity: 0.9;">{{ item.module.school.name }} • Level {{ item.module.level }} • {{ item.module.credits }} Credits</p>
+                            <p>{{ item.module.school.name }} • Level {{ item.module.level }} • {{ item.module.credits }} Credits</p>
                         </div>
                         <div class="material-count">{{ item.material_count }} material{{ item.material_count|pluralize }}</div>
                     </div>
@@ -342,7 +353,7 @@ My Resources - TOSSR
                                     <div class="material-meta">
                                         <span class="type-badge {{ material.material_type }}">
                                             {% if material.material_type == 'flashcard' %}
-                                                📇 Flashcard Set
+                                                📇 Flashcard
                                             {% elif material.material_type == 'quiz' %}
                                                 ❓ Quiz
                                             {% endif %}
@@ -351,7 +362,7 @@ My Resources - TOSSR
                                             {% if material.is_published %}✓ Published{% else %}Draft{% endif %}
                                         </span>
                                         <span class="meta-tag">
-                                            Created: {{ material.created_at|date:"M d, Y" }}
+                                            {{ material.created_at|date:"M d, Y" }}
                                         </span>
                                     </div>
                                 </div>
@@ -372,7 +383,7 @@ My Resources - TOSSR
                 <div class="module-section-header">
                     <div>
                         <h2>🔒 Private Materials</h2>
-                        <p style="margin: 5px 0 0 0; opacity: 0.9;">Materials not assigned to any module</p>
+                        <p>Materials not assigned to any module</p>
                     </div>
                     <div class="material-count">{{ private_materials.count }} material{{ private_materials|pluralize }}</div>
                 </div>
@@ -384,7 +395,7 @@ My Resources - TOSSR
                                 <div class="material-meta">
                                     <span class="type-badge {{ material.material_type }}">
                                         {% if material.material_type == 'flashcard' %}
-                                            📇 Flashcard Set
+                                            📇 Flashcard
                                         {% elif material.material_type == 'quiz' %}
                                             ❓ Quiz
                                         {% endif %}
@@ -393,7 +404,7 @@ My Resources - TOSSR
                                         {% if material.is_published %}✓ Published{% else %}Draft{% endif %}
                                     </span>
                                     <span class="meta-tag">
-                                        Created: {{ material.created_at|date:"M d, Y" }}
+                                        {{ material.created_at|date:"M d, Y" }}
                                     </span>
                                 </div>
                             </div>
@@ -412,7 +423,7 @@ My Resources - TOSSR
             <div class="empty-state">
                 <div class="icon">📭</div>
                 <p>You haven't created any resources yet.</p>
-                <p style="font-size: 0.95em; opacity: 0.7;">Start by subscribing to a module and creating study materials!</p>
+                <p style="font-size: 0.9em;">Start by subscribing to a module and creating study materials!</p>
             </div>
         {% endif %}
     {% endif %}
