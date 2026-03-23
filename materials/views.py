@@ -1,6 +1,13 @@
+import json
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import StudyMaterial
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+from django.db import transaction
+from .models import (
+    StudyMaterial, FlashcardSet, Flashcard,
+    Quiz, QuizQuestion, QuizAnswer
+)
 
 def filter_materials(request):
 
@@ -81,3 +88,129 @@ def filter_materials(request):
         'total_count': materials.count(),
         'results': data
     })
+
+
+@login_required
+@require_http_methods(["POST"])
+def create_flashcard_set(request):
+    """
+    Create a new Flashcard Set.
+    Expects a JSON payload with 'title', optional 'module_id', 'is_published', and a 'cards' array.
+    """
+    try:
+        data = json.loads(request.body)
+        title = data.get('title')
+        module_id = data.get('module_id') # Optional module association
+        is_published = data.get('is_published', False)
+        cards_data = data.get('cards', [])
+
+        if not title or not cards_data:
+            return JsonResponse({"error": "Missing title or cards data"}, status=400)
+
+        # Retrieve the Student instance associated with the currently logged-in User.
+        # Updated to correctly use 'student_profile' as defined in accounts.models.py
+        student = request.user.student_profile
+
+        # Start a database transaction to ensure atomicity (all-or-nothing execution)
+        with transaction.atomic():
+            # 1. Create the base StudyMaterial record
+            material = StudyMaterial.objects.create(
+                title=title,
+                material_type='flashcard',
+                owner=student,
+                module_id=module_id,
+                is_published=is_published
+            )
+
+            # 2. Create the FlashcardSet metadata linked to the StudyMaterial
+            flashcard_set = FlashcardSet.objects.create(study_material=material)
+
+            # 3. Prepare and bulk create the individual Flashcards
+            flashcards_to_create = []
+            for index, card in enumerate(cards_data):
+                flashcards_to_create.append(
+                    Flashcard(
+                        flashcard_set=flashcard_set,
+                        front=card.get('front', ''),
+                        back=card.get('back', ''),
+                        order=card.get('order', index + 1) # Default to array index if order is not provided
+                    )
+                )
+            # Use bulk_create for better database performance
+            Flashcard.objects.bulk_create(flashcards_to_create)
+
+        return JsonResponse({
+            "message": "Flashcard set created successfully",
+            "material_id": material.pk,
+            "cards_count": len(flashcards_to_create)
+        }, status=201)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+@login_required
+@require_http_methods(["POST"])
+def create_quiz(request):
+    """
+    Create a new Quiz.
+    Expects a JSON payload with 'title', optional 'module_id', 'is_published', and a 'questions' array.
+    """
+    try:
+        data = json.loads(request.body)
+        title = data.get('title')
+        module_id = data.get('module_id')
+        is_published = data.get('is_published', False)
+        questions_data = data.get('questions', [])
+
+        if not title or not questions_data:
+            return JsonResponse({"error": "Missing title or questions data"}, status=400)
+
+        # Retrieve the Student instance
+        student = request.user.student_profile
+
+        # Start a database transaction
+        with transaction.atomic():
+            # 1. Create the base StudyMaterial record
+            material = StudyMaterial.objects.create(
+                title=title,
+                material_type='quiz',
+                owner=student,
+                module_id=module_id,
+                is_published=is_published
+            )
+
+            # 2. Create the Quiz metadata linked to the StudyMaterial
+            quiz = Quiz.objects.create(study_material=material)
+
+            # 3. Loop through to create questions and their respective answers
+            for q_index, q_data in enumerate(questions_data):
+                question = QuizQuestion.objects.create(
+                    quiz=quiz,
+                    question_text=q_data.get('question_text', ''),
+                    question_type=q_data.get('question_type', 'single'),
+                    order=q_data.get('order', q_index + 1)
+                )
+
+                # Prepare and bulk create answers for this specific question
+                answers_data = q_data.get('answers', [])
+                answers_to_create = []
+                for a_index, a_data in enumerate(answers_data):
+                    answers_to_create.append(
+                        QuizAnswer(
+                            question=question,
+                            answer_text=a_data.get('answer_text', ''),
+                            is_correct=a_data.get('is_correct', False),
+                            order=a_data.get('order', a_index + 1)
+                        )
+                    )
+                QuizAnswer.objects.bulk_create(answers_to_create)
+
+        return JsonResponse({
+            "message": "Quiz created successfully",
+            "material_id": material.pk,
+            "questions_count": len(questions_data)
+        }, status=201)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
