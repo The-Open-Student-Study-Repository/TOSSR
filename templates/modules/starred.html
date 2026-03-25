@@ -4,9 +4,9 @@
 <ul>
     {% for module in starred %}
         {% if module == current_module %}
-        <li><strong><a href="#" class="nav-link">{{ module.name }}</a></strong></li>
+        <li><strong><a href="#" class="nav-link">{{ module.module.name }}</a></strong></li>
         {% else %}
-        <li><a href="#" class="nav-link">{{ module.name }}</a></li>
+        <li><a href="#" class="nav-link">{{ module.module.name }}</a></li>
         {% endif %}
     {% endfor %}
 </ul>

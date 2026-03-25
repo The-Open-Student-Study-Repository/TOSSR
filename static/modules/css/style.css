@@ -1,6 +1,6 @@
 /* Global Style Guide */
 
-/* Colors */
+/* Colors
 :root {
     --primary-color: #6366f1;
     --primary-hover: #4f46e5;
@@ -11,7 +11,7 @@
     --border-color: #e5e7eb;
     --shadow: 0 20px 40px rgba(0,0,0,0.08);
     --shadow-hover: 0 30px 60px rgba(0,0,0,0.12);
-}
+}*/
 
 /* Page Layout */
 body {

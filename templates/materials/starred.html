@@ -4,9 +4,9 @@
 <ul>
     {% for material in starred %}
         {% if material == current_material %}
-        <li><strong><a href="#" class="nav-link">{{ material.name }}</a></strong></li>
+        <li><strong><a href="#" class="nav-link">{{ material.material.name }}</a></strong></li>
         {% else %}
-        <li><a href="#" class="nav-link">{{ material.name }}</a></li>
+        <li><a href="#" class="nav-link">{{ material.material.name }}</a></li>
         {% endif %}
     {% endfor %}
 </ul>
