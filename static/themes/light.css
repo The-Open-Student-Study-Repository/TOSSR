@@ -11,6 +11,7 @@
     --shadow: 0 20px 40px rgba(0,0,0,0.08);
     --shadow-hover: 0 30px 60px rgba(0,0,0,0.12);
 
+    --sidebar-labels: #1f2937;
     --settings-bg: #818181;
     --settings-hover: #313131;
 
@@ -26,4 +27,8 @@
 
     --favourited-button-bg: #ff6b6b;
     --favourited-button-hover: #ee5a52;
+
+    --button-text-light: #f3f4f6;
+    --grey: #c1c1c1;
+    --button-text-dark: #1f2937;
 }
