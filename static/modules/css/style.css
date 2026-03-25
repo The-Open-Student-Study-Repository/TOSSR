@@ -60,7 +60,7 @@ h1 {
 .filter-section button {
     padding: 10px 20px;
     background: var(--primary-color);
-    color: white;
+    color: var(--bg-white);
     border: none;
     border-radius: 8px;
     font-weight: 600;
@@ -146,7 +146,7 @@ h1 {
 
 .pagination .current {
     background: var(--primary-color);
-    color: white;
+    color: var(--bg-white);
     border-color: var(--primary-color);
 }
 

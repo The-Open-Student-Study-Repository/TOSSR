@@ -13,4 +13,5 @@ path("moderator/materials/<int:material_id>/unhide/", views.unhide_material, nam
     path("autocomplete/degree/", views.DegreeAutocompleteView.as_view(), name="degree_autocomplete"),
     path("settings/",views.settings,name="settings"),
     path("logout/",views.user_logout,name="logout"),
+    path("set-theme/<str:theme>/", views.set_theme, name="set_theme"),
 ]

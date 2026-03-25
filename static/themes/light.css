@@ -1,0 +1,29 @@
+/*  colours */
+:root {
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg-light: #f3f4f6;
+    --bg-white: white;
+    --text-dark: #1f2937;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+    --bg-black: #111827;
+    --shadow: 0 20px 40px rgba(0,0,0,0.08);
+    --shadow-hover: 0 30px 60px rgba(0,0,0,0.12);
+
+    --settings-bg: #818181;
+    --settings-hover: #313131;
+
+    /*  Find Modules */
+    --subscribe-button-bg: #007bff;
+    --subsribe-button-hover: #0056b3;
+
+    --subscribed-button-bg: #28a745;
+    --subscribed-button-hover: #1e7e34;
+
+    --favourite-button-bg: #ffc107;
+    --favourite-button-hover: #e0a800;
+
+    --favourited-button-bg: #ff6b6b;
+    --favourited-button-hover: #ee5a52;
+}
