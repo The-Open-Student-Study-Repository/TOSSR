@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-from .views import logout
 
 app_name = 'accounts'
 urlpatterns = [
@@ -12,5 +11,6 @@ urlpatterns = [
 path("moderator/materials/<int:material_id>/unhide/", views.unhide_material, name="unhide_material"),
     path("student/dashboard/", views.student_dashboard, name="student_dashboard"),
     path("autocomplete/degree/", views.DegreeAutocompleteView.as_view(), name="degree_autocomplete"),
-    path('logout/',views.user_logout,name='logout'),
+    path("settings/",views.settings,name="settings"),
+    path("logout/",views.user_logout,name="logout"),
 ]

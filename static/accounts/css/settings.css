@@ -1,5 +1,5 @@
 .settings {
-  height: 100vh;
+  height: max(100%,100vh);
   margin: 0;
   display: flex;
   justify-content: center; /* horizontal */
@@ -14,7 +14,7 @@
     text-align: center;
     border: 1px solid #a1a1a1;   /* box around item */
     padding: 8px 12px;         /* space inside the box */
-    border-radius: 6px;        /* slightly rounded corners */
+    border-radius: 20px;        /* slightly rounded corners */
     margin-bottom: 8px;
     background-color: #a1a1a1; 
     display: flex;

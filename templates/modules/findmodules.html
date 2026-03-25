@@ -1,8 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Find Modules</title>
-    {% load static %}
+{% extends 'base.html' %}
+{% load static %}
+    {% block title_block %}
+    Find Modules
+    {% endblock %}
+    {% block head_block %}
     <link rel="stylesheet" href="{% static 'modules/css/style.css' %}">
     <style>
         .module h3 {
@@ -58,8 +59,8 @@
             background-color: #ee5a52;
         }
     </style>
-    </head>
-<body>
+    {% endblock %}
+{% block body_block %}
     <div class="container">
         <h1>Find Modules</h1>
         
@@ -144,5 +145,4 @@
             </div>
         {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}
