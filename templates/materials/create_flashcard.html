@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_block %}
+Create Flashcard Set
+{% endblock %}
+
+{% block head_block %}
+<link rel="stylesheet" href="{% static 'materials/css/create_flashcard.css' %}">
+{% endblock %}
+
+{% block body_block %}
+<div class="create-flashcard-container">
+    <div class="create-flashcard-wrapper">
+        <h1>Create Flashcard Set</h1>
+
+        <!-- Module and Title Section -->
+        <div class="form-section">
+            <label for="module">Module</label>
+            <select id="module" name="module">
+                <option value="">-- Select a module --</option>
+                {% for module in subscribed %}
+                <option value="{{ module.id }}" {% if initial_module_id == module.id %}selected{% endif %}>{{ module.id }}: {{ module.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-section">
+            <label for="title">Flashcard Set Title</label>
+            <input type="text" id="title" name="title" placeholder="e.g., French Vocabulary - Chapter 3">
+        </div>
+
+        <!-- Card Input Section -->
+        <div class="card-input-section">
+            <div class="form-section">
+                <label for="front">Front (Question/Prompt)</label>
+                <textarea id="front" name="front" placeholder="What should appear on the front of the card?"></textarea>
+            </div>
+
+            <div class="form-section">
+                <label for="back">Back (Answer)</label>
+                <textarea id="back" name="back" placeholder="What should appear on the back of the card?"></textarea>
+            </div>
+
+            <button type="button" id="addCardBtn" class="add-card-btn">+ Add Card to Set</button>
+        </div>
+
+        <!-- Cards List -->
+        <div id="flashcard-list" class="flashcard-list"></div>
+
+        <!-- Message -->
+        <div id="message" class="message"></div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'materials:my_resources' %}" class="btn btn-cancel">Cancel</a>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; font-weight: normal;">
+                    <input type="checkbox" id="publish" name="publish" checked>
+                    Publish
+                </label>
+                <button type="button" id="submitBtn" class="btn btn-submit">Create Flashcard Set</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const cards = [];
+
+document.getElementById('addCardBtn').addEventListener('click', function() {
+    const front = document.getElementById('front').value.trim();
+    const back = document.getElementById('back').value.trim();
+    
+    if (!front || !back) {
+        showMessage('Please fill in both front and back', 'error');
+        return;
+    }
+    
+    cards.push({ front, back });
+    document.getElementById('front').value = '';
+    document.getElementById('back').value = '';
+    document.getElementById('front').focus();
+    
+    renderCards();
+    showMessage('Card added to set!', 'success');
+});
+
+function renderCards() {
+    const container = document.getElementById('flashcard-list');
+    
+    if (cards.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><p>No cards added yet. Create your first card above!</p></div>';
+        return;
+    }
+    
+    container.innerHTML = '<h3>Cards in Set (' + cards.length + ')</h3>';
+    
+    cards.forEach((card, index) => {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'flashcard-item';
+        cardDiv.innerHTML = `
+            <div class="flashcard-content">
+                <span class="flashcard-index">${index + 1}</span>
+                <strong>Front:</strong>
+                <p>${escapeHtml(card.front)}</p>
+                <div style="margin-top: 12px;">
+                    <strong>Back:</strong>
+                    <p>${escapeHtml(card.back)}</p>
+                </div>
+            </div>
+            <button type="button" class="remove-card-btn" onclick="removeCard(${index})">Remove</button>
+        `;
+        container.appendChild(cardDiv);
+    });
+}
+
+function removeCard(index) {
+    cards.splice(index, 1);
+    renderCards();
+    showMessage('Card removed', 'success');
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showMessage(text, type) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.textContent = text;
+    messageDiv.className = 'message show ' + type;
+    setTimeout(() => {
+        messageDiv.textContent = '';
+        messageDiv.className = 'message';
+    }, 4000);
+}
+
+document.getElementById('submitBtn').addEventListener('click', async function() {
+    const title = document.getElementById('title').value.trim();
+    const moduleId = document.getElementById('module').value;
+    
+    if (!title) {
+        showMessage('Please enter a title for your flashcard set', 'error');
+        return;
+    }
+    
+    if (cards.length === 0) {
+        showMessage('Please add at least one card', 'error');
+        return;
+    }
+    
+    const payload = {
+        title: title,
+        module_id: moduleId || null,
+        is_published: document.getElementById('publish').checked,
+        cards: cards
+    };
+    
+    this.disabled = true;
+    this.textContent = 'Creating...';
+    
+    try {
+        const response = await fetch('{% url "materials:api_create_flashcard" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showMessage('✓ Flashcard set created successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = '{% url "materials:my_resources" %}';
+            }, 1500);
+        } else {
+            showMessage('Error: ' + data.error, 'error');
+            this.disabled = false;
+            this.textContent = 'Create Flashcard Set';
+        }
+    } catch (error) {
+        showMessage('Error: ' + error.message, 'error');
+        this.disabled = false;
+        this.textContent = 'Create Flashcard Set';
+    }
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+{% endblock %}

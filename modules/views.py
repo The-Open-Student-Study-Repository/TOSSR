@@ -10,7 +10,7 @@ class ModuleAutocompleteView(AutocompleteModelView):
     model = Module
     search_lookups = ["id__icontains", "name__icontains"]
     value_fields = ["id", "name", "level", "credits"]
-    page_size = 20
+    page_size = 21
     skip_authorization = True
 
     def get_queryset(self):
@@ -73,7 +73,7 @@ def browse_modules(request):
         )
     
     # Add pagination
-    paginator = Paginator(modules, 20)  # 20 modules per page
+    paginator = Paginator(modules, 21)  # 21 modules per page
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
     
