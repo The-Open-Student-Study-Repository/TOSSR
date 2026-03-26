@@ -15,4 +15,6 @@ urlpatterns = [
     path('create_flashcard/<str:module_id>/', views.create_flashcard_page, name='create_flashcard_with_module'),
     path('create_quiz/', views.create_quiz_page, name='create_quiz'),
     path('create_quiz/<str:module_id>/', views.create_quiz_page, name='create_quiz_with_module'),
+    path('flashcard/<int:material_id>/', views.view_flashcard, name='view_flashcard'),
+    path('quiz/<int:material_id>/', views.view_quiz, name='view_quiz'),
 ]

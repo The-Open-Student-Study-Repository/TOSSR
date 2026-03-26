@@ -301,3 +301,40 @@ def create_quiz_page(request, module_id=None):
         'initial_module_id': module_id,
     }
     return render(request, 'materials/create_quiz.html', context)
+@login_required
+def view_flashcard(request, material_id):
+    """Display a flashcard set"""
+    material = StudyMaterial.objects.get(id=material_id, material_type='flashcard')
+    
+    # Check if the user has permission to view this material
+    if material.owner != request.user.student_profile and not material.is_published:
+        return render(request, 'materials/my_resources.html', {'error': 'You do not have permission to view this material'})
+    
+    flashcard_set = material.flashcard_set
+    flashcards = flashcard_set.cards.all().order_by('order')
+    
+    context = {
+        'flashcard_set': flashcard_set,
+        'flashcards': flashcards,
+    }
+    
+    return render(request, 'materials/view_flashcard.html', context)
+
+@login_required
+def view_quiz(request, material_id):
+    """Display a quiz"""
+    material = StudyMaterial.objects.get(id=material_id, material_type='quiz')
+    
+    # Check if the user has permission to view this material
+    if material.owner != request.user.student_profile and not material.is_published:
+        return render(request, 'materials/my_resources.html', {'error': 'You do not have permission to view this material'})
+    
+    quiz = material.quiz
+    questions = quiz.questions.all().order_by('order')
+    
+    context = {
+        'quiz': quiz,
+        'questions': questions,
+    }
+    
+    return render(request, 'materials/view_quiz.html', context)
