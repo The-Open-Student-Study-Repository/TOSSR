@@ -1,81 +1,19 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
-    {% block title_block %}
-    Find Modules
-    {% endblock %}
-    {% block head_block %}
-    <link rel="stylesheet" href="{% static 'modules/css/style.css' %}">
-    <style>
-        .module h3 {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-            margin: 0 0 10px 0;
-        }
 
-        .page-header {
-            padding: 20px;
-        }
+{% block title_block %}
+Find Modules - TOSSR
+{% endblock %}
 
-        .page-header h1 {
-            font-size: 1.5em;
-        }
+{% block head_block %}
+<link rel="stylesheet" href="{% static 'modules/css/findmodules.css' %}">
+{% endblock %}
 
-        .filter-section form {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .filter-section select,
-        .filter-section button {
-            width: 100%;
-        }
-
-        .modules-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .module-actions {
-            flex-direction: column;
-        }
-
-        .btn {
-            width: 100%;
-        }
-        .btn-subscribe {
-            background-color: var(--subscribe-button-bg);
-            color: var(--button-text-light);
-        }
-        .btn-subscribe:hover {
-            background-color: var(--subsribe-button-hover);
-        }
-        .btn-subscribed {
-            background-color: var(--subscribed-button-bg);
-            color: var(--button-text-light);
-        }
-        .btn-subscribed:hover {
-            background-color: var(--subscribed-button-hover);
-        }
-        .btn-favourite {
-            background-color: var(--favourite-button-bg);
-            color: var(--button-text-dark);
-        }
-        .btn-favourite:hover {
-            background-color: var(--favourite-button-hover);
-        }
-        .btn-favourited {
-            background-color: var(--favourited-button-bg);
-            color: var(--button-text-light);
-        }
-        .btn-favourited:hover {
-            background-color: var(--favourited-button-hover);
-        }
-    </style>
-    {% endblock %}
 {% block body_block %}
-    <div class="container">
-        <h1>Find Modules</h1>
+<div class="find-modules-content">
+    <div class="page-header">
+        <h1>🔍 Find Modules</h1>
+        <p>Browse and subscribe to modules for your studies</p>
         
         {% if page_obj %}
             <div class="filter-section">
@@ -101,4 +39,64 @@
             </div>
         {% endif %}
     </div>
+    
+    {% if page_obj %}
+        <div class="modules-grid">
+            {% for module in page_obj %}
+                <div class="module">
+                    <h3><a href="{% url 'modules:module_detail' module.id %}">{{ module.id }}: {{ module.name }}</a></h3>
+                    <div class="module-info">
+                        <div><strong>School:</strong> <span>{{ module.school.name }}</span></div>
+                        <div><strong>Level:</strong> <span>{{ module.level }}</span></div>
+                        <div><strong>Credits:</strong> <span>{{ module.credits }}</span></div>
+                    </div>
+                    {% if user.is_authenticated and user.role == 'student' %}
+                    <div class="module-actions">
+                        <a href="{% url 'modules:toggle_subscribe' module.id %}" 
+                           class="btn {% if module.is_subscribed %}btn-subscribed{% else %}btn-subscribe{% endif %}">
+                            {% if module.is_subscribed %}✓ Subscribed{% else %}+ Subscribe{% endif %}
+                        </a>
+                        <a href="{% url 'modules:toggle_favourite' module.id %}" 
+                           class="btn {% if module.is_favourited %}btn-favourited{% else %}btn-favourite{% endif %}">
+                            {% if module.is_favourited %}★ Favourited{% else %}☆ Favourite{% endif %}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        
+        {% if page_obj.has_other_pages %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">« First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">‹ Previous</a>
+                {% else %}
+                    <span class="disabled">« First</span>
+                    <span class="disabled">‹ Previous</span>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="current">{{ num }}</span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">Next ›</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">Last »</a>
+                {% else %}
+                    <span class="disabled">Next ›</span>
+                    <span class="disabled">Last »</span>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="no-modules">
+            <p>No modules available.</p>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

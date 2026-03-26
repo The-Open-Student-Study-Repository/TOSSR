@@ -1,0 +1,267 @@
+.find-modules-content {
+    padding: 40px;
+}
+
+.page-header {
+    margin-bottom: 32px;
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.page-header h1 {
+    font-size: 2em;
+    color: #111827;
+    margin: 0 0 8px 0;
+    font-weight: 700;
+}
+
+.page-header p {
+    color: #6b7280;
+    margin: 0;
+}
+
+.filter-section {
+    margin-top: 20px;
+}
+
+.filter-section form {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.filter-section select,
+.filter-section button {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    font-size: 0.95em;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-section select {
+    color: #374151;
+}
+
+.filter-section select:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.filter-section button {
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+.filter-section button:hover {
+    background-color: #4f46e5;
+}
+
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.module {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.module:hover {
+    border-color: #6366f1;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+}
+
+.module h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.1em;
+    color: #111827;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.module h3 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.module h3 a:hover {
+    color: #6366f1;
+}
+
+.module-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: #6b7280;
+    font-size: 0.95em;
+}
+
+.module-info div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.module-info strong {
+    font-weight: 600;
+}
+
+.module-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.btn-subscribe {
+    background-color: #6366f1;
+    color: white;
+}
+
+.btn-subscribe:hover {
+    background-color: #4f46e5;
+}
+
+.btn-subscribed {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-subscribed:hover {
+    background-color: #059669;
+}
+
+.btn-favourite {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.btn-favourite:hover {
+    background-color: #d97706;
+}
+
+.btn-favourited {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn-favourited:hover {
+    background-color: #dc2626;
+}
+
+.btn {
+    padding: 10px 14px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-block;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    text-decoration: none;
+    color: #6366f1;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.pagination a:hover {
+    background-color: #f3f4f6;
+    border-color: #6366f1;
+}
+
+.pagination span.current {
+    background-color: #6366f1;
+    color: white;
+    border-color: #6366f1;
+}
+
+.pagination span.disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+}
+
+.no-modules {
+    text-align: center;
+    padding: 60px 20px;
+    color: #9ca3af;
+}
+
+.no-modules p {
+    font-size: 1.05em;
+    color: #6b7280;
+}
+
+@media (max-width: 768px) {
+    .find-modules-content {
+        padding: 20px;
+    }
+
+    .page-header {
+        padding: 20px;
+    }
+
+    .page-header h1 {
+        font-size: 1.5em;
+    }
+
+    .filter-section form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-section select,
+    .filter-section button {
+        width: 100%;
+    }
+
+    .modules-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .module-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
