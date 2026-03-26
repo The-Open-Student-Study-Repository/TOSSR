@@ -4,11 +4,14 @@
     Placeholder
     {% endblock %}
     {% block body_block %}
-        <h1>Student Placeholder Page</h1>
-        <p>Logged in as: {{ user.username }}</p>
-        <p>Email: {{ user.email }}</p>
-        <p>Name: {{ user.get_full_name }}</p>
-        <p>Degree: {{ student.degree.get_full_name }}</p>
-        <p>Graduation: {{ student.graduation_year }}</p>
-
+        <h1> {{ module_id }} Study materials</h1>
+        <div class="materials-grid">
+                {% for material in page_obj %}
+                    <div class="material">
+                        <h3>
+                                {{ material.title}}: {{ material.material_type }}
+                        </h3>
+                    </div>
+                {% endfor %}
+        </div>
 {% endblock %}

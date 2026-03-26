@@ -1,5 +1,6 @@
 import json
-from django.shortcuts import render, redirect
+from django.core.paginator import Paginator
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
@@ -89,8 +90,16 @@ def filter_materials(request):
         'results': data
     })
 
-def module_detail(request, module_id):
-    return render(request, 'modules/genericmodule.html')
+@login_required()
+def browse_materials(request, module_id):
+    materials = StudyMaterial.objects.filter(is_deleted=False, is_published=True, is_hidden_by_admin=False, module_id=module_id).select_related('module')
+    paginator = Paginator(materials, 30)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'modules/genericmodule.html', {
+        'page_obj': page_obj,
+        'module_id': module_id,
+    })
 
 @login_required
 @require_http_methods(["POST"])

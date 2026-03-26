@@ -92,7 +92,7 @@
                     <div class="module">
                         <h3>
                             {% if module.is_subscribed %}
-                                <a href="{% url 'materials:module_detail' module.id %}">
+                                <a href="{% url 'materials:browse_materials' module.id %}">
                                 {{ module.id }}: {{ module.name }}
                                 </a>
                             {% else %}
