@@ -71,6 +71,21 @@ h1 {
     background-color: #f5f7ff;
 }
 
+.answer-option.correct {
+    border-color: #4caf50;
+    background-color: #e8f5e9;
+}
+
+.answer-option.incorrect {
+    border-color: #f44336;
+    background-color: #ffebee;
+}
+
+.answer-option.show-correct {
+    border-color: #4caf50;
+    background-color: #e8f5e9;
+}
+
 .answer-option input[type="radio"] {
     cursor: pointer;
     width: 18px;
@@ -84,6 +99,44 @@ h1 {
     margin: 0;
     color: #333;
     font-size: 15px;
+}
+
+.quiz-action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 20px 0 30px 0;
+}
+
+.btn-action {
+    padding: 10px 24px;
+    background-color: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-action:hover:not(:disabled) {
+    background-color: #5568d3;
+}
+
+.btn-action.secondary {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-action.secondary:hover:not(:disabled) {
+    background-color: #e0e0e0;
+    border-color: #999;
+}
+
+.btn-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .quiz-buttons {

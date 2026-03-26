@@ -19,9 +19,9 @@
         <p class="module-label">{{ quiz.study_material.module.id }}</p>
     {% endif %}
 
-    {% if quiz.quiz.questions.exists %}
+    {% if questions %}
         <div class="quiz-progress">
-            <span id="current-question">1</span> / <span id="total-questions">{{ quiz.quiz.questions.count }}</span>
+            <span id="current-question">1</span> / <span id="total-questions">{{ questions.count }}</span>
         </div>
 
         <div class="question-box">
@@ -31,6 +31,11 @@
             <div id="answers-content" class="answers-list">
                 <!-- Loaded by JS -->
             </div>
+        </div>
+
+        <div class="quiz-action-buttons">
+            <button id="check-btn" class="btn-action">Check Answer</button>
+            <button id="reset-btn" class="btn-action secondary">Reset</button>
         </div>
 
         <div class="quiz-buttons">
@@ -48,15 +53,16 @@
 
 <script>
 const questions = [
-    {% for question in quiz.quiz.questions.all %}
+    {% for question in questions %}
         {
             id: {{ question.id }},
             question_text: "{{ question.question_text|escapejs }}",
             answers: [
-                {% for answer in question.quizanswer_set.all %}
+                {% for answer in question.answers.all %}
                     {
                         id: {{ answer.id }},
-                        answer_text: "{{ answer.answer_text|escapejs }}"
+                        answer_text: "{{ answer.answer_text|escapejs }}",
+                        is_correct: {{ answer.is_correct|lower }}
                     }{% if not forloop.last %},{% endif %}
                 {% endfor %}
             ]
@@ -65,6 +71,7 @@ const questions = [
 ];
 
 let currentIndex = 0;
+let answeredQuestions = {};
 
 function showQuestion() {
     if (questions.length === 0) return;
@@ -82,36 +89,91 @@ function showQuestion() {
     const aContent = document.getElementById('answers-content');
     aContent.innerHTML = '';
     
+    const isAnswered = answeredQuestions[currentIndex];
+    
     question.answers.forEach(answer => {
         const div = document.createElement('div');
         div.className = 'answer-option';
+        
+        if (isAnswered) {
+            if (answer.id === isAnswered.selectedId) {
+                div.classList.add(answer.is_correct ? 'correct' : 'incorrect');
+            }
+            if (answer.is_correct) {
+                div.classList.add('show-correct');
+            }
+        }
+        
         div.innerHTML = `
-            <input type="radio" id="answer-${answer.id}" name="quiz-answer" value="${answer.id}">
+            <input type="radio" id="answer-${answer.id}" name="quiz-answer" value="${answer.id}" ${isAnswered ? 'disabled' : ''}>
             <label for="answer-${answer.id}">${answer.answer_text}</label>
         `;
+        
         aContent.appendChild(div);
     });
     
     // Update button states
     document.getElementById('prev-btn').disabled = currentIndex === 0;
     document.getElementById('next-btn').disabled = currentIndex === questions.length - 1;
+    
+    // Update action buttons
+    const checkBtn = document.getElementById('check-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    
+    const selectedRadio = document.querySelector('input[name="quiz-answer"]:checked');
+    checkBtn.disabled = !selectedRadio || isAnswered;
+    resetBtn.disabled = !isAnswered;
 }
 
-document.getElementById('prev-btn').addEventListener('click', () => {
-    if (currentIndex > 0) {
-        currentIndex--;
-        showQuestion();
-    }
-});
+function checkAnswer() {
+    const selectedRadio = document.querySelector('input[name="quiz-answer"]:checked');
+    if (!selectedRadio) return;
+    
+    answeredQuestions[currentIndex] = {
+        selectedId: parseInt(selectedRadio.value)
+    };
+    
+    showQuestion();
+}
 
-document.getElementById('next-btn').addEventListener('click', () => {
-    if (currentIndex < questions.length - 1) {
-        currentIndex++;
-        showQuestion();
-    }
-});
+function resetQuestion() {
+    delete answeredQuestions[currentIndex];
+    
+    // Reset radio buttons
+    const radios = document.querySelectorAll('input[name="quiz-answer"]');
+    radios.forEach(radio => radio.checked = false);
+    
+    showQuestion();
+}
 
-showQuestion();
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('prev-btn').addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            showQuestion();
+        }
+    });
+
+    document.getElementById('next-btn').addEventListener('click', () => {
+        if (currentIndex < questions.length - 1) {
+            currentIndex++;
+            showQuestion();
+        }
+    });
+    
+    document.getElementById('check-btn').addEventListener('click', checkAnswer);
+    document.getElementById('reset-btn').addEventListener('click', resetQuestion);
+
+    showQuestion();
+    
+    // Add listener for answer selection to update button state
+    document.addEventListener('change', function(e) {
+        if (e.target.name === 'quiz-answer') {
+            const checkBtn = document.getElementById('check-btn');
+            checkBtn.disabled = false;
+        }
+    });
+});
 </script>
 
 {% endblock %}
