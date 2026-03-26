@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_block %}
+Create Quiz
+{% endblock %}
+
+{% block head_block %}
+<link rel="stylesheet" href="{% static 'materials/css/create_quiz.css' %}">
+{% endblock %}
+
+{% block body_block %}
+<div class="create-quiz-container">
+    <div class="create-quiz-wrapper">
+        <h1> Create Quiz</h1>
+
+        <!-- Module and Title Section -->
+        <div class="form-section">
+            <label for="module">Module</label>
+            <select id="module" name="module">
+                <option value="">-- Select a module --</option>
+                {% for module in subscribed %}
+                <option value="{{ module.id }}" {% if initial_module_id == module.id %}selected{% endif %}>{{ module.id }}: {{ module.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-section">
+            <label for="title">Quiz Title</label>
+            <input type="text" id="title" name="title" placeholder="e.g., Chapter 3 Review Quiz">
+        </div>
+
+        <!-- Question Input Section -->
+        <div class="question-input-section">
+            <div class="form-section">
+                <label for="question-text">Question</label>
+                <textarea id="question-text" name="question-text" placeholder="What is the question?"></textarea>
+            </div>
+
+            <div class="form-section">
+                <label>Answers</label>
+                <div class="answers-container" id="answers-container">
+                    <div class="answer-input">
+                        <input type="text" class="answer-text" placeholder="Answer option 1">
+                        <input type="checkbox" class="answer-correct" title="Mark as correct answer">
+                        <label>Correct</label>
+                        <button type="button" class="remove-answer-btn" onclick="removeAnswer(this)">Remove</button>
+                    </div>
+                    <div class="answer-input">
+                        <input type="text" class="answer-text" placeholder="Answer option 2">
+                        <input type="checkbox" class="answer-correct" title="Mark as correct answer">
+                        <label>Correct</label>
+                        <button type="button" class="remove-answer-btn" onclick="removeAnswer(this)">Remove</button>
+                    </div>
+                </div>
+                <button type="button" class="add-answer-btn" onclick="addAnswer()">+ Add Answer Option</button>
+            </div>
+
+            <button type="button" id="addQuestionBtn" class="add-question-btn">+ Add Question to Quiz</button>
+        </div>
+
+        <!-- Questions List -->
+        <div id="quiz-questions-list" class="quiz-questions-list"></div>
+
+        <!-- Message -->
+        <div id="message" class="message"></div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'materials:my_resources' %}" class="btn btn-cancel">Cancel</a>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; font-weight: normal;">
+                    <input type="checkbox" id="publish" name="publish" checked>
+                    Publish
+                </label>
+                <button type="button" id="submitBtn" class="btn btn-submit">Create Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const questions = [];
+
+function addAnswer() {
+    const container = document.getElementById('answers-container');
+    const index = container.children.length + 1;
+    
+    const answerDiv = document.createElement('div');
+    answerDiv.className = 'answer-input';
+    answerDiv.innerHTML = `
+        <input type="text" class="answer-text" placeholder="Answer option ${index}">
+        <input type="checkbox" class="answer-correct" title="Mark as correct answer">
+        <label>Correct</label>
+        <button type="button" class="remove-answer-btn" onclick="removeAnswer(this)">Remove</button>
+    `;
+    container.appendChild(answerDiv);
+}
+
+function removeAnswer(btn) {
+    btn.parentElement.remove();
+}
+
+document.getElementById('addQuestionBtn').addEventListener('click', function() {
+    const questionText = document.getElementById('question-text').value.trim();
+    
+    if (!questionText) {
+        showMessage('Please enter a question', 'error');
+        return;
+    }
+    
+    const answersContainer = document.getElementById('answers-container');
+    const answerInputs = answersContainer.querySelectorAll('.answer-input');
+    const answers = [];
+    let hasCorrect = false;
+    
+    answerInputs.forEach((input, index) => {
+        const text = input.querySelector('.answer-text').value.trim();
+        const isCorrect = input.querySelector('.answer-correct').checked;
+        
+        if (!text) {
+            showMessage('Please fill in all answer options', 'error');
+            throw new Error('Empty answer');
+        }
+        
+        if (isCorrect) hasCorrect = true;
+        
+        answers.push({
+            answer_text: text,
+            is_correct: isCorrect,
+            order: index + 1
+        });
+    });
+    
+    if (!hasCorrect) {
+        showMessage('Please mark at least one answer as correct', 'error');
+        return;
+    }
+    
+    questions.push({
+        question_text: questionText,
+        question_type: 'single',
+        answers: answers
+    });
+    
+    document.getElementById('question-text').value = '';
+    document.getElementById('answers-container').innerHTML = `
+        <div class="answer-input">
+            <input type="text" class="answer-text" placeholder="Answer option 1">
+            <input type="checkbox" class="answer-correct" title="Mark as correct answer">
+            <label>Correct</label>
+            <button type="button" class="remove-answer-btn" onclick="removeAnswer(this)">Remove</button>
+        </div>
+        <div class="answer-input">
+            <input type="text" class="answer-text" placeholder="Answer option 2">
+            <input type="checkbox" class="answer-correct" title="Mark as correct answer">
+            <label>Correct</label>
+            <button type="button" class="remove-answer-btn" onclick="removeAnswer(this)">Remove</button>
+        </div>
+    `;
+    document.getElementById('question-text').focus();
+    
+    renderQuestions();
+    showMessage('Question added to quiz!', 'success');
+});
+
+function renderQuestions() {
+    const container = document.getElementById('quiz-questions-list');
+    
+    if (questions.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><p>No questions added yet. Create your first question above!</p></div>';
+        return;
+    }
+    
+    container.innerHTML = '<h3>Questions in Quiz (' + questions.length + ')</h3>';
+    
+    questions.forEach((question, qIndex) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question-item';
+        
+        let answersHtml = '<div class="answers-list"><strong>Answers:</strong>';
+        question.answers.forEach(answer => {
+            const correctBadge = answer.is_correct ? '<span class="answer-badge">✓</span>' : '';
+            const correctClass = answer.is_correct ? ' correct' : '';
+            answersHtml += `<div class="answer-item${correctClass}">${correctBadge}${escapeHtml(answer.answer_text)}</div>`;
+        });
+        answersHtml += '</div>';
+        
+        qDiv.innerHTML = `
+            <div class="question-header">
+                <div class="question-text">
+                    <span class="question-index">${qIndex + 1}</span>
+                    <strong>Question:</strong>
+                    <p>${escapeHtml(question.question_text)}</p>
+                </div>
+                <button type="button" class="remove-question-btn" onclick="removeQuestion(${qIndex})">Remove</button>
+            </div>
+            ${answersHtml}
+        `;
+        container.appendChild(qDiv);
+    });
+}
+
+function removeQuestion(index) {
+    questions.splice(index, 1);
+    renderQuestions();
+    showMessage('Question removed', 'success');
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showMessage(text, type) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.textContent = text;
+    messageDiv.className = 'message show ' + type;
+    setTimeout(() => {
+        messageDiv.textContent = '';
+        messageDiv.className = 'message';
+    }, 4000);
+}
+
+document.getElementById('submitBtn').addEventListener('click', async function() {
+    const title = document.getElementById('title').value.trim();
+    const moduleId = document.getElementById('module').value;
+    
+    if (!title) {
+        showMessage('Please enter a title for your quiz', 'error');
+        return;
+    }
+    
+    if (questions.length === 0) {
+        showMessage('Please add at least one question', 'error');
+        return;
+    }
+    
+    const payload = {
+        title: title,
+        module_id: moduleId || null,
+        is_published: document.getElementById('publish').checked,
+        questions: questions
+    };
+    
+    this.disabled = true;
+    this.textContent = 'Creating...';
+    
+    try {
+        const response = await fetch('{% url "materials:api_create_quiz" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showMessage('✓ Quiz created successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = '{% url "materials:my_resources" %}';
+            }, 1500);
+        } else {
+            showMessage('Error: ' + data.error, 'error');
+            this.disabled = false;
+            this.textContent = 'Create Quiz';
+        }
+    } catch (error) {
+        showMessage('Error: ' + error.message, 'error');
+        this.disabled = false;
+        this.textContent = 'Create Quiz';
+    }
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+{% endblock %}

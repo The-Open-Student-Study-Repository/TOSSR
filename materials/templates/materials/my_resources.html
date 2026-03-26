@@ -11,9 +11,8 @@ My Resources - TOSSR
 
 {% block body_block %}
 <div class="my-resources-container">
-    <!-- Header -->
     <div class="resources-header">
-        <h1>📚 My Resources</h1>
+        <h1>My Resources</h1>
         <p>Manage all study materials you've created for your modules</p>
         <div class="stats">
             <div class="stat-item">
@@ -77,7 +76,7 @@ My Resources - TOSSR
             <div class="module-section private-materials-section">
                 <div class="module-section-header">
                     <div>
-                        <h2>Private Materials</h2>
+                        <h2>🔒 Private Materials</h2>
                         <p>Materials not assigned to any module</p>
                     </div>
                     <div class="material-count">{{ private_materials.count }} material{{ private_materials|pluralize }}</div>
@@ -90,9 +89,9 @@ My Resources - TOSSR
                                 <div class="material-meta">
                                     <span class="type-badge {{ material.material_type }}">
                                         {% if material.material_type == 'flashcard' %}
-                                            Flashcard
+                                            📇 Flashcard
                                         {% elif material.material_type == 'quiz' %}
-                                            Quiz
+                                            ❓ Quiz
                                         {% endif %}
                                     </span>
                                     <span class="status-badge {% if material.is_published %}published{% else %}draft{% endif %}">
