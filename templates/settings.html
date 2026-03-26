@@ -27,7 +27,7 @@ const checkboxes = document.querySelectorAll(".theme-check");
 checkboxes.forEach(box => {
     box.addEventListener("change", () => {
         checkboxes.forEach(other => {
-            if (other != box) other.checked = false;
+            if (other !== box) other.checked = false;
 
         theme = box.value;
 
