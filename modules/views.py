@@ -40,7 +40,7 @@ def browse_modules(request):
 
     # Get filter values from query params
     level = request.GET.get('level')
-    school = request.GET.get('school')
+    selected_school = request.GET.get('school')
     credits = request.GET.get('credits')
     q = request.GET.get('q')
 
@@ -50,8 +50,8 @@ def browse_modules(request):
         )
     if level:
         modules = modules.filter(level=level)
-    if school:
-        modules = modules.filter(school_id=school)
+    if selected_school:
+        modules = modules.filter(school_id=selected_school)
     if credits:
         modules = modules.filter(credits=credits)
 
@@ -88,7 +88,7 @@ def browse_modules(request):
         'schools': schools,
         'credit_options': credit_options,
         'level': level,
-        'school': school,
+        'selected_school': selected_school,
         'credits': credits,
         'q': q or '',
     })
@@ -111,6 +111,7 @@ def toggle_subscribe_module(request, module_id):
     if not created:
         # Already subscribed, so unsubscribe
         subscription.delete()
+        PinnedModule.objects.filter(student=student, module=module).delete()
         is_subscribed = False
     else:
         is_subscribed = True

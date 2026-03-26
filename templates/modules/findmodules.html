@@ -15,29 +15,29 @@ Find Modules - TOSSR
         <h1> Find Modules</h1>
         <p>Browse and subscribe to modules for your studies</p>
 
-        {% if page_obj %}
-            <div class="filter-section">
-                <form method="GET" class="filter-form">
-                    <select name="school">
-                        <option value="">All Schools</option>
-                        {% for school in schools %}
-                            <option value="{{ school.id }}" {% if school.id|stringformat:"s" == school %}selected{% endif %}>{{ school.name }}</option>
-                        {% endfor %}
-                    </select>
+        <div class="filter-section">
+            <form method="GET" class="filter-form">
+                <input type="text" name="q" value="{{ q }}" placeholder="Search modules by name or code...">
 
-                    <select name="level">
-                        <option value="">All Levels</option>
-                        <option value="1" {% if level == "1" %}selected{% endif %}>Level 1</option>
-                        <option value="2" {% if level == "2" %}selected{% endif %}>Level 2</option>
-                        <option value="3" {% if level == "3" %}selected{% endif %}>Level 3</option>
-                        <option value="4" {% if level == "4" %}selected{% endif %}>Level 4</option>
-                        <option value="5" {% if level == "5" %}selected{% endif %}>Level 5</option>
-                    </select>
+                <select name="school">
+                    <option value="">All Schools</option>
+                    {% for school in schools %}
+                        <option value="{{ school.id }}" {% if school.id|stringformat:"s" == selected_school %}selected{% endif %}>{{ school.name }}</option>
+                    {% endfor %}
+                </select>
 
-                    <button type="submit">Filter</button>
-                </form>
-            </div>
-        {% endif %}
+                <select name="level">
+                    <option value="">All Levels</option>
+                    <option value="1" {% if level == "1" %}selected{% endif %}>Level 1</option>
+                    <option value="2" {% if level == "2" %}selected{% endif %}>Level 2</option>
+                    <option value="3" {% if level == "3" %}selected{% endif %}>Level 3</option>
+                    <option value="4" {% if level == "4" %}selected{% endif %}>Level 4</option>
+                    <option value="5" {% if level == "5" %}selected{% endif %}>Level 5</option>
+                </select>
+
+                <button type="submit">Filter</button>
+            </form>
+        </div>
     </div>
 
     {% if page_obj %}
@@ -59,17 +59,19 @@ Find Modules - TOSSR
                         <div><strong>Credits:</strong> <span>{{ module.credits }}</span></div>
                     </div>
                     {% if user.is_authenticated and user.role == 'student' %}
-                    <div class="module-actions">
-                        <a href="{% url 'modules:toggle_subscribe' module.id %}"
-                           class="btn {% if module.is_subscribed %}btn-subscribed{% else %}btn-subscribe{% endif %}">
-                            {% if module.is_subscribed %}✓ Subscribed{% else %}+ Subscribe{% endif %}
-                        </a>
-                        <a href="{% url 'modules:toggle_favourite' module.id %}"
-                           class="btn {% if module.is_favourited %}btn-favourited{% else %}btn-favourite{% endif %}">
-                            {% if module.is_favourited %}★ Favourited{% else %}☆ Favourite{% endif %}
-                        </a>
-                    </div>
-                    {% endif %}
+                        <div class="module-actions">
+                            <a href="{% url 'modules:toggle_subscribe' module.id %}"
+                               class="btn {% if module.is_subscribed %}btn-subscribed{% else %}btn-subscribe{% endif %}">
+                                {% if module.is_subscribed %}✓ Subscribed{% else %}+ Subscribe{% endif %}
+                            </a>
+                            {% if module.is_subscribed %}
+                            <a href="{% url 'modules:toggle_favourite' module.id %}"
+                               class="btn {% if module.is_favourited %}btn-favourited{% else %}btn-favourite{% endif %}">
+                                {% if module.is_favourited %}★ Favourited{% else %}☆ Favourite{% endif %}
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
                 </div>
             {% endfor %}
         </div>
@@ -77,8 +79,8 @@ Find Modules - TOSSR
         {% if page_obj.has_other_pages %}
             <div class="pagination">
                 {% if page_obj.has_previous %}
-                    <a href="?page=1{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">« First</a>
-                    <a href="?page={{ page_obj.previous_page_number }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">‹ Previous</a>
+                    <a href="?page=1{% if q %}&q={{ q }}{% endif %}{% if selected_school %}&school={{ selected_school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">« First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if selected_school %}&school={{ selected_school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">‹ Previous</a>
                 {% else %}
                     <span class="disabled">« First</span>
                     <span class="disabled">‹ Previous</span>
@@ -88,13 +90,13 @@ Find Modules - TOSSR
                     {% if page_obj.number == num %}
                         <span class="current">{{ num }}</span>
                     {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                        <a href="?page={{ num }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">{{ num }}</a>
+                        <a href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}{% if selected_school %}&school={{ selected_school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">{{ num }}</a>
                     {% endif %}
                 {% endfor %}
 
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">Next ›</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}{% if school %}&school={{ school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">Last »</a>
+                    <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if selected_school %}&school={{ selected_school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">Next ›</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if selected_school %}&school={{ selected_school }}{% endif %}{% if level %}&level={{ level }}{% endif %}">Last »</a>
                 {% else %}
                     <span class="disabled">Next ›</span>
                     <span class="disabled">Last »</span>
@@ -103,7 +105,7 @@ Find Modules - TOSSR
         {% endif %}
     {% else %}
         <div class="no-modules">
-            <p>No modules available.</p>
+            <p>No modules found.</p>
         </div>
     {% endif %}
 </div>
