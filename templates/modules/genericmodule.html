@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
-{% block title_block %}
-Placeholder
-{% endblock %}
-{% block body_block %}
-    <h1>Student Placeholder Page</h1>
-    <p>Logged in as: {{ user.username }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Name: {{ user.get_full_name }}</p>
-    <p>Degree: {{ student.degree.get_full_name }}</p>
-    <p>Graduation: {{ student.graduation_year }}</p>
+{% load static %}
+    {% block title_block %}
+    Placeholder
+    {% endblock %}
+    {% block body_block %}
+        <h1>Student Placeholder Page</h1>
+        <p>Logged in as: {{ user.username }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Name: {{ user.get_full_name }}</p>
+        <p>Degree: {{ student.degree.get_full_name }}</p>
+        <p>Graduation: {{ student.graduation_year }}</p>
 
 {% endblock %}

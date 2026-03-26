@@ -90,7 +90,15 @@
             <div class="modules-grid">
                 {% for module in page_obj %}
                     <div class="module">
-                        <h3>{{ module.id }}: {{ module.name }}</h3>
+                        <h3>
+                            {% if module.is_subscribed %}
+                                <a href="{% url 'materials:module_detail' module.id %}">
+                                {{ module.id }}: {{ module.name }}
+                                </a>
+                            {% else %}
+                                {{ module.id }}: {{ module.name }}
+                            {% endif %}
+                        </h3>
                         <div class="module-info">
                             <div><strong>School:</strong> {{ module.school.name }}</div>
                             <div><strong>Level:</strong> {{ module.level }}</div>

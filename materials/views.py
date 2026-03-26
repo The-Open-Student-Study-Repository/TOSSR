@@ -1,5 +1,5 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
@@ -89,6 +89,8 @@ def filter_materials(request):
         'results': data
     })
 
+def module_detail(request, module_id):
+    return render(request, 'modules/genericmodule.html')
 
 @login_required
 @require_http_methods(["POST"])
