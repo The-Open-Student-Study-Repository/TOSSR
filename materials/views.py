@@ -1,5 +1,4 @@
 import json
-from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -9,7 +8,8 @@ from .models import (
     StudyMaterial, FlashcardSet, Flashcard,
     Quiz, QuizQuestion, QuizAnswer
 )
-from modules.models import StudentModule
+from modules.models import StudentModule, Module, PinnedModule
+
 
 def filter_materials(request):
 
@@ -17,7 +17,7 @@ def filter_materials(request):
         FRONTEND DEVELOPER INSTRUCTIONS (AJAX Filtering API)
         —————————————————————————————————————————————————————————————————————————
         This is the API endpoint for the "Funnel" filtering tool on the materials page.
-        As per the WAD2 rubric, please use Javascript/JQuery/AJAX to fetch data from this endpoint.
+        As per the WAD2 rubric, please use JavaScript/JQuery/AJAX to fetch data from this endpoint.
 
         ENDPOINT:
         {% url 'filter_materials' %} (Resolves to /materials/filter/)
@@ -91,15 +91,26 @@ def filter_materials(request):
         'results': data
     })
 
+
 @login_required()
 def browse_materials(request, module_id):
-    materials = StudyMaterial.objects.filter(is_deleted=False, is_published=True, is_hidden_by_admin=False, module_id=module_id).select_related('module')
-    paginator = Paginator(materials, 30)
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'modules/genericmodule.html', {
-        'page_obj': page_obj,
-        'module_id': module_id,
+    module = Module.objects.get(id=module_id)
+    materials = StudyMaterial.objects.filter(
+        is_deleted=False, is_published=True, is_hidden_by_admin=False, module_id=module_id
+    ).select_related('module')
+
+    is_subscribed = False
+    is_favourited = False
+    if request.user.is_authenticated and request.user.role == 'student':
+        student = request.user.student_profile
+        is_subscribed = StudentModule.objects.filter(student=student, module=module).exists()
+        is_favourited = PinnedModule.objects.filter(student=student, module=module).exists()
+
+    return render(request, 'modules/module_detail.html', {
+        'module': module,
+        'materials': materials,
+        'is_subscribed': is_subscribed,
+        'is_favourited': is_favourited,
     })
 
 @login_required
@@ -120,7 +131,7 @@ def my_resources(request):
     # Get all materials created by the student (both published and unpublished, but not deleted)
     all_materials = student.created_materials.filter(is_deleted=False).select_related('module')
     
-    # Organize materials by module
+    # Organizes materials by module
     modules_with_materials = []
     
     for subscription in subscribed_modules:
