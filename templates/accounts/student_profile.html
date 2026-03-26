@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_block %}
+My Profile
+{% endblock %}
+
+{% block head_block %}
+<link rel="stylesheet" href="{% static 'student_profile.css' %}">
+{% endblock %}
+
+{% block body_block %}
+<div class="profile-page">
+    <section class="profile-header-card">
+        <h1>{{ user.get_full_name|default:user.username }}</h1>
+        <h2>
+            {% if student.degree %}
+                {{ student.degree.get_full_name }}
+            {% else %}
+                Degree not set
+            {% endif %}
+        </h2>
+        <p class="profile-grad-year">
+            <strong>Graduation Year:</strong> {{ student.graduation_year }}
+        </p>
+
+        <div class="profile-bio-box">
+            <h3>Bio</h3>
+            <p>{{ student.bio|default:"No bio added yet." }}</p>
+        </div>
+    </section>
+
+    <section class="modules-card">
+        <h2>Current Modules</h2>
+        {% if modules %}
+            <ul class="modules-list">
+                {% for module in modules %}
+                    <li>{{ module.name }} - {{ module.id }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No current modules to display.</p>
+        {% endif %}
+    </section>
+
+    <section class="resources-card">
+        <h1>Resources</h1>
+
+        <div class="resource-group">
+            <h2>Flashcards</h2>
+            {% if flashcards %}
+                <ul class="resource-list">
+                    {% for material in flashcards %}
+                        <li>
+                            <span class="resource-title">
+                                {{ material.title }}
+                                {% if material.module %}
+                                    - {{ material.module.id }}
+                                {% else %}
+                                    - Private
+                                {% endif %}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No flashcards yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="resource-group">
+            <h2>Quizzes</h2>
+            {% if quizzes %}
+                <ul class="resource-list">
+                    {% for material in quizzes %}
+                        <li>
+                            <span class="resource-title">
+                                {{ material.title }}
+                                {% if material.module %}
+                                    - {{ material.module.id }}
+                                {% else %}
+                                    - Private
+                                {% endif %}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No quizzes yet.</p>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}
