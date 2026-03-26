@@ -195,3 +195,11 @@ textarea:focus {
     background-color: rgba(108, 99, 255, 0.1) !important;
     color: inherit !important;
 }
+
+/* errors */
+
+.form-errors {
+    color: red;
+    margin-bottom: 15px;
+    text-align: left;
+}

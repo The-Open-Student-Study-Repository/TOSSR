@@ -6,13 +6,14 @@ Settings
 {% endblock %}
 {% block head_block %}
 <link rel="stylesheet" href="{% static '/accounts/css/settings.css' %}">
+<link rel="stylesheet" href="{% static '/accounts/css/settings_page.css' %}">
 {% endblock %}
 
 {% block body_block %}
 <div class="settings">
 <div class="center-box">
-<h2 style="font-size: 30px;"><b>Settings</b></h2>
-<h3 style="font-size: 25px;"><b>Accessibility</b></h3>
+<h2 class="settings-title"><b>Settings</b></h2>
+<h3 class="settings-subtitle"><b>Accessibility</b></h3>
 <ul>
     <li><label class="custom-check"><input type="checkbox" class="theme-check" value="light" {% if theme == "light" %}checked{% endif %}><span class="checkmark"></span></label><span class="text"><b>Light</b></span></li>
     <li><label class="custom-check"><input type="checkbox" class="theme-check" value="high-contrast" {% if theme == "high-contrast" %}checked{% endif %}><span class="checkmark"></span></label><span class="text"><b>High Contrast Mode</b></span></li>
@@ -27,7 +28,7 @@ const checkboxes = document.querySelectorAll(".theme-check");
 checkboxes.forEach(box => {
     box.addEventListener("change", () => {
         checkboxes.forEach(other => {
-            if (other != box) other.checked = false;
+            if (other !== box) other.checked = false;
 
         theme = box.value;
 

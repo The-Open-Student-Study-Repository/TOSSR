@@ -1,0 +1,50 @@
+.settings {
+    padding: 40px;
+}
+
+.center-box {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.settings h2 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #111827;
+}
+
+.settings h3 {
+    font-size: 25px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #374151;
+}
+
+.settings ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.settings li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.settings li:last-child {
+    border-bottom: none;
+}
+
+.settings .text {
+    color: #374151;
+    font-weight: 500;
+}

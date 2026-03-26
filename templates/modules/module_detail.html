@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title_block %}
+{{ module.id }}: {{ module.name }} - TOSSR
+{% endblock %}
+
+{% block head_block %}
+<link rel="stylesheet" href="{% static 'modules/css/module_detail.css' %}">
+{% endblock %}
+
+{% block body_block %}
+<div class="module-detail-content">
+    <div class="module-header">
+        <div>
+            <h1>{{ module.name }}</h1>
+            <div class="module-code">{{ module.id }}</div>
+        </div>
+        
+        <div class="module-meta">
+            <div class="meta-item">
+                <strong>School</strong>
+                <span>{{ module.school.name }}</span>
+            </div>
+            <div class="meta-item">
+                <strong>Level</strong>
+                <span>{{ module.level }}</span>
+            </div>
+            <div class="meta-item">
+                <strong>Credits</strong>
+                <span>{{ module.credits }}</span>
+            </div>
+            <div class="meta-item">
+                <strong>Available Resources</strong>
+                <span>{{ materials.count }}</span>
+            </div>
+        </div>
+
+        {% if user.is_authenticated and user.role == 'student' %}
+        <div class="module-actions">
+            <a href="{% url 'modules:toggle_subscribe' module.id %}" 
+               class="btn {% if is_subscribed %}btn-subscribed{% else %}btn-subscribe{% endif %}">
+                {% if is_subscribed %}✓ Subscribed{% else %}+ Subscribe{% endif %}
+            </a>
+            <a href="{% url 'modules:toggle_favourite' module.id %}" 
+               class="btn {% if is_favourited %}btn-favourited{% else %}btn-favourite{% endif %}">
+                {% if is_favourited %}★ Favourited{% else %}☆ Favourite{% endif %}
+            </a>
+            <a href="{% url 'modules:browse_modules' %}" class="btn btn-back">← Back</a>
+        </div>
+        {% else %}
+        <div class="module-actions">
+            <a href="{% url 'modules:browse_modules' %}" class="btn btn-back">← Back</a>
+        </div>
+        {% endif %}
+    </div>
+            <div class="materials-section">
+                <h2>Study Materials</h2>
+                
+                {% if materials %}
+                    <div class="materials-grid">
+                        {% for material in materials %}
+                            <div class="material-card">
+                                <div class="material-type {{ material.material_type }}">
+                                    {% if material.material_type == 'flashcard' %}
+                                        📇 Flashcard Set
+                                    {% elif material.material_type == 'quiz' %}
+                                        ❓ Quiz
+                                    {% endif %}
+                                </div>
+                                
+                                <h3>{{ material.title }}</h3>
+                                
+                                <div class="material-info">
+                                    <div>
+                                        <strong>Created by</strong>
+                                        <span>{{ material.owner.user.get_full_name }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="material-owner">
+                                    Created on: {% load materials_template_tags %}{{ material.created_at|date:"M d, Y" }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-materials">
+                        <div class="empty-icon">📚</div>
+                        <p>No study materials available for this module yet.</p>
+                        <p class="contribute-hint">Be the first to contribute!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
