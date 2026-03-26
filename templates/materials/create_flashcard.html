@@ -12,7 +12,7 @@ Create Flashcard Set
 {% block body_block %}
 <div class="create-flashcard-container">
     <div class="create-flashcard-wrapper">
-        <h1>📇 Create Flashcard Set</h1>
+        <h1>Create Flashcard Set</h1>
 
         <!-- Module and Title Section -->
         <div class="form-section">
@@ -54,7 +54,13 @@ Create Flashcard Set
         <!-- Action Buttons -->
         <div class="action-buttons">
             <a href="{% url 'materials:my_resources' %}" class="btn btn-cancel">Cancel</a>
-            <button type="button" id="submitBtn" class="btn btn-submit">Create Flashcard Set</button>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; font-weight: normal;">
+                    <input type="checkbox" id="publish" name="publish" checked>
+                    Publish
+                </label>
+                <button type="button" id="submitBtn" class="btn btn-submit">Create Flashcard Set</button>
+            </div>
         </div>
     </div>
 </div>
@@ -148,7 +154,7 @@ document.getElementById('submitBtn').addEventListener('click', async function() 
     const payload = {
         title: title,
         module_id: moduleId || null,
-        is_published: true,
+        is_published: document.getElementById('publish').checked,
         cards: cards
     };
     
