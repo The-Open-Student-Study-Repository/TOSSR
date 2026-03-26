@@ -1,7 +1,7 @@
 asgiref==3.11.1
 Django==6.0.3
 django-bootstrap5==26.2
-django-tomselect==2026.3.1
+django-tomselect==2026.3.3
 mysqlclient==2.2.8
 python-decouple==3.8
 python-dotenv==1.2.2
