@@ -1,0 +1,200 @@
+.card {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 40px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card .logo {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+.card .subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 20px;
+    font-size: 1.05em;
+}
+
+.card .step-indicator {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 0.9em;
+    margin-bottom: 24px;
+}
+
+.card .error-container {
+    color: #dc2626;
+    margin-bottom: 15px;
+    text-align: left;
+    background-color: #fee2e2;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #fecaca;
+}
+
+.card form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card input[type="text"],
+.card input[type="email"],
+.card input[type="password"] {
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.95em;
+    font-family: inherit;
+}
+
+.card input[type="text"]:focus,
+.card input[type="email"]:focus,
+.card input[type="password"]:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.card button[type="submit"] {
+    padding: 12px;
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+}
+
+.card button[type="submit"]:hover {
+    background-color: #4f46e5;
+}
+
+.card .privacy {
+    margin: 16px 0;
+    font-size: 0.9em;
+    color: #6b7280;
+}
+
+.card .privacy a {
+    color: #6366f1;
+    text-decoration: none;
+}
+
+.card .privacy a:hover {
+    text-decoration: underline;
+}
+
+.card .footer {
+    text-align: center;
+    margin-top: 24px;
+    color: #6b7280;
+    font-size: 0.95em;
+}
+
+.card .footer a {
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.card .footer a:hover {
+    text-decoration: underline;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 12px;
+}
+
+.modal-header {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 20px;
+}
+
+.modal-header .logo {
+    font-size: 24px;
+    margin: 0;
+}
+
+.modal-body {
+    padding: 30px;
+    color: #374151;
+    line-height: 1.6;
+}
+
+.modal-body h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #111827;
+}
+
+.modal-body h2 {
+    font-size: 1.2em;
+    margin: 24px 0 12px 0;
+    color: #111827;
+    font-weight: 600;
+}
+
+.modal-body p {
+    margin: 0 0 12px 0;
+}
+
+.modal-body ul {
+    margin: 12px 0;
+    padding-left: 20px;
+}
+
+.modal-body ul li {
+    margin-bottom: 8px;
+}
+
+.modal-body a {
+    color: #6366f1;
+    text-decoration: none;
+}
+
+.modal-body a:hover {
+    text-decoration: underline;
+}
+
+.modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 16px 20px;
+    background: #f9fafb;
+}
+
+.modal-footer .btn {
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.modal-footer .btn-secondary {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: #d1d5db;
+}
+
+.modal-footer .btn-primary {
+    background-color: #6366f1;
+    color: white;
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #4f46e5;
+}

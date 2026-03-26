@@ -9776,7 +9776,7 @@ def populate():
         role='student',
     )
 
-    student1 = Student.objects.create(
+    Student.objects.create(
         user=student1_user,
         degree=degrees['G400'],
         graduation_year=2028,

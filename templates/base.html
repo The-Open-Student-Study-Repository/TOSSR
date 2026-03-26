@@ -3,7 +3,7 @@
 {% load materials_template_tags %}
 {% load modules_template_tags %}
 
-<html>
+<html lang="en">
     <head lang="en">
         <meta charset="UTF-8" />
         <title>TOSSR - 
@@ -26,12 +26,13 @@
         <div class="nav-label">
             <h4><strong><u>Navigation:</u></strong></h4>
             <ul>
-                <li><a href="#" class="nav-link">My Resources</a></li>
+                <li><a href="{% url 'materials:my_resources' %}" class="nav-link">My Resources</a></li>
                 <li><a href="#" class="nav-link">My Profile</a></li>
+                <li><a href="{% url 'modules:browse_modules' %}" class="nav-link">Find Modules</a></li>
             </ul>
         </div>
             {% get_starred_materials_list material %}
-            {% get_starred_modules_list module %}
+            {% get_starred_modules_list user module %}
         <div class="nav-label">
             <h4><strong><u>Profile:</u></strong></h4>
             <ul>

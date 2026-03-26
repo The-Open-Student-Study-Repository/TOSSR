@@ -122,18 +122,6 @@ def login_view(request):
 
     return render(request, 'accounts/login.html')
 
-def logout(request):
-    """
-    Logs the user out and clears the session
-    
-    """
-    request.session.flush()
-
-    return redirect('/accounts/login/')
-
-
-
-
 @student_required
 def student_dashboard(request):
     """Tier 3: Student dashboard"""
@@ -282,7 +270,7 @@ def anonymise_account(request):
             user.is_active = False
             user.save()
 
-            logout(request)
+            user_logout(request)
             return redirect('account_deleted')
         else:
             return render(request, 'accounts/delete_account.html', {

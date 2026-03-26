@@ -6,6 +6,13 @@
   align-items: center;     /* vertical */
 }
 
+.settings-title {
+    font-size: 30px;
+}
+.settings-subtitle {
+    font-size: 25px;
+}
+
 .center-box {
   width: 50%;
   height: 50%;
