@@ -279,3 +279,7 @@ def create_quiz(request):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+@login_required
+def create_flashcard_page(request):
+    return render(request,'materials/create_flashcard.html')

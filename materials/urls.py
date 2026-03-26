@@ -11,4 +11,5 @@ urlpatterns = [
     path('api/quiz/create/', views.create_quiz, name='api_create_quiz'),
     path('module/<str:module_id>/', views.browse_materials, name='browse_materials'),
     path('my-resources/', views.my_resources, name='my_resources'),
+    path('create_flashcard/',views.create_flashcard_page,name='create_flashcard'),
 ]
