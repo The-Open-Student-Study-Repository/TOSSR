@@ -1,0 +1,37 @@
+:root {
+    --primary-color: #ffff00;           /* bright yellow */
+    --primary-hover: #ffea00;
+
+    --bg-light: #000000;                 /* pure black for max contrast */
+    --bg-white: #ffffff;                 /* white cards/panels */
+    --text-dark: #ffffff;                /* white text */
+    --text-muted: #aaaaaa;               /* secondary text */
+    --border-color: #ffffff;             /* highly visible borders */
+    --bg-black: #000000;
+
+    --shadow: 0 20px 40px rgba(255,255,255,0.2);
+    --shadow-hover: 0 30px 60px rgba(255,255,255,0.3);
+
+    --sidebar-labels: #1f2937;           /* bright sidebar labels */
+    --settings-bg: #1f2937;
+    --settings-hover: #333333;
+
+    /* Find Modules */
+    --subscribe-button-bg: #00ffff;      /* bright cyan */
+    --subsribe-button-hover: #00dddd;
+
+    --subscribed-button-bg: #00ff00;     /* bright green */
+    --subscribed-button-hover: #00dd00;
+
+    --favourite-button-bg: #ff00ff;      /* bright magenta */
+    --favourite-button-hover: #dd00dd;
+
+    --favourited-button-bg: #ff0000;     /* bright red */
+    --favourited-button-hover: #dd0000;
+
+    --modules-text: #1f2937;
+
+    --button-text-light: #ffffff;
+    --grey: #ffffff;
+    --button-text-dark: #000000;         /* high contrast text for buttons */
+}

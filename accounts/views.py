@@ -308,3 +308,12 @@ class DegreeAutocompleteView(AutocompleteModelView):
 def user_logout(request):
     logout(request)
     return redirect(reverse('accounts:login'))
+
+@login_required
+def settings(request):
+    return render(request,'settings.html')
+
+def set_theme(request, theme):
+    response = redirect("/")   # redirect back to your page
+    response.set_cookie("theme", theme)
+    return response

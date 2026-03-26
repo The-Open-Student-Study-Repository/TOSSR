@@ -1,12 +1,14 @@
 {% if starred %}
+<div class="nav-label">
 <h4><strong><u>Starred Materials:</u></strong></h4>
 <ul>
     {% for material in starred %}
         {% if material == current_material %}
-        <li><strong><a href="#">{{ material.name }}</a></strong></li>
+        <li><strong><a href="#" class="nav-link">{{ material.material.name }}</a></strong></li>
         {% else %}
-        <li><a href="#">{{ material.name }}</a></li>
+        <li><a href="#" class="nav-link">{{ material.material.name }}</a></li>
         {% endif %}
     {% endfor %}
 </ul>
+</div>
 {% endif %}

@@ -25,5 +25,4 @@ urlpatterns = [
         path('accounts/', include('accounts.urls')),
         path('modules/', include('modules.urls')),
         path('', lambda request: redirect('accounts:login')),
-        path('modules/', include('modules.urls')),
 ]

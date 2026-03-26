@@ -1,6 +1,6 @@
 /* Global Style Guide */
 
-/* Colors */
+/* Colors
 :root {
     --primary-color: #6366f1;
     --primary-hover: #4f46e5;
@@ -11,7 +11,7 @@
     --border-color: #e5e7eb;
     --shadow: 0 20px 40px rgba(0,0,0,0.08);
     --shadow-hover: 0 30px 60px rgba(0,0,0,0.12);
-}
+}*/
 
 /* Page Layout */
 body {
@@ -60,7 +60,7 @@ h1 {
 .filter-section button {
     padding: 10px 20px;
     background: var(--primary-color);
-    color: white;
+    color: var(--bg-white);
     border: none;
     border-radius: 8px;
     font-weight: 600;
@@ -93,7 +93,7 @@ h1 {
 
 .module h3 {
     margin-top: 0;
-    color: var(--text-dark);
+    color: var(--modules-text);
     margin-bottom: 15px;
     font-size: 16px;
 }
@@ -107,7 +107,7 @@ h1 {
 }
 
 .module-info strong {
-    color: var(--text-dark);
+    color: var(--modules-text);
 }
 
 /* Empty State */
@@ -146,7 +146,7 @@ h1 {
 
 .pagination .current {
     background: var(--primary-color);
-    color: white;
+    color: var(--bg-white);
     border-color: var(--primary-color);
 }
 

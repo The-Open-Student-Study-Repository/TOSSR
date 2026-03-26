@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+    {% block title_block %}
+    Find Modules
+    {% endblock %}
+    {% block head_block %}
+    <link rel="stylesheet" href="{% static 'modules/css/style.css' %}">
+    <style>
+        .module h3 {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            margin: 0 0 10px 0;
+        }
+
+        .page-header {
+            padding: 20px;
+        }
+
+        .page-header h1 {
+            font-size: 1.5em;
+        }
+
+        .filter-section form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-section select,
+        .filter-section button {
+            width: 100%;
+        }
+
+        .modules-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .module-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+        .btn-subscribe {
+            background-color: var(--subscribe-button-bg);
+            color: var(--button-text-light);
+        }
+        .btn-subscribe:hover {
+            background-color: var(--subsribe-button-hover);
+        }
+        .btn-subscribed {
+            background-color: var(--subscribed-button-bg);
+            color: var(--button-text-light);
+        }
+        .btn-subscribed:hover {
+            background-color: var(--subscribed-button-hover);
+        }
+        .btn-favourite {
+            background-color: var(--favourite-button-bg);
+            color: var(--button-text-dark);
+        }
+        .btn-favourite:hover {
+            background-color: var(--favourite-button-hover);
+        }
+        .btn-favourited {
+            background-color: var(--favourited-button-bg);
+            color: var(--button-text-light);
+        }
+        .btn-favourited:hover {
+            background-color: var(--favourited-button-hover);
+        }
+    </style>
+    {% endblock %}
+{% block body_block %}
+    <div class="container">
+        <h1>Find Modules</h1>
+        
+        {% if page_obj %}
+            <div class="filter-section">
+                <form method="GET">
+                    <select name="school">
+                        <option value="">All Schools</option>
+                        {% for school in schools %}
+                            <option value="{{ school.id }}" {% if school.id|stringformat:"s" == school %}selected{% endif %}>{{ school.name }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <select name="level">
+                        <option value="">All Levels</option>
+                        <option value="1" {% if level == "1" %}selected{% endif %}>Level 1</option>
+                        <option value="2" {% if level == "2" %}selected{% endif %}>Level 2</option>
+                        <option value="3" {% if level == "3" %}selected{% endif %}>Level 3</option>
+                        <option value="4" {% if level == "4" %}selected{% endif %}>Level 4</option>
+                        <option value="5" {% if level == "5" %}selected{% endif %}>Level 5</option>
+                    </select>
+                    
+                    <button type="submit">Filter</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
