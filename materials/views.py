@@ -284,7 +284,7 @@ def create_quiz(request):
 def create_flashcard_page(request, module_id=None):
     student = request.user.student_profile
     # Get subscribed modules
-    subscribed_modules = StudentModule.objects.filter(student=student).select_related('module')
+    subscribed_modules = StudentModule.objects.filter(student=student).select_related('module').order_by('module__school__name', 'module__id')
     context = {
         'subscribed': [sm.module for sm in subscribed_modules],
         'initial_module_id': module_id,
@@ -295,7 +295,7 @@ def create_flashcard_page(request, module_id=None):
 def create_quiz_page(request, module_id=None):
     student = request.user.student_profile
     # Get subscribed modules
-    subscribed_modules = StudentModule.objects.filter(student=student).select_related('module')
+    subscribed_modules = StudentModule.objects.filter(student=student).select_related('module').order_by('module__school__name', 'module__id')
     context = {
         'subscribed': [sm.module for sm in subscribed_modules],
         'initial_module_id': module_id,
