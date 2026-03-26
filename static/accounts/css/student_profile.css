@@ -1,0 +1,74 @@
+.profile-page {
+    padding: 20px 30px;
+}
+
+.profile-header-card,
+.modules-card,
+.resources-card {
+    background: transparent;
+    border-top: 1px solid #999;
+    padding: 20px 0;
+}
+
+.profile-header-card {
+    border-top: none;
+    padding-top: 0;
+}
+
+.profile-header-card h1 {
+    font-size: 2.3rem;
+    margin-bottom: 10px;
+}
+
+.profile-header-card h2 {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+}
+
+.profile-grad-year {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.profile-bio-box {
+    border: 1px solid #999;
+    padding: 18px 20px;
+    max-width: 700px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.profile-bio-box h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.modules-card h2,
+.resources-card h1,
+.resource-group h2 {
+    margin-bottom: 16px;
+}
+
+.modules-list,
+.resource-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.modules-list li,
+.resource-list li {
+    padding: 8px 0;
+    font-size: 1.05rem;
+}
+
+.resource-group {
+    margin-bottom: 28px;
+}
+
+.resource-group:last-child {
+    margin-bottom: 0;
+}
+
+.resource-title {
+    display: inline-block;
+}

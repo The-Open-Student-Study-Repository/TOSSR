@@ -124,13 +124,31 @@ def login_view(request):
 
 @student_required
 def student_dashboard(request):
-    """Tier 3: Student dashboard"""
+    """Tier 3: Student profile/dashboard"""
     student = request.user.student_profile
 
-    return render(request, 'accounts/placeholder.html', {
-        'user': request.user,
+    student_modules = (
+        student.studentmodule_set
+        .select_related('module')
+        .filter(is_hidden_by_student=False)
+    )
+    modules = [subscription.module for subscription in student_modules]
+
+    materials = (
+        student.created_materials
+        .filter(is_deleted=False)
+        .select_related('module')
+        .order_by('-created_at')
+    )
+
+    flashcards = materials.filter(material_type='flashcard')
+    quizzes = materials.filter(material_type='quiz')
+
+    return render(request, 'accounts/student_profile.html', {
         'student': student,
-        'message': f'Student Dashboard for {student.degree}'
+        'modules': modules,
+        'flashcards': flashcards,
+        'quizzes': quizzes,
     })
 
 
