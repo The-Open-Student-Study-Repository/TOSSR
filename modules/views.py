@@ -154,3 +154,29 @@ def toggle_favourite_module(request, module_id):
     if query_params:
         return redirect(f"{request.META.get('HTTP_REFERER', 'modules:browse_modules')}?{query_params}")
     return redirect(request.META.get('HTTP_REFERER', 'modules:browse_modules'))
+
+
+def module_detail(request, module_id):
+    """Display detailed information about a module and its associated study materials"""
+    module = get_object_or_404(Module, id=module_id, is_archived=False)
+    
+    # Get the user's subscription and favourite status if authenticated
+    is_subscribed = False
+    is_favourited = False
+    
+    if request.user.is_authenticated and request.user.role == 'student':
+        student = request.user.student_profile
+        is_subscribed = StudentModule.objects.filter(student=student, module=module).exists()
+        is_favourited = PinnedModule.objects.filter(student=student, module=module).exists()
+    
+    # Get published materials for this module
+    materials = module.materials.filter(is_published=True).select_related('owner')
+    
+    context = {
+        'module': module,
+        'materials': materials,
+        'is_subscribed': is_subscribed,
+        'is_favourited': is_favourited,
+    }
+    
+    return render(request, 'modules/module_detail.html', context)
