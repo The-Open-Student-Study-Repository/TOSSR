@@ -1,0 +1,37 @@
+:root {
+    --primary-color: #2563eb;           /* vivid blue */
+    --primary-hover: #1d4ed8;
+
+    --bg-light: #f3f4f6;                /* light gray background */
+    --bg-white: #ffffff;                /* white for panels/cards */
+    --text-dark: #1f2937;               /* dark text */
+    --text-muted: #4b5563;              /* muted gray */
+    --border-color: #d1d5db;            /* light border for separation */
+    --bg-black: #111827;                /* dark panels if needed */
+
+    --shadow: 0 20px 40px rgba(0,0,0,0.08);
+    --shadow-hover: 0 30px 60px rgba(0,0,0,0.12);
+
+    --sidebar-labels: #1f2937;
+    --settings-bg: #818181;
+    --settings-hover: #313131;
+
+    /* Find Modules */
+    --subscribe-button-bg: #ffb000;     /* bright orange instead of blue-green */
+    --subsribe-button-hover: #ff9900;
+
+    --subscribed-button-bg: #00bfff;    /* cyan/blue for subscribe indicator */
+    --subscribed-button-hover: #0099cc;
+
+    --favourite-button-bg: #ffcc00;     /* golden yellow */
+    --favourite-button-hover: #e6b800;
+
+    --favourited-button-bg: #ff6600;    /* deep orange/red safe for colorblind */
+    --favourited-button-hover: #e65c00;
+
+    --modules-text: #1f2937;
+
+    --button-text-light: #f3f4f6;
+    --grey: #c1c1c1;
+    --button-text-dark: #1f2937;
+}

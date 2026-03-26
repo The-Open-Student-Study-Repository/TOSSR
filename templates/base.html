@@ -11,46 +11,50 @@
             The Open Student Study Repository
             {% endblock %}
         </title>
+        <link rel="stylesheet" href="{% static '/themes/' %}{{ theme }}.css">
         <link rel="stylesheet" href="{% static '/base.css' %}" >
         {% block head_block %}
         {% endblock %}
     </head>
     <body>
+        <div class="shell">
+            <div class="main">
         {% block sidebar_block %}
         <div class="sidenav">
-            <h3><strong><u>TOSSR</u></strong></h3>
-            <p style="text-align: center"><strong>The Open Student Study Repository</strong></p>
-        <br />
+            <div class="brand">TOSSR</div>
+            <div class="brand-subtitle">The Open Student Study Repository</div>
+        <div class="nav-label">
             <h4><strong><u>Navigation:</u></strong></h4>
             <ul>
-                <li><a href="#">My Resources</a></li>
+                <li><a href="#" class="nav-link">My Resources</a></li>
+                <li><a href="#" class="nav-link">My Profile</a></li>
             </ul>
-        <br />
+        </div>
             {% get_starred_materials_list material %}
-        <br />
             {% get_starred_modules_list module %}
-        <br />
+        <div class="nav-label">
             <h4><strong><u>Profile:</u></strong></h4>
             <ul>
                 <li>Name: {{ user.get_full_name }}</li>
                 <li>Degree: {{ student.degree.get_full_name }} </li>
                 <li>Graduation Year: {{ student.graduation_year }}</li>
-                <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                <li><a href="{% url 'accounts:logout' %}" class="nav-link">Logout</a></li>
             </ul>
-        <br />
+        </div>
+        <div class="nav-label">
             <h4><strong><u>Bio:</u></strong></h4>
-            <p>{{ student.bio }}</p>
-        <br />
-        <div class="settings">
-            <h3 ><a href="#">Settings</a></h3>
+            {{ student.bio }}
         </div>
-        </div>
+            <h3 ><a href="{% url 'accounts:settings' %}" class="settings">Settings</a></h3>
+    </div>
+    </div>
         {% endblock %}
         <div class="main">
             {% block body_block %}
             <h1>The Open Student Study Repository</h1>
             {% endblock %}
         </div>
+    </div>
     </body>
 </html>
 

@@ -1,8 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Find Modules</title>
-    {% load static %}
+{% extends 'base.html' %}
+{% load static %}
+    {% block title_block %}
+    Find Modules
+    {% endblock %}
+    {% block head_block %}
     <link rel="stylesheet" href="{% static 'modules/css/style.css' %}">
     <style>
         .module h3 {
@@ -30,36 +31,36 @@
             white-space: nowrap;
         }
         .btn-subscribe {
-            background-color: #007bff;
-            color: white;
+            background-color: var(--subscribe-button-bg);
+            color: var(--button-text-light);
         }
         .btn-subscribe:hover {
-            background-color: #0056b3;
+            background-color: var(--subsribe-button-hover);
         }
         .btn-subscribed {
-            background-color: #28a745;
-            color: white;
+            background-color: var(--subscribed-button-bg);
+            color: var(--button-text-light);
         }
         .btn-subscribed:hover {
-            background-color: #1e7e34;
+            background-color: var(--subscribed-button-hover);
         }
         .btn-favourite {
-            background-color: #ffc107;
-            color: #333;
+            background-color: var(--favourite-button-bg);
+            color: var(--button-text-dark);
         }
         .btn-favourite:hover {
-            background-color: #e0a800;
+            background-color: var(--favourite-button-hover);
         }
         .btn-favourited {
-            background-color: #ff6b6b;
-            color: white;
+            background-color: var(--favourited-button-bg);
+            color: var(--button-text-light);
         }
         .btn-favourited:hover {
-            background-color: #ee5a52;
+            background-color: var(--favourited-button-hover);
         }
     </style>
-    </head>
-<body>
+    {% endblock %}
+{% block body_block %}
     <div class="container">
         <h1>Find Modules</h1>
         
@@ -144,5 +145,4 @@
             </div>
         {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}

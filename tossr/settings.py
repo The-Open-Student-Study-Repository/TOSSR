@@ -74,6 +74,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "django_tomselect.context_processors.tomselect",
+                "accounts.context_processors.theme",
             ],
         },
     },
