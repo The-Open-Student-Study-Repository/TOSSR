@@ -22,7 +22,7 @@ My Resources - TOSSR
             </div>
             <div class="stat-item">
                 <strong>Subscribed Modules</strong>
-                <div class="number">{{ modules_with_materials|length }}</div>
+                <div class="number">{{ subscription_count }}</div>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@ My Resources - TOSSR
                             <h2>{{ item.module.id }}: {{ item.module.name }}</h2>
                             <p>{{ item.module.school.name }} • Level {{ item.module.level }} • {{ item.module.credits }} Credits</p>
                         </div>
-                        <div class="material-count">{{ item.material_count }} material{{ item.material_count|pluralize }}</div>
+                        <div class="material-count">{{ item.material_count }} material {{ item.material_count|pluralize }}</div>
                     </div>
                     <div class="materials-list">
                         {% for material in item.materials %}

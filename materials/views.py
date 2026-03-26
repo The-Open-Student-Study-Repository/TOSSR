@@ -125,8 +125,7 @@ def my_resources(request):
     # Get all modules the student is subscribed to
     subscribed_modules = StudentModule.objects.filter(
         student=student,
-        is_hidden_by_student=False
-    ).select_related('module').order_by('module__school__name', 'module__id')
+    ).select_related('module')
     
     # Get all materials created by the student (both published and unpublished, but not deleted)
     all_materials = student.created_materials.filter(is_deleted=False).select_related('module')
@@ -153,6 +152,7 @@ def my_resources(request):
         'modules_with_materials': modules_with_materials,
         'private_materials': private_materials,
         'total_materials': all_materials.count(),
+        'subscription_count': len(subscribed_modules),
     }
     
     return render(request, 'materials/my_resources.html', context)
