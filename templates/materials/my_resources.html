@@ -49,9 +49,9 @@ My Resources - TOSSR
                                     <div class="material-meta">
                                         <span class="type-badge {{ material.material_type }}">
                                             {% if material.material_type == 'flashcard' %}
-                                                📇 Flashcard
+                                                Flashcard
                                             {% elif material.material_type == 'quiz' %}
-                                                ❓ Quiz
+                                                Quiz
                                             {% endif %}
                                         </span>
                                         <span class="status-badge {% if material.is_published %}published{% else %}draft{% endif %}">
@@ -63,8 +63,8 @@ My Resources - TOSSR
                                     </div>
                                 </div>
                                 <div class="material-actions">
-                                    <button class="btn-action edit">✏️ Edit</button>
-                                    <button class="btn-action">👁️ View</button>
+                                    <button class="btn-action edit">Edit</button>
+                                    <button class="btn-action">View</button>
                                 </div>
                             </div>
                         {% endfor %}
@@ -78,7 +78,7 @@ My Resources - TOSSR
             <div class="module-section private-materials-section">
                 <div class="module-section-header">
                     <div>
-                        <h2>🔒 Private Materials</h2>
+                        <h2>Private Materials</h2>
                         <p>Materials not assigned to any module</p>
                     </div>
                     <div class="material-count">{{ private_materials.count }} material{{ private_materials|pluralize }}</div>
@@ -91,9 +91,9 @@ My Resources - TOSSR
                                 <div class="material-meta">
                                     <span class="type-badge {{ material.material_type }}">
                                         {% if material.material_type == 'flashcard' %}
-                                            📇 Flashcard
+                                            Flashcard
                                         {% elif material.material_type == 'quiz' %}
-                                            ❓ Quiz
+                                            Quiz
                                         {% endif %}
                                     </span>
                                     <span class="status-badge {% if material.is_published %}published{% else %}draft{% endif %}">
@@ -105,8 +105,8 @@ My Resources - TOSSR
                                 </div>
                             </div>
                             <div class="material-actions">
-                                <button class="btn-action edit">✏️ Edit</button>
-                                <button class="btn-action">👁️ View</button>
+                                <button class="btn-action edit">Edit</button>
+                                <button class="btn-action">View</button>
                             </div>
                         </div>
                     {% endfor %}

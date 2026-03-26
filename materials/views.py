@@ -281,5 +281,23 @@ def create_quiz(request):
         return JsonResponse({"error": str(e)}, status=500)
     
 @login_required
-def create_flashcard_page(request):
-    return render(request,'materials/create_flashcard.html')
+def create_flashcard_page(request, module_id=None):
+    student = request.user.student_profile
+    # Get subscribed modules
+    subscribed_modules = StudentModule.objects.filter(student=student).select_related('module')
+    context = {
+        'subscribed': [sm.module for sm in subscribed_modules],
+        'initial_module_id': module_id,
+    }
+    return render(request, 'materials/create_flashcard.html', context)
+
+@login_required
+def create_quiz_page(request, module_id=None):
+    student = request.user.student_profile
+    # Get subscribed modules
+    subscribed_modules = StudentModule.objects.filter(student=student).select_related('module')
+    context = {
+        'subscribed': [sm.module for sm in subscribed_modules],
+        'initial_module_id': module_id,
+    }
+    return render(request, 'materials/create_quiz.html', context)

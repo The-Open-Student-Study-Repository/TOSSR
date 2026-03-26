@@ -1,0 +1,243 @@
+.create-flashcard-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.create-flashcard-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+}
+
+.create-flashcard-wrapper h1 {
+    font-size: 2em;
+    margin: 0 0 30px 0;
+    color: #111827;
+    font-weight: 700;
+}
+
+.form-section {
+    margin-bottom: 24px;
+}
+
+.form-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 15px;
+}
+
+.form-section select,
+.form-section input,
+.form-section textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-section input:focus,
+.form-section select:focus,
+.form-section textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-section textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.card-input-section {
+    background: #f9fafb;
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 24px;
+    margin: 30px 0;
+}
+
+.card-input-section .form-section {
+    margin-bottom: 16px;
+}
+
+.card-input-section .form-section:last-child {
+    margin-bottom: 0;
+}
+
+.add-card-btn {
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+    font-size: 15px;
+}
+
+.add-card-btn:hover {
+    background: #4f46e5;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+    justify-content: space-between;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    font-size: 15px;
+}
+
+.btn-cancel {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.btn-cancel:hover {
+    background: #d1d5db;
+}
+
+.btn-submit {
+    background: #10b981;
+    color: white;
+    flex: 1;
+}
+
+.btn-submit:hover {
+    background: #059669;
+}
+
+.btn-submit:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.flashcard-list {
+    margin-top: 30px;
+}
+
+.flashcard-list h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    color: #111827;
+}
+
+.flashcard-item {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.flashcard-content {
+    flex: 1;
+    font-size: 14px;
+}
+
+.flashcard-content strong {
+    color: #374151;
+}
+
+.flashcard-content p {
+    margin: 6px 0 0 0;
+    color: #6b7280;
+    word-break: break-word;
+}
+
+.flashcard-index {
+    display: inline-block;
+    background: #6366f1;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-weight: 600;
+    font-size: 12px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.remove-card-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-weight: 500;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.remove-card-btn:hover {
+    background: #dc2626;
+}
+
+.message {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-top: 16px;
+    font-weight: 500;
+    display: none;
+}
+
+.message.show {
+    display: block;
+}
+
+.message.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.message.success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #9ca3af;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 15px;
+}

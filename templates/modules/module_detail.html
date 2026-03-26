@@ -46,6 +46,7 @@
                class="btn {% if is_favourited %}btn-favourited{% else %}btn-favourite{% endif %}">
                 {% if is_favourited %}★ Favourited{% else %}☆ Favourite{% endif %}
             </a>
+            <a href="{% url 'materials:create_flashcard_with_module' module.id %}" class="btn btn-create">+ Create Quiz/Flashcard</a>
             <a href="{% url 'modules:browse_modules' %}" class="btn btn-back">← Back</a>
         </div>
         {% else %}
