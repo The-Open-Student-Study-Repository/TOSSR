@@ -45,13 +45,9 @@ Find Modules - TOSSR
             {% for module in page_obj %}
                 <div class="module">
                     <h3>
-                        {% if module.is_subscribed %}
-                            <a href="{% url 'materials:browse_materials' module.id %}">
+                        <a href="{% url 'materials:browse_materials' module.id %}">
                                 {{ module.id }}: {{ module.name }}
-                            </a>
-                        {% else %}
-                            {{ module.id }}: {{ module.name }}
-                        {% endif %}
+                        </a>
                     </h3>
                     <div class="module-info">
                         <div><strong>School:</strong> <span>{{ module.school.name }}</span></div>
