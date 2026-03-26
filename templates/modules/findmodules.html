@@ -4,61 +4,7 @@
     Find Modules
     {% endblock %}
     {% block head_block %}
-    <link rel="stylesheet" href="{% static 'modules/css/style.css' %}">
-    <style>
-        .module h3 {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-            margin: 0 0 10px 0;
-        }
-        .module-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .btn {
-            padding: 8px 12px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.9em;
-            transition: background-color 0.3s;
-            display: inline-block;
-            min-width: 100px;
-            text-align: center;
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-        .btn-subscribe {
-            background-color: var(--subscribe-button-bg);
-            color: var(--button-text-light);
-        }
-        .btn-subscribe:hover {
-            background-color: var(--subsribe-button-hover);
-        }
-        .btn-subscribed {
-            background-color: var(--subscribed-button-bg);
-            color: var(--button-text-light);
-        }
-        .btn-subscribed:hover {
-            background-color: var(--subscribed-button-hover);
-        }
-        .btn-favourite {
-            background-color: var(--favourite-button-bg);
-            color: var(--button-text-dark);
-        }
-        .btn-favourite:hover {
-            background-color: var(--favourite-button-hover);
-        }
-        .btn-favourited {
-            background-color: var(--favourited-button-bg);
-            color: var(--button-text-light);
-        }
-        .btn-favourited:hover {
-            background-color: var(--favourited-button-hover);
-        }
-    </style>
+        <link rel="stylesheet" href="{% static 'modules/css/style.css' %}">
     {% endblock %}
 {% block body_block %}
     <div class="container">
@@ -66,8 +12,7 @@
         
         {% if page_obj %}
             <div class="filter-section">
-                <form method="GET" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; width: 100%;">
-                    <select name="school">
+                <form method="GET" class="filter-form">                    <select name="school">
                         <option value="">All Schools</option>
                         {% for school in schools %}
                             <option value="{{ school.id }}" {% if school.id|stringformat:"s" == school %}selected{% endif %}>{{ school.name }}</option>
