@@ -42,14 +42,17 @@
                class="btn {% if is_subscribed %}btn-subscribed{% else %}btn-subscribe{% endif %}">
                 {% if is_subscribed %}✓ Subscribed{% else %}+ Subscribe{% endif %}
             </a>
+
             {% if is_subscribed %}
             <a href="{% url 'modules:toggle_favourite' module.id %}"
                class="btn {% if is_favourited %}btn-favourited{% else %}btn-favourite{% endif %}">
                 {% if is_favourited %}★ Favourited{% else %}☆ Favourite{% endif %}
             </a>
-            {% endif %}
+
             <a href="{% url 'materials:create_flashcard_with_module' module.id %}" class="btn btn-create">Create Flashcard</a>
             <a href="{% url 'materials:create_quiz_with_module' module.id %}" class="btn btn-create">Create Quiz</a>
+            {% endif %}
+
             <a href="{% url 'modules:browse_modules' %}" class="btn btn-back">← Back</a>
         </div>
         {% else %}
@@ -98,9 +101,9 @@
                             </span>
 
                             {% if material.owner != student and is_subscribed %}
-                            <form method="POST" action="{% url 'materials:toggle_save_material' material.id %}" class="save-material-form" style="display:inline-block;">
+                            <form method="POST" action="{% url 'materials:toggle_save_material' material.id %}" style="display:inline-block;">
                                 {% csrf_token %}
-                                <button type="submit" class="btn-action btn-save {% if material.id in saved_material_ids %}saved{% endif %}">
+                                <button type="submit" class="btn-action {% if material.id in saved_material_ids %}saved{% endif %}">
                                     {% if material.id in saved_material_ids %}💾 Saved{% else %}💾 Save{% endif %}
                                 </button>
                             </form>

@@ -160,13 +160,20 @@ def create_flashcard_set(request):
         is_published = data.get('is_published', False)
         cards_data = data.get('cards', [])
 
-        if not module_id:
-            is_published = False
-
         if not title or not cards_data:
             return JsonResponse({"error": "Missing title or cards data"}, status=400)
 
         student = request.user.student_profile
+
+        if module_id:
+            is_subscribed = StudentModule.objects.filter(
+                student=student,
+                module_id=module_id
+            ).exists()
+            if not is_subscribed:
+                return JsonResponse({"error": "You must be subscribed to this module"}, status=403)
+        else:
+            is_published = False
 
         with transaction.atomic():
             material = StudyMaterial.objects.create(
@@ -211,13 +218,20 @@ def create_quiz(request):
         is_published = data.get('is_published', False)
         questions_data = data.get('questions', [])
 
-        if not module_id:
-            is_published = False
-
         if not title or not questions_data:
             return JsonResponse({"error": "Missing title or questions data"}, status=400)
 
         student = request.user.student_profile
+
+        if module_id:
+            is_subscribed = StudentModule.objects.filter(
+                student=student,
+                module_id=module_id
+            ).exists()
+            if not is_subscribed:
+                return JsonResponse({"error": "You must be subscribed to this module"}, status=403)
+        else:
+            is_published = False
 
         with transaction.atomic():
             material = StudyMaterial.objects.create(
