@@ -3,9 +3,7 @@
 <html>
 <head>
 <title>TOSSR Login</title>
-
 <link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
-
 </head>
 
 <body>
@@ -14,6 +12,12 @@
 
 <div class="logo">TOSSR</div>
 <div class="subtitle">Log in to your account</div>
+
+{% if error %}
+<div class="error-popup">
+    {{ error }}
+</div>
+{% endif %}
 
 <form method="POST">
 {% csrf_token %}

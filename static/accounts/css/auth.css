@@ -148,6 +148,16 @@ textarea:focus {
     margin-bottom: 12px;
 }
 
+.error-popup {
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #f5c2c7;
+    border-radius: 5px;
+    text-align: center;
+}
+
 .ts-wrapper {
     border: 1px solid #ddd !important;
     border-radius: 12px !important;
@@ -194,12 +204,4 @@ textarea:focus {
 .ts-dropdown .active {
     background-color: rgba(108, 99, 255, 0.1) !important;
     color: inherit !important;
-}
-
-/* errors */
-
-.form-errors {
-    color: red;
-    margin-bottom: 15px;
-    text-align: left;
 }
