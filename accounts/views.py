@@ -289,7 +289,7 @@ def anonymise_account(request):
             user.save()
 
             user_logout(request)
-            return redirect('account_deleted')
+            return redirect('accounts:account_deleted')
         else:
             return render(request, 'accounts/delete_account.html', {
                 'error': 'Incorrect password'
