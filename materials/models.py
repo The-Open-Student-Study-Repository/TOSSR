@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 
 
 class StudyMaterial(models.Model):
@@ -143,6 +142,12 @@ class Comment(models.Model):
         db_column='created_at',
     )
 
+    is_deleted = models.BooleanField(
+        default=False,
+        db_column='is_deleted',
+        help_text='Soft delete, hidden from students but visible to moderators',
+    )
+
     def __str__(self):
         return f"Comment by {self.student.user.username} on {self.study_material.title}"
 
@@ -219,6 +224,18 @@ class Report(models.Model):
         on_delete=models.CASCADE,
         db_column='material_id',
         related_name='reports',
+        null=True,
+        blank=True,
+    )
+
+    # Comment being reported
+    comment = models.ForeignKey(
+        Comment,
+        on_delete=models.CASCADE,
+        db_column='comment_id',
+        related_name='reports',
+        null=True,
+        blank=True,
     )
 
     # Reason for report
@@ -249,15 +266,14 @@ class Report(models.Model):
     )
 
     def __str__(self):
+        if self.comment:
+            return f"Report by {self.reporter.user.username} on comment #{self.comment.id}"
         return f"Report by {self.reporter.user.username} on {self.study_material.title}"
 
     class Meta:
         db_table = 'report'
         verbose_name = 'Report'
         verbose_name_plural = 'Reports'
-        # Prevent duplicate reports.
-        unique_together = [['reporter', 'study_material']]
-
 
 class Quiz(models.Model):
     """
@@ -422,3 +438,25 @@ class Flashcard(models.Model):
         ordering = ['order']
         verbose_name = 'Flashcard'
         verbose_name_plural = 'Flashcards'
+
+class SavedMaterial(models.Model):
+    """
+    Junction table for materials students have 'saved' to their profile.
+    """
+    student = models.ForeignKey(
+        'accounts.Student',
+        on_delete=models.CASCADE,
+        related_name='saved_materials_assoc'
+    )
+    study_material = models.ForeignKey(
+        'StudyMaterial',
+        on_delete=models.CASCADE,
+        related_name='saved_by_students'
+    )
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'saved_material'
+        unique_together = [['student', 'study_material']]
+        verbose_name = 'Saved Material'
+        verbose_name_plural = 'Saved Materials'

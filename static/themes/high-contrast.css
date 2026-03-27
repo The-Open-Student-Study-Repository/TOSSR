@@ -4,34 +4,41 @@
 
     --bg-light: #000000;                 /* pure black for max contrast */
     --bg-white: #ffffff;                 /* white cards/panels */
-    --text-dark: #ffffff;                /* white text */
+    --text-dark: #ffffff;                /* white text on black page bg */
     --text-muted: #aaaaaa;               /* secondary text */
-    --border-color: #ffffff;             /* highly visible borders */
+    --border-color: #888888;             /* medium gray borders */
     --bg-black: #000000;
 
-    --shadow: 0 20px 40px rgba(255,255,255,0.2);
-    --shadow-hover: 0 30px 60px rgba(255,255,255,0.3);
+    --shadow: 0 0 0 2px #888888;
+    --shadow-hover: 0 0 0 3px #ffff00;
 
-    --sidebar-labels: #1f2937;           /* bright sidebar labels */
+    --sidebar-labels: #1f2937;
     --settings-bg: #1f2937;
     --settings-hover: #333333;
 
+    /* Text colour on cards (--bg-white surfaces) */
+    --card-text: #000000;
+    --card-text-muted: #444444;
+
+    /* Text on primary-colored (yellow) buttons/links */
+    --primary-button-text: #000000;
+
     /* Find Modules */
-    --subscribe-button-bg: #00ffff;      /* bright cyan */
-    --subsribe-button-hover: #00dddd;
+    --subscribe-button-bg: #005fa3;
+    --subsribe-button-hover: #004a80;
 
-    --subscribed-button-bg: #00ff00;     /* bright green */
-    --subscribed-button-hover: #00dd00;
+    --subscribed-button-bg: #1a7f37;
+    --subscribed-button-hover: #146b2d;
 
-    --favourite-button-bg: #ff00ff;      /* bright magenta */
-    --favourite-button-hover: #dd00dd;
+    --favourite-button-bg: #bf8700;
+    --favourite-button-hover: #a67600;
 
-    --favourited-button-bg: #ff0000;     /* bright red */
-    --favourited-button-hover: #dd0000;
+    --favourited-button-bg: #cf222e;
+    --favourited-button-hover: #a40e26;
 
-    --modules-text: #1f2937;
+    --modules-text: #000000;
 
     --button-text-light: #ffffff;
-    --grey: #ffffff;
-    --button-text-dark: #000000;         /* high contrast text for buttons */
+    --grey: #666666;
+    --button-text-dark: #ffffff;
 }
