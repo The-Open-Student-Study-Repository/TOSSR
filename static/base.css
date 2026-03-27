@@ -11,6 +11,7 @@ body {
 
 .sidenav {
     background: var(--bg-black);
+    overflow-y:auto;
     color: var(--bg-light);
     padding: 24px 16px;
     display: flex;

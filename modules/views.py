@@ -76,7 +76,7 @@ def browse_modules(request):
         )
 
     # Add pagination
-    paginator = Paginator(modules, 21)  # 21 modules per page
+    paginator = Paginator(modules, 24)  # 24 modules per page
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
