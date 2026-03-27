@@ -16,7 +16,7 @@
             <h1>{{ module.name }}</h1>
             <div class="module-code">{{ module.id }}</div>
         </div>
-        
+
         <div class="module-meta">
             <div class="meta-item">
                 <strong>School</strong>
@@ -38,14 +38,16 @@
 
         {% if user.is_authenticated and user.role == 'student' %}
         <div class="module-actions">
-            <a href="{% url 'modules:toggle_subscribe' module.id %}" 
+            <a href="{% url 'modules:toggle_subscribe' module.id %}"
                class="btn {% if is_subscribed %}btn-subscribed{% else %}btn-subscribe{% endif %}">
                 {% if is_subscribed %}✓ Subscribed{% else %}+ Subscribe{% endif %}
             </a>
-            <a href="{% url 'modules:toggle_favourite' module.id %}" 
+            {% if is_subscribed %}
+            <a href="{% url 'modules:toggle_favourite' module.id %}"
                class="btn {% if is_favourited %}btn-favourited{% else %}btn-favourite{% endif %}">
                 {% if is_favourited %}★ Favourited{% else %}☆ Favourite{% endif %}
             </a>
+            {% endif %}
             <a href="{% url 'materials:create_flashcard_with_module' module.id %}" class="btn btn-create">Create Flashcard</a>
             <a href="{% url 'materials:create_quiz_with_module' module.id %}" class="btn btn-create">Create Quiz</a>
             <a href="{% url 'modules:browse_modules' %}" class="btn btn-back">← Back</a>
@@ -59,7 +61,7 @@
 
     <div class="materials-section">
         <h2>Study Materials</h2>
-        
+
         {% if materials %}
             <div class="materials-grid">
                 {% for material in materials %}
@@ -71,19 +73,40 @@
                                 Quiz
                             {% endif %}
                         </div>
-                        
+
                         <h3>{{ material.title }}</h3>
-                        
+
                         <div class="material-info">
                             <div>
                                 <strong>Created by</strong>
                                 <span>{{ material.owner.user.get_full_name }}</span>
                             </div>
                         </div>
-                        
+
                         <div class="material-owner">
                             Created on: {{ material.created_at|date:"M d, Y" }}
                         </div>
+
+                        {% if user.is_authenticated and user.role == 'student' %}
+                        <div class="material-actions">
+                            <span class="btn-action upvote-count" style="margin-right: 10px;">
+                                👍 {{ material.upvote_count }}
+                            </span>
+
+                            <span class="btn-action comment-count" style="margin-right: 10px;">
+                                💬 {{ material.comment_count }}
+                            </span>
+
+                            {% if material.owner != student and is_subscribed %}
+                            <form method="POST" action="{% url 'materials:toggle_save_material' material.id %}" class="save-material-form" style="display:inline-block;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-action btn-save {% if material.id in saved_material_ids %}saved{% endif %}">
+                                    {% if material.id in saved_material_ids %}💾 Saved{% else %}💾 Save{% endif %}
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>

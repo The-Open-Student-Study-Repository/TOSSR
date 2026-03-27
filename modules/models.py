@@ -1,4 +1,3 @@
-from MySQLdb.constants.FIELD_TYPE import NULL
 from django.db import models
 
 class School(models.Model):

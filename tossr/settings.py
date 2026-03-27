@@ -75,6 +75,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 "django_tomselect.context_processors.tomselect",
                 "accounts.context_processors.theme",
+                'accounts.context_processors.student_context',
             ],
         },
     },

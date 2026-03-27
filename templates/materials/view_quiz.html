@@ -7,14 +7,34 @@
 
 {% block head_block %}
 <link rel="stylesheet" href="{% static 'materials/css/view_quiz.css' %}">
+<script src="{% static 'materials/js/view_quiz.js' %}" defer></script>
 {% endblock %}
 
 {% block body_block %}
-<div class="quiz-view-container">
+<div class="quiz-view-container"
+     id="quiz-container"
+     data-questions='[
+        {% for question in questions %}
+        {
+            "id": {{ question.id }},
+            "question_text": "{{ question.question_text|escapejs }}",
+            "answers": [
+                {% for answer in question.answers.all %}
+                {
+                    "id": {{ answer.id }},
+                    "answer_text": "{{ answer.answer_text|escapejs }}",
+                    "is_correct": {{ answer.is_correct|yesno:"true,false" }}
+                }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+     ]'>
+
     <a href="{% url 'materials:my_resources' %}" class="back-link">← Back to Resources</a>
-    
+
     <h1>{{ quiz.study_material.title }}</h1>
-    
+
     {% if quiz.study_material.module %}
         <p class="module-label">{{ quiz.study_material.module.id }}</p>
     {% endif %}
@@ -25,12 +45,8 @@
         </div>
 
         <div class="question-box">
-            <div id="question-content" class="question-text">
-                <!-- Loaded by JS -->
-            </div>
-            <div id="answers-content" class="answers-list">
-                <!-- Loaded by JS -->
-            </div>
+            <div id="question-content" class="question-text"></div>
+            <div id="answers-content" class="answers-list"></div>
         </div>
 
         <div class="quiz-action-buttons">
@@ -47,133 +63,5 @@
             <p>No questions in this quiz yet.</p>
         </div>
     {% endif %}
-
-    <a href="{% url 'materials:my_resources' %}" class="btn-back">Back to Resources</a>
 </div>
-
-<script>
-const questions = [
-    {% for question in questions %}
-        {
-            id: {{ question.id }},
-            question_text: "{{ question.question_text|escapejs }}",
-            answers: [
-                {% for answer in question.answers.all %}
-                    {
-                        id: {{ answer.id }},
-                        answer_text: "{{ answer.answer_text|escapejs }}",
-                        is_correct: {{ answer.is_correct|lower }}
-                    }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            ]
-        }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
-
-let currentIndex = 0;
-let answeredQuestions = {};
-
-function showQuestion() {
-    if (questions.length === 0) return;
-    
-    const question = questions[currentIndex];
-    
-    // Update progress
-    document.getElementById('current-question').textContent = currentIndex + 1;
-    
-    // Show question
-    const qContent = document.getElementById('question-content');
-    qContent.textContent = question.question_text;
-    
-    // Show answers
-    const aContent = document.getElementById('answers-content');
-    aContent.innerHTML = '';
-    
-    const isAnswered = answeredQuestions[currentIndex];
-    
-    question.answers.forEach(answer => {
-        const div = document.createElement('div');
-        div.className = 'answer-option';
-        
-        if (isAnswered) {
-            if (answer.id === isAnswered.selectedId) {
-                div.classList.add(answer.is_correct ? 'correct' : 'incorrect');
-            }
-            if (answer.is_correct) {
-                div.classList.add('show-correct');
-            }
-        }
-        
-        div.innerHTML = `
-            <input type="radio" id="answer-${answer.id}" name="quiz-answer" value="${answer.id}" ${isAnswered ? 'disabled' : ''}>
-            <label for="answer-${answer.id}">${answer.answer_text}</label>
-        `;
-        
-        aContent.appendChild(div);
-    });
-    
-    // Update button states
-    document.getElementById('prev-btn').disabled = currentIndex === 0;
-    document.getElementById('next-btn').disabled = currentIndex === questions.length - 1;
-    
-    // Update action buttons
-    const checkBtn = document.getElementById('check-btn');
-    const resetBtn = document.getElementById('reset-btn');
-    
-    const selectedRadio = document.querySelector('input[name="quiz-answer"]:checked');
-    checkBtn.disabled = !selectedRadio || isAnswered;
-    resetBtn.disabled = !isAnswered;
-}
-
-function checkAnswer() {
-    const selectedRadio = document.querySelector('input[name="quiz-answer"]:checked');
-    if (!selectedRadio) return;
-    
-    answeredQuestions[currentIndex] = {
-        selectedId: parseInt(selectedRadio.value)
-    };
-    
-    showQuestion();
-}
-
-function resetQuestion() {
-    delete answeredQuestions[currentIndex];
-    
-    // Reset radio buttons
-    const radios = document.querySelectorAll('input[name="quiz-answer"]');
-    radios.forEach(radio => radio.checked = false);
-    
-    showQuestion();
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('prev-btn').addEventListener('click', () => {
-        if (currentIndex > 0) {
-            currentIndex--;
-            showQuestion();
-        }
-    });
-
-    document.getElementById('next-btn').addEventListener('click', () => {
-        if (currentIndex < questions.length - 1) {
-            currentIndex++;
-            showQuestion();
-        }
-    });
-    
-    document.getElementById('check-btn').addEventListener('click', checkAnswer);
-    document.getElementById('reset-btn').addEventListener('click', resetQuestion);
-
-    showQuestion();
-    
-    // Add listener for answer selection to update button state
-    document.addEventListener('change', function(e) {
-        if (e.target.name === 'quiz-answer') {
-            const checkBtn = document.getElementById('check-btn');
-            checkBtn.disabled = false;
-        }
-    });
-});
-</script>
-
 {% endblock %}

@@ -7,10 +7,22 @@
 
 {% block head_block %}
 <link rel="stylesheet" href="{% static 'materials/css/view_flashcard.css' %}">
+<script src="{% static 'materials/js/view_flashcard.js' %}" defer></script>
 {% endblock %}
 
 {% block body_block %}
-<div class="flashcard-view-container">
+<div class="flashcard-view-container"
+     id="flashcard-container"
+     data-flashcards='[
+        {% for card in flashcard_set.cards.all %}
+        {
+            "id": {{ card.id }},
+            "front": "{{ card.front|escapejs }}",
+            "back": "{{ card.back|escapejs }}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+     ]'>
+
     <div class="flashcard-header">
         <div class="header-content">
             <a href="{% url 'materials:my_resources' %}" class="back-link">← Back to Resources</a>
@@ -32,6 +44,26 @@
             <strong id="total-cards-count">{{ flashcard_set.cards.count }}</strong>
             <span>card{{ flashcard_set.cards.count|pluralize }}</span>
         </div>
+        {% if flashcard_set.study_material.is_published and user.is_authenticated and user.role == 'student' %}
+        <div class="stat-actions">
+            <a href="{% url 'materials:toggle_upvote' flashcard_set.study_material.id %}"
+               class="btn-upvote {% if user_has_upvoted %}upvoted{% endif %}">
+                👍 Upvote {{ upvote_count }}
+            </a>
+            <form method="POST" action="{% url 'materials:report_material' flashcard_set.study_material.id %}" class="report-form">
+                {% csrf_token %}
+                <select name="reason" required>
+                    <option value="" disabled selected>Report reason...</option>
+                    <option value="inappropriate">Inappropriate</option>
+                    <option value="spam">Spam</option>
+                    <option value="incorrect">Incorrect Info</option>
+                    <option value="offensive">Offensive</option>
+                    <option value="other">Other</option>
+                </select>
+                <button type="submit" class="btn-report">🚩 Report</button>
+            </form>
+        </div>
+        {% endif %}
     </div>
 
     {% if flashcard_set.cards.exists %}
@@ -43,9 +75,7 @@
             <div class="flashcard-wrapper">
                 <div class="flashcard" id="flashcard">
                     <div class="flashcard-inner" id="flashcard-inner">
-                        <div class="flashcard-front" id="flashcard-content">
-                            <!-- Content will be loaded by JS -->
-                        </div>
+                        <div class="flashcard-front" id="flashcard-content"></div>
                     </div>
                 </div>
             </div>
@@ -65,64 +95,4 @@
 
     <a href="{% url 'materials:my_resources' %}" class="btn btn-back">Back to My Resources</a>
 </div>
-
-<script>
-const flashcards = [
-    {% for card in flashcard_set.cards.all %}
-        {
-            id: {{ card.id }},
-            front: "{{ card.front|escapejs }}",
-            back: "{{ card.back|escapejs }}"
-        }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
-
-let currentIndex = 0;
-let isFlipped = false;
-
-function updateCard() {
-    if (flashcards.length === 0) {
-        document.getElementById('flashcard-content').textContent = 'No cards available';
-        return;
-    }
-
-    const card = flashcards[currentIndex];
-    const content = isFlipped ? card.back : card.front;
-    
-    const flashcardContent = document.getElementById('flashcard-content');
-    flashcardContent.textContent = content;
-    
-    document.getElementById('current-card').textContent = currentIndex + 1;
-    document.getElementById('flashcard-inner').className = isFlipped ? 'flashcard-inner flipped' : 'flashcard-inner';
-    
-    // Update button states
-    document.getElementById('prev-btn').disabled = currentIndex === 0;
-    document.getElementById('next-btn').disabled = currentIndex === flashcards.length - 1;
-}
-
-document.getElementById('prev-btn').addEventListener('click', () => {
-    if (currentIndex > 0) {
-        currentIndex--;
-        isFlipped = false;
-        updateCard();
-    }
-});
-
-document.getElementById('next-btn').addEventListener('click', () => {
-    if (currentIndex < flashcards.length - 1) {
-        currentIndex++;
-        isFlipped = false;
-        updateCard();
-    }
-});
-
-document.getElementById('flip-btn').addEventListener('click', () => {
-    isFlipped = !isFlipped;
-    updateCard();
-});
-
-// Initialize
-updateCard();
-</script>
-
 {% endblock %}

@@ -6,89 +6,89 @@ My Profile
 {% endblock %}
 
 {% block head_block %}
-<link rel="stylesheet" href="{% static 'student_profile.css' %}">
+<link rel="stylesheet" href="{% static 'accounts/css/student_profile.css' %}">
 {% endblock %}
-
 {% block body_block %}
-<div class="profile-page">
-    <section class="profile-header-card">
-        <h1>{{ user.get_full_name|default:user.username }}</h1>
-        <h2>
-            {% if student.degree %}
-                {{ student.degree.get_full_name }}
-            {% else %}
-                Degree not set
-            {% endif %}
-        </h2>
-        <p class="profile-grad-year">
-            <strong>Graduation Year:</strong> {{ student.graduation_year }}
-        </p>
+<div class="my-resources-container">
+    <div class="resources-header">
+        <h1>👤 {{ user.get_full_name|default:user.username }}</h1>
+        <p>{{ student.degree.get_full_name|default:"Degree not set" }} • Class of {{ student.graduation_year }}</p>
 
-        <div class="profile-bio-box">
-            <h3>Bio</h3>
+        <div class="stats">
+            <div class="stat-item">
+                <strong>Subscribed Modules</strong>
+                <div class="number">{{ modules }}</div>
+            </div>
+            <div class="stat-item">
+                <strong>Total Flashcards</strong>
+                <div class="number">{{ flashcards.count }}</div>
+            </div>
+            <div class="stat-item">
+                <strong>Total Quizzes</strong>
+                <div class="number">{{ quizzes.count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="module-section">
+        <div class="module-section-header">
+            <div>
+                <h2>📝 About Me</h2>
+            </div>
+        </div>
+        <div class="profile-bio-content">
             <p>{{ student.bio|default:"No bio added yet." }}</p>
         </div>
-    </section>
+    </div>
 
-    <section class="modules-card">
-        <h2>Current Modules</h2>
-        {% if modules %}
-            <ul class="modules-list">
-                {% for module in modules %}
-                    <li>{{ module.name }} - {{ module.id }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No current modules to display.</p>
-        {% endif %}
-    </section>
-
-    <section class="resources-card">
-        <h1>Resources</h1>
-
-        <div class="resource-group">
-            <h2>Flashcards</h2>
-            {% if flashcards %}
-                <ul class="resource-list">
-                    {% for material in flashcards %}
-                        <li>
-                            <span class="resource-title">
-                                {{ material.title }}
-                                {% if material.module %}
-                                    - {{ material.module.id }}
-                                {% else %}
-                                    - Private
-                                {% endif %}
-                            </span>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No flashcards yet.</p>
-            {% endif %}
+    <div class="module-section">
+        <div class="module-section-header">
+            <div>
+                <h2>📚 Created Resources</h2>
+                <p>A collection of your published and private study materials</p>
+            </div>
+            <div class="module-header-actions">
+                <span class="material-count">{{ flashcards.count|add:quizzes.count }} materials</span>
+            </div>
         </div>
 
-        <div class="resource-group">
-            <h2>Quizzes</h2>
-            {% if quizzes %}
-                <ul class="resource-list">
-                    {% for material in quizzes %}
-                        <li>
-                            <span class="resource-title">
-                                {{ material.title }}
-                                {% if material.module %}
-                                    - {{ material.module.id }}
-                                {% else %}
-                                    - Private
-                                {% endif %}
-                            </span>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No quizzes yet.</p>
-            {% endif %}
+        <div class="materials-list">
+            {% for material in flashcards %}
+            <div class="material-item">
+                <div class="material-info">
+                    <div class="material-title">{{ material.title }}</div>
+                    <div class="material-meta">
+                        <span class="type-badge flashcard">Flashcard</span>
+                        <span class="status-badge {% if material.is_published %}published{% else %}private{% endif %}">
+                            {% if material.is_published %}✓ Published{% else %}🔒 Private{% endif %}
+                        </span>
+                        <span class="meta-tag">{% if material.module %}{{ material.module.id }}{% else %}Personal{% endif %}</span>
+                    </div>
+                </div>
+                <div class="material-actions">
+                    <a href="{% url 'materials:view_flashcard' material.id %}" class="btn-action view-btn">View</a>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% for material in quizzes %}
+            <div class="material-item">
+                <div class="material-info">
+                    <div class="material-title">{{ material.title }}</div>
+                    <div class="material-meta">
+                        <span class="type-badge quiz">Quiz</span>
+                        <span class="status-badge {% if material.is_published %}published{% else %}private{% endif %}">
+                            {% if material.is_published %}✓ Published{% else %}🔒 Private{% endif %}
+                        </span>
+                        <span class="meta-tag">{% if material.module %}{{ material.module.id }}{% else %}Personal{% endif %}</span>
+                    </div>
+                </div>
+                <div class="material-actions">
+                    <a href="{% url 'materials:view_quiz' material.id %}" class="btn-action view-btn">View</a>
+                </div>
+            </div>
+            {% endfor %}
         </div>
-    </section>
+    </div>
 </div>
 {% endblock %}
