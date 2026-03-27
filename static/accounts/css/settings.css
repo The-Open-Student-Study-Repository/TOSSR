@@ -1,9 +1,9 @@
-.settings {
+.settings-page {
   height: max(100%,100vh);
   margin: 0;
   display: flex;
-  justify-content: center; /* horizontal */
-  align-items: center;     /* vertical */
+  justify-content: center;
+  align-items: center;
 }
 
 .settings-title {
