@@ -8,357 +8,267 @@
     <link rel="stylesheet" href="{% static 'accounts/css/moderator.css' %}">
 </head>
 <body>
-    <div class="dashboard-shell">
-        <aside class="sidebar">
+<div class="dashboard-shell">
+    <aside class="sidebar">
+        <div>
+            <div class="brand">TOSSR</div>
+            <div class="brand-subtitle">Moderator Panel</div>
+        </div>
+        <div class="moderator-card">
+            <div class="moderator-label">Logged in as</div>
+            <div class="moderator-name">{{ user.username }}</div>
+            <div class="moderator-role">Moderator</div>
+            <a href="{% url 'accounts:logout' %}" class="logout-button">Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-panel">
+        <header class="topbar">
             <div>
-                <div class="brand">TOSSR</div>
-                <div class="brand-subtitle">Moderator Panel</div>
+                <h1>Moderator Dashboard</h1>
+                <p>Priority goes to materials that are live and need moderator attention.</p>
             </div>
+        </header>
 
-            <div class="moderator-card">
-                <div class="moderator-label">Logged in as</div>
-                <div class="moderator-name">{{ user.username }}</div>
-                <div class="moderator-role">Moderator</div>
-
-                <a href="/accounts/logout/" class="logout-button">
-                    Logout
-                </a>
-            </div>
-        </aside>
-
-        <main class="main-panel">
-            <header class="topbar">
+        <!-- Pending Reports -->
+        <section id="reports" class="section-block">
+            <div class="section-intro">
                 <div>
-                    <h1>Moderator Dashboard</h1>
-                    <p>Priority goes to materials that are live and need moderator attention.</p>
+                    <h2>Reported Content</h2>
+                    <p>Unreviewed reports from students.</p>
                 </div>
-            </header>
+                <div class="queue-badge">{{ pending_reports|length }} pending</div>
+            </div>
+            <div class="panel-card">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Content</th>
+                            <th>Reason</th>
+                            <th>Reporter</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in pending_reports %}
+                        <tr>
+                            <td>
+                                {% if report.comment %}
+                                    <span class="priority-pill">Comment</span>
+                                {% else %}
+                                    <span class="priority-pill high-priority">Material</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if report.comment %}
+                                    <strong>Comment on: {{ report.study_material.title }}</strong>
+                                    <div class="scrollable-content">{{ report.comment.content }}</div>
+                                {% else %}
+                                    <strong>{{ report.study_material.title }}</strong>
+                                    <div class="row-subtext">Module: {{ report.study_material.module.name|default:"No module" }}</div>
+                                    <a href="{% url 'materials:view_material' report.study_material.id %}" class="preview-link">View Material</a>
+                                {% endif %}
+                            </td>
+                            <td>{{ report.get_reason_display }}</td>
+                            <td>{{ report.reporter.user.username }}</td>
+                            <td>{{ report.created_at|date:"d M Y" }}</td>
+                            <td>
+                                <div class="action-group">
+                                    {% if report.comment %}
+                                        <form method="post" action="{% url 'accounts:hide_comment' report.comment.id %}">{% csrf_token %}
+                                            <button type="submit" class="small-button danger-button">Hide Comment</button>
+                                        </form>
+                                    {% else %}
+                                        <form method="post" action="{% url 'accounts:hide_material' report.study_material.id %}">{% csrf_token %}
+                                            <button type="submit" class="small-button danger-button">Hide Material</button>
+                                        </form>
+                                    {% endif %}
+                                    <form method="post" action="{% url 'accounts:review_report' report.id %}">{% csrf_token %}
+                                        <button type="submit" class="small-button secondary-button">Dismiss</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="empty-state">No pending reports.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-            <section id="reports" class="section-block">
-                <div class="section-intro">
-                    <div>
-                        <h2>Reported Content</h2>
-                        <p>Unreviewed reports from students.</p>
-                    </div>
-                    <div class="queue-badge">
-                        {{ pending_reports|length }} pending
-                    </div>
+        <!-- Flagged Materials -->
+        <section id="priority-queue" class="section-block">
+            <div class="section-intro">
+                <div>
+                    <h2>Priority Queue</h2>
+                    <p>Visible materials that should be reviewed first.</p>
                 </div>
+                <div class="queue-badge">{{ flagged_materials|length }} in queue</div>
+            </div>
+            <div class="panel-card">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Priority</th>
+                            <th>Title</th>
+                            <th>Module</th>
+                            <th>Author</th>
+                            <th>Status</th>
+                            <th>Content</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for material in flagged_materials %}
+                        <tr>
+                            <td><span class="priority-pill high-priority">Review</span></td>
+                            <td>{{ material.title }}</td>
+                            <td>{{ material.module.name|default:"No module" }}</td>
+                            <td>{{ material.owner.user.username|default:"Unknown" }}</td>
+                            <td><span class="status-badge visible-badge">Visible</span></td>
+                            <td>
+                                <a href="{% url 'materials:view_material' material.id %}" class="preview-link">Preview Content</a>
+                            </td>
+                            <td>
+                                <form method="post" action="{% url 'accounts:hide_material' material.id %}">{% csrf_token %}
+                                    <button type="submit" class="small-button danger-button">Hide</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="7" class="empty-state">No materials currently need review.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-                <div class="panel-card">
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Content</th>
-                                    <th>Reason</th>
-                                    <th>Reporter</th>
-                                    <th>Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for report in pending_reports %}
-                                    <tr>
-                                        <td>
-                                            {% if report.comment %}
-                                                <span class="priority-pill">Comment</span>
-                                            {% else %}
-                                                <span class="priority-pill high-priority">Material</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="material-title-cell">
-                                            {% if report.comment %}
-                                                <strong>Comment on: {{ report.study_material.title }}</strong>
-                                                <div class="row-subtext">"{{ report.comment.content|truncatewords:20 }}"</div>
-                                            {% else %}
-                                                <strong>{{ report.study_material.title }}</strong>
-                                                <div class="row-subtext">{{ report.study_material.module.name|default:"No module" }}</div>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ report.get_reason_display }}</td>
-                                        <td>{{ report.reporter.user.username }}</td>
-                                        <td>{{ report.created_at|date:"d M Y" }}</td>
-                                        <td>
-                                            <div class="action-group">
-                                                {% if report.comment %}
-                                                    <form method="post" action="{% url 'accounts:hide_comment' report.comment.id %}">
-                                                        {% csrf_token %}
-                                                        <button type="submit" class="small-button danger-button">Hide Comment</button>
-                                                    </form>
-                                                {% else %}
-                                                    <form method="post" action="{% url 'accounts:hide_material' report.study_material.id %}">
-                                                        {% csrf_token %}
-                                                        <button type="submit" class="small-button danger-button">Hide Material</button>
-                                                    </form>
-                                                {% endif %}
-                                                <form method="post" action="{% url 'accounts:review_report' report.id %}">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="small-button secondary-button">Dismiss</button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="6" class="empty-state">No pending reports.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+        <!-- Hidden Materials -->
+        <section id="hidden-materials" class="section-block">
+            <div class="section-intro">
+                <h2>Hidden Materials</h2>
+                <div class="queue-badge muted-badge">{{ hidden_materials|length }} hidden</div>
+            </div>
+            <div class="panel-card">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Module</th>
+                            <th>Author</th>
+                            <th>Status</th>
+                            <th>Content</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for material in hidden_materials %}
+                        <tr>
+                            <td>{{ material.title }}</td>
+                            <td>{{ material.module.name|default:"No module" }}</td>
+                            <td>{{ material.owner.user.username|default:"Unknown" }}</td>
+                            <td><span class="status-badge hidden-badge">Hidden</span></td>
+                            <td>
+                                <a href="{% url 'materials:view_material' material.id %}" class="preview-link">Preview Content</a>
+                            </td>
+                            <td>
+                                <form method="post" action="{% url 'accounts:unhide_material' material.id %}">{% csrf_token %}
+                                    <button type="submit" class="small-button secondary-button">Unhide</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="empty-state">No hidden materials found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-            <section id="priority-queue" class="section-block">
-                <div class="section-intro">
-                    <div>
-                        <h2>Priority Queue</h2>
-                        <p>Visible materials that should be reviewed first.</p>
-                    </div>
-                    <div class="queue-badge">
-                        {{ flagged_materials|length }} in queue
-                    </div>
-                </div>
+        <!-- Deleted Comments -->
+        <section id="deleted-comments" class="section-block">
+            <div class="section-intro">
+                <h2>Deleted Comments</h2>
+                <div class="queue-badge muted-badge">{{ deleted_comments|length }} deleted</div>
+            </div>
+            <div class="panel-card">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Comment</th>
+                            <th>On Material</th>
+                            <th>Author</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comment in deleted_comments %}
+                        <tr>
+                            <td class="scrollable-content">{{ comment.content|safe }}</td>
+                            <td>{{ comment.study_material.title }}</td>
+                            <td>{{ comment.student.user.username }}</td>
+                            <td>
+                                <form method="post" action="{% url 'accounts:restore_comment' comment.id %}">{% csrf_token %}
+                                    <button type="submit" class="small-button secondary-button">Restore</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="empty-state">No deleted comments.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-                <div class="panel-card">
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Priority</th>
-                                    <th>Title</th>
-                                    <th>Module</th>
-                                    <th>Author</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for material in flagged_materials %}
-                                    <tr>
-                                        <td>
-                                            <span class="priority-pill high-priority">Review</span>
-                                        </td>
-                                        <td class="material-title-cell">
-                                            <strong>{{ material.title }}</strong>
-                                            <div class="row-subtext">Published material currently visible to students</div>
-                                        </td>
-                                        <td>{{ material.module.name|default:"No module" }}</td>
-                                        <td>{{ material.owner.user.username|default:"Unknown" }}</td>
-                                        <td>
-                                            <span class="status-badge visible-badge">Visible</span>
-                                        </td>
-                                        <td>
-                                            <div class="action-group">
-                                                <form method="post" action="{% url 'accounts:hide_material' material.id %}">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="small-button danger-button">Hide</button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="6" class="empty-state">No materials currently need review.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+        <!-- Recent Materials -->
+        <section id="recent-materials" class="section-block">
+            <div class="section-intro">
+                <h2>Recent Published Materials</h2>
+            </div>
+            <div class="panel-card">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Module</th>
+                            <th>Content</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for material in recent_materials %}
+                        <tr>
+                            <td>{{ material.title }}</td>
+                            <td>{{ material.module.name|default:"No module" }}</td>
+                            <td>
+                                <a href="{% url 'materials:view_material' material.id %}" class="preview-link">Preview Content</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="empty-state">No recent materials found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-            <section id="deleted-comments" class="section-block">
-                <div class="section-intro">
-                    <div>
-                        <h2>Deleted Comments</h2>
-                        <p>Soft-deleted comments still visible to moderators for review.</p>
-                    </div>
-                    <div class="queue-badge muted-badge">
-                        {{ deleted_comments|length }} deleted
-                    </div>
-                </div>
+        <!-- Overview Stats -->
+        <section id="overview" class="section-block">
+            <div class="stats-grid">
+                <div class="stat-card priority-stat"><span>Pending reports</span><strong>{{ stats.pending_reports }}</strong></div>
+                <div class="stat-card priority-stat"><span>Needs review now</span><strong>{{ flagged_materials|length }}</strong></div>
+                <div class="stat-card"><span>Total materials</span><strong>{{ stats.total_materials }}</strong></div>
+                <div class="stat-card"><span>Published materials</span><strong>{{ stats.published_materials }}</strong></div>
+                <div class="stat-card"><span>Hidden materials</span><strong>{{ stats.hidden_materials }}</strong></div>
+                <div class="stat-card"><span>Deleted comments</span><strong>{{ stats.deleted_comments }}</strong></div>
+                <div class="stat-card"><span>Total students</span><strong>{{ stats.total_students }}</strong></div>
+            </div>
+        </section>
 
-                <div class="panel-card">
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Comment</th>
-                                    <th>On Material</th>
-                                    <th>Author</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for comment in deleted_comments %}
-                                    <tr>
-                                        <td class="material-title-cell">
-                                            <div class="row-subtext">"{{ comment.content|truncatewords:30 }}"</div>
-                                        </td>
-                                        <td>{{ comment.study_material.title }}</td>
-                                        <td>{{ comment.student.user.username }}</td>
-                                        <td>
-                                            <div class="action-group">
-                                                <form method="post" action="{% url 'accounts:restore_comment' comment.id %}">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="small-button secondary-button">Restore</button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="4" class="empty-state">No deleted comments.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <section id="hidden-materials" class="section-block">
-                <div class="section-intro">
-                    <div>
-                        <h2>Hidden Materials</h2>
-                        <p>Previously moderated materials that are currently hidden.</p>
-                    </div>
-                    <div class="queue-badge muted-badge">
-                        {{ hidden_materials|length }} hidden
-                    </div>
-                </div>
-
-                <div class="panel-card">
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Module</th>
-                                    <th>Author</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for material in hidden_materials %}
-                                    <tr>
-                                        <td class="material-title-cell">
-                                            <strong>{{ material.title }}</strong>
-                                            <div class="row-subtext">Removed from public view</div>
-                                        </td>
-                                        <td>{{ material.module.name|default:"No module" }}</td>
-                                        <td>{{ material.owner.user.username|default:"Unknown" }}</td>
-                                        <td>
-                                            <span class="status-badge hidden-badge">Hidden</span>
-                                        </td>
-                                        <td>
-                                            <div class="action-group">
-                                                <form method="post" action="{% url 'accounts:unhide_material' material.id %}">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="small-button secondary-button">Unhide</button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="5" class="empty-state">No hidden materials found.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <section id="recent-materials" class="section-block">
-                <div class="section-intro">
-                    <div>
-                        <h2>Recent Published Materials</h2>
-                        <p>Newest public materials from the current backend query.</p>
-                    </div>
-                </div>
-
-                <div class="panel-card">
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Module</th>
-                                    <th>Created</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for material in recent_materials %}
-                                    <tr>
-                                        <td class="material-title-cell">
-                                            <strong>{{ material.title }}</strong>
-                                        </td>
-                                        <td>{{ material.module.name|default:"No module" }}</td>
-                                        <td>{{ material.created_at|date:"d M Y, H:i" }}</td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="3" class="empty-state">No recent materials found.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <section id="overview" class="section-block">
-                <div class="section-intro">
-                    <div>
-                        <h2>Overview</h2>
-                        <p>Quick platform counts from the current backend.</p>
-                    </div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card priority-stat">
-                        <span class="stat-label">Pending reports</span>
-                        <strong>{{ stats.pending_reports }}</strong>
-                    </div>
-
-                    <div class="stat-card priority-stat">
-                        <span class="stat-label">Needs review now</span>
-                        <strong>{{ flagged_materials|length }}</strong>
-                    </div>
-
-                    <div class="stat-card">
-                        <span class="stat-label">Total materials</span>
-                        <strong>{{ stats.total_materials }}</strong>
-                    </div>
-
-                    <div class="stat-card">
-                        <span class="stat-label">Published materials</span>
-                        <strong>{{ stats.published_materials }}</strong>
-                    </div>
-
-                    <div class="stat-card">
-                        <span class="stat-label">Hidden materials</span>
-                        <strong>{{ stats.hidden_materials }}</strong>
-                    </div>
-
-                    <div class="stat-card">
-                        <span class="stat-label">Deleted comments</span>
-                        <strong>{{ stats.deleted_comments }}</strong>
-                    </div>
-
-                    <div class="stat-card">
-                        <span class="stat-label">Total students</span>
-                        <strong>{{ stats.total_students }}</strong>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
+    </main>
+</div>
 </body>
 </html>

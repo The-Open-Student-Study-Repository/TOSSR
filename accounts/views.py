@@ -150,19 +150,33 @@ def student_dashboard(request):
     })
 
 
+from django.db.models import Prefetch
+
 @moderator_required
 def moderator_dashboard(request):
+    # Fetch flagged materials (with unreviewed reports)
+    reported_material_ids = Report.objects.filter(
+        is_reviewed=False, study_material__isnull=False, comment__isnull=True
+    ).values_list('study_material_id', flat=True)
+
+    flagged_materials = StudyMaterial.objects.filter(
+        id__in=reported_material_ids, is_hidden_by_admin=False
+    ).select_related('owner__user', 'module').prefetch_related(
+        Prefetch('flashcard_set__cards'),  # flashcards
+        Prefetch('quiz__questions__answers'),  # quiz questions and answers
+    )[:20]
+
+    # Fetch other dashboard info as usual
     pending_reports = Report.objects.filter(
         is_reviewed=False
-    ).select_related(
-        'reporter__user',
-        'study_material__module',
-        'comment__student__user'
-    ).order_by('-created_at')[:20]
+    ).select_related('reporter__user', 'study_material', 'comment__student__user').order_by('-created_at')[:20]
 
     hidden_materials = StudyMaterial.objects.filter(
         is_hidden_by_admin=True
-    ).select_related('owner__user', 'module')[:20]
+    ).select_related('owner__user', 'module').prefetch_related(
+        Prefetch('flashcard_set__cards'),
+        Prefetch('quiz__questions__answers'),
+    )[:20]
 
     deleted_comments = Comment.objects.filter(
         is_deleted=True
@@ -170,13 +184,10 @@ def moderator_dashboard(request):
 
     recent_materials = StudyMaterial.objects.filter(
         is_published=True, is_deleted=False
-    ).select_related('module').order_by('-created_at')[:10]
-
-    flagged_materials = StudyMaterial.objects.filter(
-        is_published=True,
-        is_hidden_by_admin=False,
-        reports__is_reviewed=False
-    ).distinct().select_related('owner__user', 'module')[:20]
+    ).select_related('owner__user', 'module').prefetch_related(
+        Prefetch('flashcard_set__cards'),
+        Prefetch('quiz__questions__answers'),
+    ).order_by('-created_at')[:10]
 
     stats = {
         'total_materials': StudyMaterial.objects.filter(is_deleted=False).count(),
@@ -354,8 +365,30 @@ def user_logout(request):
 @login_required
 def settings(request):
     return render(request,'settings.html')
-
+@login_required
 def set_theme(request, theme):
     response = redirect("/")   # redirect back to your page
     response.set_cookie("theme", theme)
     return response
+
+@moderator_required
+def moderator_material_preview(request, material_id):
+    """
+    Preview the full content of a study material:
+    - For flashcards: show cards
+    - For quizzes: show questions and answers
+    """
+    material = get_object_or_404(
+        StudyMaterial.objects.select_related('owner__user', 'module')
+        .prefetch_related(
+            'flashcard_set__cards',
+            'quiz__questions__answers'
+        ),
+        id=material_id
+    )
+
+    context = {
+        'material': material,
+    }
+
+    return render(request, 'accounts/moderator_material_preview.html', context)

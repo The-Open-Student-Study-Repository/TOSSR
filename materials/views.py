@@ -533,3 +533,22 @@ def toggle_save_material(request, material_id):
         messages.success(request, f'"{material.title}" saved to My Resources.')
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+ #for moderators
+def view_material(request, material_id):
+    material = get_object_or_404(StudyMaterial, id=material_id)
+
+    if material.material_type == 'flashcard' and hasattr(material, 'flashcard_set'):
+        return render(request, 'materials/view_flashcard.html', {
+            'flashcard_set': material.flashcard_set
+        })
+
+    elif material.material_type == 'quiz' and hasattr(material, 'quiz'):
+        return render(request, 'materials/view_quiz.html', {
+            'quiz': material.quiz,
+            'questions': material.quiz.questions.all()
+        })
+
+    else:
+        messages.error(request, "No preview available for this material.")
+        return redirect('accounts:moderator_dashboard')

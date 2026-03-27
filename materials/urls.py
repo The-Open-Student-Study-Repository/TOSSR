@@ -23,4 +23,5 @@ urlpatterns = [
     path('report/material/<int:material_id>/', views.report_material, name='report_material'),
     path('report/comment/<int:comment_id>/', views.report_comment, name='report_comment'),
     path('save/<int:material_id>/', views.toggle_save_material, name='toggle_save_material'),
+    path('material/<int:material_id>/view/', views.view_material, name='view_material'),
 ]
