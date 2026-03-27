@@ -19,6 +19,7 @@ urlpatterns = [
     path("settings/", views.settings, name="settings"),
     path("logout/", views.user_logout, name="logout"),
     path("set-theme/<str:theme>/", views.set_theme, name="set_theme"),
-    path("download-data/", views.download_my_data, name="download_my_data"),
+    path("download-my-data/", views.download_my_data, name="download_my_data"),
+    path("anonymise-account/", views.anonymise_account, name="anonymise_account"),
     path("account-deleted/", TemplateView.as_view(template_name="accounts/account_deleted.html"), name="account_deleted"),
 ]

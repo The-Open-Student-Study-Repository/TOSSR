@@ -1,17 +1,14 @@
-from django.test import TestCase, Client, RequestFactory
+from django.test import TestCase, Client
 from django.urls import reverse
 from accounts.models import User, Student
-from modules.models import School, Degree
-
-# Create your tests here.
-
+from modules.models import School, Degree, Module, StudentModule
+from materials.models import StudyMaterial
 
 class TestLogIn(TestCase):
     def setUp(self):
         self.client = Client()
         self.login_url = reverse('accounts:login')
 
-        # Create school and degree for student
         self.school = School.objects.create(name='School of Computing Science')
         self.degree = Degree.objects.create(
             code='G400',
@@ -20,14 +17,12 @@ class TestLogIn(TestCase):
         )
         self.degree.schools.add(self.school)
 
-        # Tier 1: Superuser
         self.superuser = User.objects.create_superuser(
             username='admin',
             email='admin@test.com',
             password='admin123',
         )
 
-        # Tier 2: Moderator
         self.moderator = User.objects.create_user(
             username='moderator',
             email='mod@test.com',
@@ -35,7 +30,6 @@ class TestLogIn(TestCase):
             role='moderator',
         )
 
-        # Tier 3: Student
         self.student_user = User.objects.create_user(
             username='student',
             email='student@test.com',
@@ -55,62 +49,60 @@ class TestLogIn(TestCase):
         Degree.objects.all().delete()
 
     def test_tier_1_login_redirects_to_admin(self):
-        """Test Tier 1 (superuser) redirects to Django admin"""
         response = self.client.post(self.login_url, {
             'username': 'admin',
             'password': 'admin123'
         })
-
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('admin:index'))
 
     def test_student_login_success(self):
-        """Test Tier 2 (moderator) redirects to moderator dashboard"""
         response = self.client.post(self.login_url, {
             'username': 'moderator',
             'password': 'mod123'
         })
-
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('accounts:moderator_dashboard'))
 
     def test_tier_3_login_redirects_to_student_dashboard(self):
-        """Test Tier 3 (student) redirects to student dashboard"""
         response = self.client.post(self.login_url, {
             'username': 'student',
             'password': 'student123'
         })
-
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('accounts:student_dashboard'))
 
     def test_get_tier_methods(self):
-        """Test tier identification methods"""
+        """Test tier identification methods (Updated for new model definitions)"""
         self.assertEqual(self.superuser.get_tier(), 1)
-        self.assertEqual(self.superuser.get_tier_name(), 'Superuser')
+        self.assertEqual(self.superuser.get_tier_name(), 'Database Admin')
 
         self.assertEqual(self.moderator.get_tier(), 2)
-        self.assertEqual(self.moderator.get_tier_name(), 'Moderator')
+        self.assertEqual(self.moderator.get_tier_name(), 'Content Moderator')
 
         self.assertEqual(self.student_user.get_tier(), 3)
         self.assertEqual(self.student_user.get_tier_name(), 'Student')
 
+    def test_blocked_user_login(self):
+        """Test that blocked users are not allowed to log in"""
+        self.student_user.is_blocked = True
+        self.student_user.save()
+
+        response = self.client.post(self.login_url, {
+            'username': 'student',
+            'password': 'student123'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Your account has been blocked', response.context['error'])
+
     def test_student_required_decorator(self):
-        """Test student_required decorator blocks non-students"""
-        # Try to access student dashboard as moderator
         self.client.login(username='moderator', password='mod123')
         response = self.client.get(reverse('accounts:student_dashboard'))
-
-        # Should redirect away
         self.assertEqual(response.status_code, 302)
 
     def test_moderator_required_decorator(self):
-        """Test moderator_required decorator blocks non-moderators"""
-        # Try to access moderator dashboard as student
         self.client.login(username='student', password='student123')
         response = self.client.get(reverse('accounts:moderator_dashboard'))
-
-        # Should redirect away
         self.assertEqual(response.status_code, 302)
 
 class TestDegreeAutocomplete(TestCase):
@@ -166,7 +158,6 @@ class TestDegreeAutocomplete(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_no_duplicate_results(self):
-        """Ensure distinct() prevents duplicate entries"""
         self.degree1.schools.add(self.school)
         response = self.client.get(self.url, {'q': 'Computing'})
         data = response.json()
@@ -300,7 +291,6 @@ class TestSignUpStep2(TestCase):
         School.objects.all().delete()
 
     def _set_step1_session(self):
-        """Helper to simulate completing step 1"""
         session = self.client.session
         session['signup_step1'] = {
             'username': 'newuser',
@@ -310,7 +300,6 @@ class TestSignUpStep2(TestCase):
         session.save()
 
     def test_step2_redirects_without_step1(self):
-        """Cannot access step 2 without completing step 1"""
         response = self.client.get(self.url)
         self.assertRedirects(response, reverse('accounts:signup_step1'))
 
@@ -330,12 +319,10 @@ class TestSignUpStep2(TestCase):
         })
         self.assertRedirects(response, reverse('accounts:login'))
 
-        # Check user was created
         user = User.objects.get(username='newuser')
         self.assertEqual(user.email, 'new@test.com')
         self.assertEqual(user.role, 'student')
 
-        # Check student profile was created
         student = Student.objects.get(user=user)
         self.assertEqual(student.degree.code, 'G400')
         self.assertEqual(student.graduation_year, 2027)
@@ -367,7 +354,7 @@ class TestSignUpStep2(TestCase):
     def test_step2_missing_required_fields(self):
         self._set_step1_session()
         response = self.client.post(self.url, {})
-        self.assertEqual(response.status_code, 200)  # stays on page
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username='newuser').exists())
 
     def test_step2_invalid_degree(self):
@@ -379,5 +366,118 @@ class TestSignUpStep2(TestCase):
             'graduation_year': 2027,
             'bio': '',
         })
-        self.assertEqual(response.status_code, 200)  # stays on page
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username='newuser').exists())
+
+class TestDashboardsAndModeration(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.school = School.objects.create(name='School of Computing Science')
+        self.degree = Degree.objects.create(code='G400', name='Computing Science', degree_type='BSc (Hons)')
+        self.module = Module.objects.create(id='COMP1001', name='Programming 1', school=self.school, level=1, credits=20)
+
+        self.moderator = User.objects.create_user(username='mod', password='mod123', role='moderator')
+
+        self.student_user = User.objects.create_user(username='student1', password='password123', role='student')
+        self.student = Student.objects.create(user=self.student_user, degree=self.degree, graduation_year=2026)
+
+        StudentModule.objects.create(student=self.student, module=self.module)
+        self.material = StudyMaterial.objects.create(
+            title="Test Flashcards", material_type="flashcard", owner=self.student, module=self.module, is_published=True
+        )
+
+    def test_student_dashboard_context(self):
+        self.client.login(username='student1', password='password123')
+        response = self.client.get(reverse('accounts:student_dashboard'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(self.module, response.context['modules'])
+        self.assertIn(self.material, response.context['flashcards'])
+
+    def test_moderator_dashboard_context(self):
+        self.client.login(username='mod', password='mod123')
+        response = self.client.get(reverse('accounts:moderator_dashboard'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('stats', response.context)
+        self.assertIn(self.material, response.context['recent_materials'])
+
+    def test_hide_and_unhide_material(self):
+        self.client.login(username='mod', password='mod123')
+
+        response = self.client.get(reverse('accounts:hide_material', args=[self.material.id]))
+        self.assertEqual(response.status_code, 302)
+        self.material.refresh_from_db()
+        self.assertTrue(self.material.is_hidden_by_admin)
+
+        response = self.client.get(reverse('accounts:unhide_material', args=[self.material.id]))
+        self.assertEqual(response.status_code, 302)
+        self.material.refresh_from_db()
+        self.assertFalse(self.material.is_hidden_by_admin)
+
+
+class TestGDPRAndMisc(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.school = School.objects.create(name='School of Computing Science')
+        self.degree = Degree.objects.create(code='G400', name='Computing Science')
+        self.module = Module.objects.create(id='COMP1001', name='Programming', school=self.school, level=1, credits=20)
+
+        self.student_user = User.objects.create_user(username='gdpr_student', email='gdpr@test.com', password='password123', role='student', first_name='John', last_name='Doe')
+        self.student = Student.objects.create(user=self.student_user, degree=self.degree, graduation_year=2026, bio="My data")
+        StudentModule.objects.create(student=self.student, module=self.module)
+
+        self.draft_material = StudyMaterial.objects.create(
+            title="Draft", material_type="quiz", owner=self.student, is_published=False
+        )
+        self.published_material = StudyMaterial.objects.create(
+            title="Published", material_type="quiz", owner=self.student, module=self.module, is_published=True
+        )
+
+    def test_download_my_data(self):
+        self.client.login(username='gdpr_student', password='password123')
+        response = self.client.get(reverse('accounts:download_my_data'))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertIn('attachment;', response['Content-Disposition'])
+        data = response.json()
+        self.assertEqual(data['profile']['username'], 'gdpr_student')
+        self.assertEqual(data['profile']['bio'], 'My data')
+        self.assertEqual(data['modules'][0]['code'], 'COMP1001')
+        self.assertEqual(len(data['materials_created']), 2)
+
+    def test_anonymise_account_success(self):
+        self.client.login(username='gdpr_student', password='password123')
+        # NOTE: If your urls.py uses a different name for the delete account view, change 'account_deleted' here
+        response = self.client.post(reverse('accounts:anonymise_account'), {'password': 'password123'})
+
+        self.student_user.refresh_from_db()
+        self.student.refresh_from_db()
+        self.assertFalse(self.student_user.is_active)
+        self.assertIn('deleted_user_', self.student_user.username)
+        self.assertEqual(self.student_user.first_name, 'Deleted')
+        self.assertEqual(self.student.bio, '')
+
+        self.assertFalse(StudyMaterial.objects.filter(id=self.draft_material.id).exists())
+        self.assertTrue(StudyMaterial.objects.filter(id=self.published_material.id).exists())
+
+    def test_anonymise_account_wrong_password(self):
+        self.client.login(username='gdpr_student', password='password123')
+        response = self.client.post(reverse('accounts:anonymise_account'), {'password': 'wrongpassword'})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Incorrect password', response.context['error'])
+        self.assertTrue(self.student_user.is_active)
+
+    def test_settings_and_theme(self):
+        self.client.login(username='gdpr_student', password='password123')
+
+        response = self.client.get(reverse('accounts:settings'))
+        self.assertEqual(response.status_code, 200)
+
+        theme_response = self.client.get(reverse('accounts:set_theme', args=['dark']))
+        self.assertEqual(theme_response.status_code, 302)
+        self.assertEqual(theme_response.cookies['theme'].value, 'dark')
+
+    def test_logout(self):
+        self.client.login(username='gdpr_student', password='password123')
+        response = self.client.get(reverse('accounts:logout'))
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn('_auth_user_id', self.client.session)

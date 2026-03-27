@@ -150,8 +150,6 @@ def my_resources(request):
     }
 
     return render(request, 'materials/my_resources.html', context)
-
-
 @login_required
 @require_http_methods(["POST"])
 def create_flashcard_set(request):
