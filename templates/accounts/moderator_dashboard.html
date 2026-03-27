@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="dashboard-shell">
-        <aside class="sidebar"> <!-- The moderator sidebar -->
+        <aside class="sidebar">
             <div>
                 <div class="brand">TOSSR</div>
                 <div class="brand-subtitle">Moderator Panel</div>
@@ -17,9 +17,8 @@
 
             <div class="moderator-card">
                 <div class="moderator-label">Logged in as</div>
-                <div class="moderator-name"> {{ user.username }}</div>
+                <div class="moderator-name">{{ user.username }}</div>
                 <div class="moderator-role">Moderator</div>
-            
 
                 <a href="/accounts/logout/" class="logout-button">
                     Logout
@@ -34,6 +33,83 @@
                     <p>Priority goes to materials that are live and need moderator attention.</p>
                 </div>
             </header>
+
+            <section id="reports" class="section-block">
+                <div class="section-intro">
+                    <div>
+                        <h2>Reported Content</h2>
+                        <p>Unreviewed reports from students.</p>
+                    </div>
+                    <div class="queue-badge">
+                        {{ pending_reports|length }} pending
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Content</th>
+                                    <th>Reason</th>
+                                    <th>Reporter</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for report in pending_reports %}
+                                    <tr>
+                                        <td>
+                                            {% if report.comment %}
+                                                <span class="priority-pill">Comment</span>
+                                            {% else %}
+                                                <span class="priority-pill high-priority">Material</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="material-title-cell">
+                                            {% if report.comment %}
+                                                <strong>Comment on: {{ report.study_material.title }}</strong>
+                                                <div class="row-subtext">"{{ report.comment.content|truncatewords:20 }}"</div>
+                                            {% else %}
+                                                <strong>{{ report.study_material.title }}</strong>
+                                                <div class="row-subtext">{{ report.study_material.module.name|default:"No module" }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ report.get_reason_display }}</td>
+                                        <td>{{ report.reporter.user.username }}</td>
+                                        <td>{{ report.created_at|date:"d M Y" }}</td>
+                                        <td>
+                                            <div class="action-group">
+                                                {% if report.comment %}
+                                                    <form method="post" action="{% url 'accounts:hide_comment' report.comment.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="small-button danger-button">Hide Comment</button>
+                                                    </form>
+                                                {% else %}
+                                                    <form method="post" action="{% url 'accounts:hide_material' report.study_material.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="small-button danger-button">Hide Material</button>
+                                                    </form>
+                                                {% endif %}
+                                                <form method="post" action="{% url 'accounts:review_report' report.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="small-button secondary-button">Dismiss</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="empty-state">No pending reports.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
             <section id="priority-queue" class="section-block">
                 <div class="section-intro">
@@ -63,30 +139,14 @@
                                 {% for material in flagged_materials %}
                                     <tr>
                                         <td>
-                                            <span class="priority-pill high-priority">
-                                                Review
-                                            </span>
+                                            <span class="priority-pill high-priority">Review</span>
                                         </td>
                                         <td class="material-title-cell">
                                             <strong>{{ material.title }}</strong>
-                                            <div class="row-subtext">
-                                                Published material currently visible to students
-                                            </div>
+                                            <div class="row-subtext">Published material currently visible to students</div>
                                         </td>
-                                        <td>
-                                            {% if material.module %}
-                                                {{ material.module.name }}
-                                            {% else %}
-                                                No module
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if material.owner %}
-                                                {{ material.owner.username }}
-                                            {% else %}
-                                                Unknown
-                                            {% endif %}
-                                        </td>
+                                        <td>{{ material.module.name|default:"No module" }}</td>
+                                        <td>{{ material.owner.user.username|default:"Unknown" }}</td>
                                         <td>
                                             <span class="status-badge visible-badge">Visible</span>
                                         </td>
@@ -102,6 +162,56 @@
                                 {% empty %}
                                     <tr>
                                         <td colspan="6" class="empty-state">No materials currently need review.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="deleted-comments" class="section-block">
+                <div class="section-intro">
+                    <div>
+                        <h2>Deleted Comments</h2>
+                        <p>Soft-deleted comments still visible to moderators for review.</p>
+                    </div>
+                    <div class="queue-badge muted-badge">
+                        {{ deleted_comments|length }} deleted
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Comment</th>
+                                    <th>On Material</th>
+                                    <th>Author</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for comment in deleted_comments %}
+                                    <tr>
+                                        <td class="material-title-cell">
+                                            <div class="row-subtext">"{{ comment.content|truncatewords:30 }}"</div>
+                                        </td>
+                                        <td>{{ comment.study_material.title }}</td>
+                                        <td>{{ comment.student.user.username }}</td>
+                                        <td>
+                                            <div class="action-group">
+                                                <form method="post" action="{% url 'accounts:restore_comment' comment.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="small-button secondary-button">Restore</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="empty-state">No deleted comments.</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -138,24 +248,10 @@
                                     <tr>
                                         <td class="material-title-cell">
                                             <strong>{{ material.title }}</strong>
-                                            <div class="row-subtext">
-                                                Removed from public view
-                                            </div>
+                                            <div class="row-subtext">Removed from public view</div>
                                         </td>
-                                        <td>
-                                            {% if material.module %}
-                                                {{ material.module.name }}
-                                            {% else %}
-                                                No module
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if material.owner %}
-                                                {{ material.owner.username }}
-                                            {% else %}
-                                                Unknown
-                                            {% endif %}
-                                        </td>
+                                        <td>{{ material.module.name|default:"No module" }}</td>
+                                        <td>{{ material.owner.user.username|default:"Unknown" }}</td>
                                         <td>
                                             <span class="status-badge hidden-badge">Hidden</span>
                                         </td>
@@ -203,13 +299,7 @@
                                         <td class="material-title-cell">
                                             <strong>{{ material.title }}</strong>
                                         </td>
-                                        <td>
-                                            {% if material.module %}
-                                                {{ material.module.name }}
-                                            {% else %}
-                                                No module
-                                            {% endif %}
-                                        </td>
+                                        <td>{{ material.module.name|default:"No module" }}</td>
                                         <td>{{ material.created_at|date:"d M Y, H:i" }}</td>
                                     </tr>
                                 {% empty %}
@@ -233,6 +323,11 @@
 
                 <div class="stats-grid">
                     <div class="stat-card priority-stat">
+                        <span class="stat-label">Pending reports</span>
+                        <strong>{{ stats.pending_reports }}</strong>
+                    </div>
+
+                    <div class="stat-card priority-stat">
                         <span class="stat-label">Needs review now</span>
                         <strong>{{ flagged_materials|length }}</strong>
                     </div>
@@ -250,6 +345,11 @@
                     <div class="stat-card">
                         <span class="stat-label">Hidden materials</span>
                         <strong>{{ stats.hidden_materials }}</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-label">Deleted comments</span>
+                        <strong>{{ stats.deleted_comments }}</strong>
                     </div>
 
                     <div class="stat-card">

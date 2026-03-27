@@ -15,6 +15,10 @@
     --settings-bg: #818181;
     --settings-hover: #313131;
 
+    --card-text: #1f2937;
+    --card-text-muted: #6b7280;
+    --primary-button-text: #ffffff;
+
     /*  Find Modules */
     --subscribe-button-bg: #007bff;
     --subsribe-button-hover: #0056b3;

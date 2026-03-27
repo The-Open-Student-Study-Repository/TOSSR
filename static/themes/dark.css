@@ -1,32 +1,36 @@
 :root {
-    --primary-color: #818cf8;        /* lighter shade for dark bg */
+    --primary-color: #818cf8;
     --primary-hover: #6366f1;
 
-    --bg-light: #1f2937;             /* dark gray background */
-    --bg-white: #111827;             /* deep dark background alternative */
-    --text-dark: #f3f4f6;            /* light text */
-    --text-muted: #9ca3af;           /* muted light gray */
-    --border-color: #374151;         /* darker borders for contrast */
-    --bg-black: #000000;             /* true black */
+    --bg-light: #1f2937;
+    --bg-white: #111827;
+    --text-dark: #f3f4f6;
+    --text-muted: #9ca3af;
+    --border-color: #374151;
+    --bg-black: #000000;
 
-    --shadow: 0 20px 40px rgba(0,0,0,0.3);       /* stronger shadows on dark */
+    --shadow: 0 20px 40px rgba(0,0,0,0.3);
     --shadow-hover: 0 30px 60px rgba(0,0,0,0.5);
 
     --sidebar-labels: #1f2937;
-    --settings-bg: #52525b;          /* darkened gray for settings */
+    --settings-bg: #52525b;
     --settings-hover: #3f3f46;
 
+    --card-text: #f3f4f6;
+    --card-text-muted: #9ca3af;
+    --primary-button-text: #ffffff;
+
     /* Find Modules */
-    --subscribe-button-bg: #3b82f6;   /* bright blue */
+    --subscribe-button-bg: #3b82f6;
     --subsribe-button-hover: #2563eb;
 
-    --subscribed-button-bg: #22c55e;  /* bright green */
+    --subscribed-button-bg: #22c55e;
     --subscribed-button-hover: #16a34a;
 
-    --favourite-button-bg: #facc15;   /* bright yellow */
+    --favourite-button-bg: #facc15;
     --favourite-button-hover: #eab308;
 
-    --favourited-button-bg: #f87171;  /* warm red/pink */
+    --favourited-button-bg: #f87171;
     --favourited-button-hover: #ef4444;
 
     --modules-text: #f3f4f6;

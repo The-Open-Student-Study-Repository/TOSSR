@@ -5,10 +5,10 @@ from django.http import JsonResponse
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from materials.models import StudyMaterial
+from materials.models import StudyMaterial, Report, Comment
 from .forms import SignUpStep1Form, SignUpStep2Form
 from .models import User, Student
-from  modules.models import Degree
+from modules.models import Degree, StudentModule
 from .decorators import student_required, moderator_required
 from django_tomselect.autocompletes import AutocompleteModelView
 
@@ -128,11 +128,9 @@ def student_dashboard(request):
     student = request.user.student_profile
 
     student_modules = (
-        student.studentmodule_set
-        .select_related('module')
-        .filter(is_hidden_by_student=False)
-    )
-    modules = [subscription.module for subscription in student_modules]
+        StudentModule.objects.filter(
+            student=student, is_hidden_by_student=False
+        ).select_related('module'))
 
     materials = (
         student.created_materials
@@ -146,7 +144,7 @@ def student_dashboard(request):
 
     return render(request, 'accounts/student_profile.html', {
         'student': student,
-        'modules': modules,
+        'modules': student_modules.count(),
         'flashcards': flashcards,
         'quizzes': quizzes,
     })
@@ -154,38 +152,78 @@ def student_dashboard(request):
 
 @moderator_required
 def moderator_dashboard(request):
-    """Tier 2: Moderator dashboard for content moderation"""
+    # Unreviewed reports (highest priority)
+    pending_reports = Report.objects.filter(
+        is_reviewed=False
+    ).select_related('reporter__user', 'study_material', 'comment__student__user').order_by('-created_at')[:20]
 
-    # Get materials that need attention
-    flagged_materials = StudyMaterial.objects.filter(
-        is_hidden_by_admin=False
-    ).select_related('owner', 'module')[:20]
-
+    # Materials hidden by admin
     hidden_materials = StudyMaterial.objects.filter(
         is_hidden_by_admin=True
-    ).select_related('owner', 'module')[:20]
+    ).select_related('owner__user', 'module')[:20]
 
+    # Soft-deleted comments (visible to mods for review)
+    deleted_comments = Comment.objects.filter(
+        is_deleted=True
+    ).select_related('student__user', 'study_material')[:20]
+
+    # Recent published materials
     recent_materials = StudyMaterial.objects.filter(
-        is_published=True,
-        is_deleted=False
+        is_published=True, is_deleted=False
     ).order_by('-created_at')[:10]
+
+    # Flagged materials (published but have unreviewed reports)
+    reported_material_ids = Report.objects.filter(
+        is_reviewed=False, study_material__isnull=False, comment__isnull=True
+    ).values_list('study_material_id', flat=True)
+    flagged_materials = StudyMaterial.objects.filter(
+        id__in=reported_material_ids, is_hidden_by_admin=False
+    ).select_related('owner__user', 'module')[:20]
 
     stats = {
         'total_materials': StudyMaterial.objects.filter(is_deleted=False).count(),
-        'published_materials': StudyMaterial.objects.filter(
-            is_published=True,
-            is_deleted=False
-        ).count(),
+        'published_materials': StudyMaterial.objects.filter(is_published=True, is_deleted=False).count(),
         'hidden_materials': StudyMaterial.objects.filter(is_hidden_by_admin=True).count(),
         'total_students': User.objects.filter(role='student').count(),
+        'pending_reports': Report.objects.filter(is_reviewed=False).count(),
+        'deleted_comments': Comment.objects.filter(is_deleted=True).count(),
     }
-    #TODO: MAKE SURE WE MAKE A MOD DASHBOARD
+
     return render(request, 'accounts/moderator_dashboard.html', {
         'flagged_materials': flagged_materials,
         'hidden_materials': hidden_materials,
+        'deleted_comments': deleted_comments,
+        'pending_reports': pending_reports,
         'recent_materials': recent_materials,
         'stats': stats,
     })
+
+
+@moderator_required
+def review_report(request, report_id):
+    """Mark a report as reviewed"""
+    report = get_object_or_404(Report, id=report_id)
+    report.is_reviewed = True
+    report.save()
+    return redirect('accounts:moderator_dashboard')
+
+
+@moderator_required
+def hide_comment(request, comment_id):
+    """Moderator hides a comment"""
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment.is_deleted = True
+    comment.save()
+    return redirect('accounts:moderator_dashboard')
+
+
+@moderator_required
+def restore_comment(request, comment_id):
+    """Moderator restores a soft-deleted comment"""
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment.is_deleted = False
+    comment.save()
+    return redirect('accounts:moderator_dashboard')
 
 
 @moderator_required
